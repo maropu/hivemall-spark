@@ -17,6 +17,7 @@
 
 package org.apache.spark.sql.hive
 
+import org.apache.spark.sql.catalyst.expressions.Literal
 import org.apache.spark.sql.types._
 import org.scalatest.FunSuite
 
@@ -30,6 +31,11 @@ import scala.util.Random
 
 class HivemallOpsSuite extends FunSuite {
   import org.apache.spark.sql.hive.HivemallOpsSuite._
+
+  /**
+   * An implicit conversion to avoid doing annoying transformation.
+   */
+  @inline private implicit def toIntLiteral(i: Int) = Column(Literal(i, IntegerType))
 
   test("add_bias") {
     assert(TinyTrainData.select(add_bias($"feature")).collect.toSet
@@ -59,14 +65,19 @@ class HivemallOpsSuite extends FunSuite {
         Row(ArrayBuffer("1:0.2"))))
   }
 
+  /**
+   * TODO: The tests below currently fail because Spark
+   * can't handle HiveGenericUDTF correctly.
+   * This issue was reported in SPARK-6734 and a PR of github
+   * was made in #5383.
+   */
   ignore("logress") {
-    /**
-     * TODO: This test currently fails because Spark can't handle
-     * HiveGenericUDTF correctly.
-     * This issue was reported in SPARK-6734 and a PR of github
-     * was made in #5383.
-     */
     val test = LargeTrainData.train_logregr(add_bias($"feature"), $"label")
+    assert(test.count > 0)
+  }
+
+  ignore("amplify") {
+    val test = LargeTrainData.amplify(3, $"*")
     assert(test.count > 0)
   }
 }

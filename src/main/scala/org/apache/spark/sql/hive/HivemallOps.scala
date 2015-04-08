@@ -43,8 +43,19 @@ class HivemallOps(df: DataFrame) {
    * @group regression
    */
   def train_logregr(exprs: Column*): DataFrame = {
-    Generate(new HiveGenericUdtf(new HiveFunctionWrapper("hivemall.regression.LogressUDTF"), Nil, exprs.map(_.expr)),
-      join = true, outer = false, None, df.logicalPlan)
+    Generate(new HiveGenericUdtf(
+        new HiveFunctionWrapper("hivemall.regression.LogressUDTF"), Nil, exprs.map(_.expr)),
+      join = false, outer = false, None, df.logicalPlan)
+  }
+
+  /**
+   * @see hivemall.ftvec.amplify.AmplifierUDTF
+   * @group ftvec.amplify
+   */
+  def amplify(exprs: Column*): DataFrame = {
+    Generate(new HiveGenericUdtf(
+        new HiveFunctionWrapper("hivemall.ftvec.amplify.AmplifierUDTF"), Nil, exprs.map(_.expr)),
+      join = false, outer = false, None, df.logicalPlan)
   }
 }
 
