@@ -68,4 +68,12 @@ object HivemallOps {
   def add_bias(exprs: Column*): Column = {
     new HiveGenericUdf(new HiveFunctionWrapper("hivemall.ftvec.AddBiasUDFWrapper"), exprs.map(_.expr))
   }
+
+  /**
+   * @see hivemall.ftvec.ExtractFeatureUdf
+   * @group ftvec
+   */
+  def extract_feature(exprs: Column*): Column = {
+    new HiveGenericUdf(new HiveFunctionWrapper("hivemall.ftvec.ExtractFeatureUDFWrapper"), exprs.map(_.expr))
+  }
 }

@@ -32,7 +32,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * A wrapper of [[hivemall.ftvec.AddBiasUDF]].
+ * A wrapper of [[hivemall.ftvec.ExtractFeatureUDF]].
  *
  * NOTE: This is needed to avoid the issue of Spark reflection.
  * That is, spark-1.3 cannot handle List<> as a return type in Hive UDF.
@@ -40,8 +40,8 @@ import java.util.List;
  * This issues has been reported in SPARK-6747, so a future
  * release of Spark makes the wrapper obsolete.
  */
-public class AddBiasUDFWrapper extends GenericUDF {
-    private AddBiasUDF udf = new AddBiasUDF();
+public class ExtractFeatureUDFWrapper extends GenericUDF {
+    private ExtractFeatureUDF udf = new ExtractFeatureUDF();
 
     private List<Text> retValue = new ArrayList<Text>();
     private ListObjectInspector[] argumentOIs = null;
@@ -50,31 +50,26 @@ public class AddBiasUDFWrapper extends GenericUDF {
     public ObjectInspector initialize(ObjectInspector[] arguments) throws UDFArgumentException {
         if(arguments.length != 1) {
             throw new UDFArgumentLengthException(
-                    "add_bias() has an only single argument.");
-        }
-        final int nargs = arguments.length;
-        for(int i = 0; i < nargs; i++) {
-            switch(arguments[i].getCategory()) {
-                case LIST:
-                    ObjectInspector elmOI = ((ListObjectInspector) arguments[i]).getListElementObjectInspector();
-                    if(elmOI.getCategory().equals(Category.PRIMITIVE)) {
-                        if (((PrimitiveObjectInspector) elmOI).getPrimitiveCategory()
-                                == PrimitiveCategory.STRING) {
-                            break;
-                        }
-                    }
-                default:
-                    throw new UDFArgumentTypeException(0,
-                        "Argument " + i + " of add_bias() must be "
-                            + "List[String], but " + arguments[0].getTypeName()
-                            + " was found.");
-            }
+                    "extract_feature() has an only single argument.");
         }
 
-        argumentOIs = new ListObjectInspector[nargs];
-        for(int i = 0; i < nargs; i++) {
-            argumentOIs[i] = (ListObjectInspector) arguments[i];
+        switch(arguments[0].getCategory()) {
+            case LIST:
+                ObjectInspector elmOI = ((ListObjectInspector) arguments[0]).getListElementObjectInspector();
+                if(elmOI.getCategory().equals(Category.PRIMITIVE)) {
+                    if (((PrimitiveObjectInspector) elmOI).getPrimitiveCategory()
+                            == PrimitiveCategory.STRING) {
+                        break;
+                    }
+                }
+            default:
+                throw new UDFArgumentTypeException(0,
+                    "extract_feature() must have List[String] as an argument, but "
+                        + arguments[0].getTypeName() + " was found.");
         }
+
+        argumentOIs = new ListObjectInspector[1];
+        argumentOIs[0] = (ListObjectInspector) arguments[0];
 
         ObjectInspector firstElemOI = argumentOIs[0].getListElementObjectInspector();
         ObjectInspector returnElemOI = ObjectInspectorUtils.getStandardObjectInspector(firstElemOI);
@@ -84,23 +79,16 @@ public class AddBiasUDFWrapper extends GenericUDF {
 
     @Override
     public Object evaluate(DeferredObject[] arguments) throws HiveException {
-        for(int i = 0; i < arguments.length; i++) {
-            final Object arrayObject = arguments[i].get();
-            if(arrayObject == null) {
-                continue;
-            }
-
-            final ListObjectInspector arrayOI = (ListObjectInspector) argumentOIs[i];
-            @SuppressWarnings("unchecked")
-            final List<String> input = (List<String>) arrayOI.getList(arrayObject);
-            retValue = udf.evaluate(input);
-        }
-
+        final Object arrayObject = arguments[0].get();
+        final ListObjectInspector arrayOI = (ListObjectInspector) argumentOIs[0];
+        @SuppressWarnings("unchecked")
+        final List<String> input = (List<String>) arrayOI.getList(arrayObject);
+        retValue = udf.evaluate(input);
         return retValue;
     }
 
     @Override
     public String getDisplayString(String[] children) {
-        return "add_bias(" + Arrays.toString(children) + ")";
+        return "extract_feature(" + Arrays.toString(children) + ")";
     }
 }

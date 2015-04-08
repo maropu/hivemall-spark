@@ -38,6 +38,13 @@ class HivemallOpsSuite extends FunSuite {
         Row(ArrayBuffer("1:0.9", "0:1.0"))))
   }
 
+  test("extract_feature") {
+    assert(regressionTinyData.select(extract_feature($"feature")).collect.toSet
+      == Set(Row(ArrayBuffer("1", "2")),
+        Row(ArrayBuffer("2")),
+        Row(ArrayBuffer("1"))))
+  }
+
   ignore("logress") {
     /**
      * TODO: This test currently fails because Spark can't handle
