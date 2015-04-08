@@ -71,13 +71,23 @@ class HivemallOpsSuite extends FunSuite {
    * This issue was reported in SPARK-6734 and a PR of github
    * was made in #5383.
    */
-  ignore("logress") {
+  ignore("train_adadelta") {
+    val test = LargeTrainData.train_adadelta(add_bias($"feature"), $"label")
+    assert(test.count > 0)
+  }
+
+  ignore("train_logregr") {
     val test = LargeTrainData.train_logregr(add_bias($"feature"), $"label")
     assert(test.count > 0)
   }
 
   ignore("amplify") {
     val test = LargeTrainData.amplify(3, $"*")
+    assert(test.count > 0)
+  }
+
+  ignore("rand_amplify") {
+    val test = LargeTrainData.rand_amplify(3, $"*")
     assert(test.count > 0)
   }
 }

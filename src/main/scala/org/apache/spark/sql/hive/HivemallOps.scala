@@ -39,12 +39,24 @@ class HivemallOps(df: DataFrame) {
     DataFrame(df.sqlContext, logicalPlan)
 
   /**
+   * @see hivemall.regression.AdaDeltaUDTF
+   * @group regression
+   */
+  def train_adadelta(exprs: Column*): DataFrame = {
+    Generate(new HiveGenericUdtf(
+        new HiveFunctionWrapper("hivemall.regression.AdaDeltaUDTF"),
+        Nil, exprs.map(_.expr)),
+      join = false, outer = false, None, df.logicalPlan)
+  }
+
+  /**
    * @see hivemall.regression.LogressUDTF
    * @group regression
    */
   def train_logregr(exprs: Column*): DataFrame = {
     Generate(new HiveGenericUdtf(
-        new HiveFunctionWrapper("hivemall.regression.LogressUDTF"), Nil, exprs.map(_.expr)),
+        new HiveFunctionWrapper("hivemall.regression.LogressUDTF"),
+        Nil, exprs.map(_.expr)),
       join = false, outer = false, None, df.logicalPlan)
   }
 
@@ -54,7 +66,19 @@ class HivemallOps(df: DataFrame) {
    */
   def amplify(exprs: Column*): DataFrame = {
     Generate(new HiveGenericUdtf(
-        new HiveFunctionWrapper("hivemall.ftvec.amplify.AmplifierUDTF"), Nil, exprs.map(_.expr)),
+        new HiveFunctionWrapper("hivemall.ftvec.amplify.AmplifierUDTF"),
+        Nil, exprs.map(_.expr)),
+      join = false, outer = false, None, df.logicalPlan)
+  }
+
+  /**
+   * @see hivemall.ftvec.amplify.RandomAmplifierUDTF
+   * @group ftvec.amplify
+   */
+  def rand_amplify(exprs: Column*): DataFrame = {
+    Generate(new HiveGenericUdtf(
+        new HiveFunctionWrapper("hivemall.ftvec.amplify.RandomAmplifierUDTF"),
+        Nil, exprs.map(_.expr)),
       join = false, outer = false, None, df.logicalPlan)
   }
 }
@@ -77,7 +101,8 @@ object HivemallOps {
    * @group ftvec
    */
   def add_bias(exprs: Column*): Column = {
-    new HiveGenericUdf(new HiveFunctionWrapper("hivemall.ftvec.AddBiasUDFWrapper"), exprs.map(_.expr))
+    new HiveGenericUdf(new HiveFunctionWrapper(
+      "hivemall.ftvec.AddBiasUDFWrapper"), exprs.map(_.expr))
   }
 
   /**
@@ -85,7 +110,8 @@ object HivemallOps {
    * @group ftvec
    */
   def extract_feature(exprs: Column*): Column = {
-    new HiveGenericUdf(new HiveFunctionWrapper("hivemall.ftvec.ExtractFeatureUDFWrapper"), exprs.map(_.expr))
+    new HiveGenericUdf(new HiveFunctionWrapper(
+      "hivemall.ftvec.ExtractFeatureUDFWrapper"), exprs.map(_.expr))
   }
 
   /**
@@ -93,7 +119,8 @@ object HivemallOps {
    * @group ftvec
    */
   def extract_weight(exprs: Column*): Column = {
-    new HiveGenericUdf(new HiveFunctionWrapper("hivemall.ftvec.ExtractWeightUDFWrapper"), exprs.map(_.expr))
+    new HiveGenericUdf(new HiveFunctionWrapper(
+      "hivemall.ftvec.ExtractWeightUDFWrapper"), exprs.map(_.expr))
   }
 
   /**
@@ -101,6 +128,7 @@ object HivemallOps {
    * @group ftvec
    */
   def add_feature_index(exprs: Column*): Column = {
-    new HiveGenericUdf(new HiveFunctionWrapper("hivemall.ftvec.AddFeatureIndexUDFWrapper"), exprs.map(_.expr))
+    new HiveGenericUdf(new HiveFunctionWrapper(
+      "hivemall.ftvec.AddFeatureIndexUDFWrapper"), exprs.map(_.expr))
   }
 }
