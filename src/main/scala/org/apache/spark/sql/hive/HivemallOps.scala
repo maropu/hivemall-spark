@@ -50,6 +50,17 @@ class HivemallOps(df: DataFrame) {
   }
 
   /**
+   * @see hivemall.regression.AdaGradUDTF
+   * @group regression
+   */
+  def train_adagrad(exprs: Column*): DataFrame = {
+    Generate(new HiveGenericUdtf(
+        new HiveFunctionWrapper("hivemall.regression.AdaGradUDTF"),
+        Nil, exprs.map(_.expr)),
+      join = false, outer = false, None, df.logicalPlan)
+  }
+
+  /**
    * @see hivemall.regression.LogressUDTF
    * @group regression
    */
