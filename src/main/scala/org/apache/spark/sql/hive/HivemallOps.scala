@@ -146,7 +146,7 @@ object HivemallOps {
   }
 
   /**
-   * @see hivemall.ftvec.ExtractWeightUdf
+   * @see hivemall.ftvec.AddFeatureIndexUDFWrapper
    * @group ftvec
    */
   def add_feature_index(exprs: Column*): Column = {
