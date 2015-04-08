@@ -44,7 +44,7 @@ public class AddBiasUDFWrapper extends GenericUDF {
     private AddBiasUDF udf = new AddBiasUDF();
 
     private List<Text> retValue = new ArrayList<Text>();
-    private ListObjectInspector[] argumentOIs = null;
+    private ListObjectInspector argumentOIs = null;
 
     @Override
     public ObjectInspector initialize(ObjectInspector[] arguments) throws UDFArgumentException {
@@ -52,31 +52,25 @@ public class AddBiasUDFWrapper extends GenericUDF {
             throw new UDFArgumentLengthException(
                     "add_bias() has an only single argument.");
         }
-        final int nargs = arguments.length;
-        for(int i = 0; i < nargs; i++) {
-            switch(arguments[i].getCategory()) {
-                case LIST:
-                    ObjectInspector elmOI = ((ListObjectInspector) arguments[i]).getListElementObjectInspector();
-                    if(elmOI.getCategory().equals(Category.PRIMITIVE)) {
-                        if (((PrimitiveObjectInspector) elmOI).getPrimitiveCategory()
-                                == PrimitiveCategory.STRING) {
-                            break;
-                        }
+
+        switch(arguments[0].getCategory()) {
+            case LIST:
+                ObjectInspector elmOI = ((ListObjectInspector) arguments[0]).getListElementObjectInspector();
+                if(elmOI.getCategory().equals(Category.PRIMITIVE)) {
+                    if (((PrimitiveObjectInspector) elmOI).getPrimitiveCategory()
+                            == PrimitiveCategory.STRING) {
+                        break;
                     }
-                default:
-                    throw new UDFArgumentTypeException(0,
-                        "Argument " + i + " of add_bias() must be "
-                            + "List[String], but " + arguments[0].getTypeName()
-                            + " was found.");
-            }
+                }
+            default:
+                throw new UDFArgumentTypeException(0,
+                    "add_bias() must have List[String] as an argument, but "
+                        + arguments[0].getTypeName() + " was found.");
         }
 
-        argumentOIs = new ListObjectInspector[nargs];
-        for(int i = 0; i < nargs; i++) {
-            argumentOIs[i] = (ListObjectInspector) arguments[i];
-        }
+        argumentOIs = (ListObjectInspector) arguments[0];
 
-        ObjectInspector firstElemOI = argumentOIs[0].getListElementObjectInspector();
+        ObjectInspector firstElemOI = argumentOIs.getListElementObjectInspector();
         ObjectInspector returnElemOI = ObjectInspectorUtils.getStandardObjectInspector(firstElemOI);
 
         return ObjectInspectorFactory.getStandardListObjectInspector(returnElemOI);
@@ -84,19 +78,12 @@ public class AddBiasUDFWrapper extends GenericUDF {
 
     @Override
     public Object evaluate(DeferredObject[] arguments) throws HiveException {
-        for(int i = 0; i < arguments.length; i++) {
-            final Object arrayObject = arguments[i].get();
-            if(arrayObject == null) {
-                continue;
-            }
-
-            final ListObjectInspector arrayOI = (ListObjectInspector) argumentOIs[i];
-            @SuppressWarnings("unchecked")
-            final List<String> input = (List<String>) arrayOI.getList(arrayObject);
-            retValue = udf.evaluate(input);
-        }
-
-        return retValue;
+        assert(arguments.length == 1);
+        final Object arrayObject = arguments[0].get();
+        final ListObjectInspector arrayOI = (ListObjectInspector) argumentOIs;
+        @SuppressWarnings("unchecked")
+        final List<String> input = (List<String>) arrayOI.getList(arrayObject);
+        return udf.evaluate(input);
     }
 
     @Override

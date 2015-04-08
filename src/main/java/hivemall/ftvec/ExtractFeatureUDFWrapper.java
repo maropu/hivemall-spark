@@ -44,7 +44,7 @@ public class ExtractFeatureUDFWrapper extends GenericUDF {
     private ExtractFeatureUDF udf = new ExtractFeatureUDF();
 
     private List<Text> retValue = new ArrayList<Text>();
-    private ListObjectInspector[] argumentOIs = null;
+    private ListObjectInspector argumentOIs = null;
 
     @Override
     public ObjectInspector initialize(ObjectInspector[] arguments) throws UDFArgumentException {
@@ -68,10 +68,9 @@ public class ExtractFeatureUDFWrapper extends GenericUDF {
                         + arguments[0].getTypeName() + " was found.");
         }
 
-        argumentOIs = new ListObjectInspector[1];
-        argumentOIs[0] = (ListObjectInspector) arguments[0];
+        argumentOIs = (ListObjectInspector) arguments[0];
 
-        ObjectInspector firstElemOI = argumentOIs[0].getListElementObjectInspector();
+        ObjectInspector firstElemOI = argumentOIs.getListElementObjectInspector();
         ObjectInspector returnElemOI = ObjectInspectorUtils.getStandardObjectInspector(firstElemOI);
 
         return ObjectInspectorFactory.getStandardListObjectInspector(returnElemOI);
@@ -79,12 +78,12 @@ public class ExtractFeatureUDFWrapper extends GenericUDF {
 
     @Override
     public Object evaluate(DeferredObject[] arguments) throws HiveException {
+        assert(arguments.length == 1);
         final Object arrayObject = arguments[0].get();
-        final ListObjectInspector arrayOI = (ListObjectInspector) argumentOIs[0];
+        final ListObjectInspector arrayOI = (ListObjectInspector) argumentOIs;
         @SuppressWarnings("unchecked")
         final List<String> input = (List<String>) arrayOI.getList(arrayObject);
-        retValue = udf.evaluate(input);
-        return retValue;
+        return udf.evaluate(input);
     }
 
     @Override
