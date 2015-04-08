@@ -61,6 +61,17 @@ class HivemallOps(df: DataFrame) {
   }
 
   /**
+   * @see hivemall.regression.AROWRegressionUDTF
+   * @group regression
+   */
+  def train_arow_regr(exprs: Column*): DataFrame = {
+    Generate(new HiveGenericUdtf(
+        new HiveFunctionWrapper("hivemall.regression.AROWRegressionUDTF"),
+        Nil, exprs.map(_.expr)),
+      join = false, outer = false, None, df.logicalPlan)
+  }
+
+  /**
    * @see hivemall.regression.LogressUDTF
    * @group regression
    */

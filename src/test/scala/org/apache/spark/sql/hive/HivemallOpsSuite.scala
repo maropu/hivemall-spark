@@ -75,22 +75,22 @@ class HivemallOpsSuite extends FunSuite {
     val test = LargeTrainData.train_adadelta(add_bias($"feature"), $"label")
     assert(test.count > 0)
   }
-
   ignore("train_adagrad") {
     val test = LargeTrainData.train_adagrad(add_bias($"feature"), $"label")
     assert(test.count > 0)
   }
-
+  ignore("train_arow_regr") {
+    val test = LargeTrainData.train_arow_regr(add_bias($"feature"), $"label")
+    assert(test.count > 0)
+  }
   ignore("train_logregr") {
     val test = LargeTrainData.train_logregr(add_bias($"feature"), $"label")
     assert(test.count > 0)
   }
-
   ignore("amplify") {
     val test = LargeTrainData.amplify(3, $"*")
     assert(test.count > 0)
   }
-
   ignore("rand_amplify") {
     val test = LargeTrainData.rand_amplify(3, $"*")
     assert(test.count > 0)
