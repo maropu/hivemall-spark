@@ -70,8 +70,8 @@ public class AddBiasUDFWrapper extends GenericUDF {
 
         argumentOIs = (ListObjectInspector) arguments[0];
 
-        ObjectInspector firstElemOI = argumentOIs.getListElementObjectInspector();
-        ObjectInspector returnElemOI = ObjectInspectorUtils.getStandardObjectInspector(firstElemOI);
+        ObjectInspector listElemOI = argumentOIs.getListElementObjectInspector();
+        ObjectInspector returnElemOI = ObjectInspectorUtils.getStandardObjectInspector(listElemOI);
 
         return ObjectInspectorFactory.getStandardListObjectInspector(returnElemOI);
     }
@@ -83,7 +83,8 @@ public class AddBiasUDFWrapper extends GenericUDF {
         final ListObjectInspector arrayOI = (ListObjectInspector) argumentOIs;
         @SuppressWarnings("unchecked")
         final List<String> input = (List<String>) arrayOI.getList(arrayObject);
-        return udf.evaluate(input);
+        retValue = udf.evaluate(input);
+        return retValue;
     }
 
     @Override

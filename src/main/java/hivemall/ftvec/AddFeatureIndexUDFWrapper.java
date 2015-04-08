@@ -22,9 +22,13 @@ import org.apache.hadoop.hive.ql.exec.UDFArgumentLengthException;
 import org.apache.hadoop.hive.ql.exec.UDFArgumentTypeException;
 import org.apache.hadoop.hive.ql.metadata.HiveException;
 import org.apache.hadoop.hive.ql.udf.generic.GenericUDF;
+import org.apache.hadoop.hive.serde.serdeConstants;
 import org.apache.hadoop.hive.serde2.objectinspector.*;
 import org.apache.hadoop.hive.serde2.objectinspector.ObjectInspector.Category;
 import org.apache.hadoop.hive.serde2.objectinspector.PrimitiveObjectInspector.PrimitiveCategory;
+import org.apache.hadoop.hive.serde2.objectinspector.primitive.JavaStringObjectInspector;
+import org.apache.hadoop.hive.serde2.objectinspector.primitive.PrimitiveObjectInspectorFactory;
+import org.apache.hadoop.hive.serde2.typeinfo.TypeInfoFactory;
 import org.apache.hadoop.io.Text;
 
 import java.util.ArrayList;
@@ -32,7 +36,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * A wrapper of [[hivemall.ftvec.ExtractFeatureUDF]].
+ * A wrapper of [[hivemall.ftvec.AddFeatureIndexUDF]].
  *
  * NOTE: This is needed to avoid the issue of Spark reflection.
  * That is, spark-1.3 cannot handle List<> as a return type in Hive UDF.
@@ -40,8 +44,8 @@ import java.util.List;
  * This issues has been reported in SPARK-6747, so a future
  * release of Spark makes the wrapper obsolete.
  */
-public class ExtractFeatureUDFWrapper extends GenericUDF {
-    private ExtractFeatureUDF udf = new ExtractFeatureUDF();
+public class AddFeatureIndexUDFWrapper extends GenericUDF {
+    private AddFeatureIndexUDF udf = new AddFeatureIndexUDF();
 
     private List<Text> retValue = new ArrayList<Text>();
     private ListObjectInspector argumentOIs = null;
@@ -50,7 +54,7 @@ public class ExtractFeatureUDFWrapper extends GenericUDF {
     public ObjectInspector initialize(ObjectInspector[] arguments) throws UDFArgumentException {
         if(arguments.length != 1) {
             throw new UDFArgumentLengthException(
-                    "extract_feature() has an only single argument.");
+                    "add_feature_index() has an only single argument.");
         }
 
         switch(arguments[0].getCategory()) {
@@ -58,19 +62,19 @@ public class ExtractFeatureUDFWrapper extends GenericUDF {
                 ObjectInspector elmOI = ((ListObjectInspector) arguments[0]).getListElementObjectInspector();
                 if(elmOI.getCategory().equals(Category.PRIMITIVE)) {
                     if (((PrimitiveObjectInspector) elmOI).getPrimitiveCategory()
-                            == PrimitiveCategory.STRING) {
+                            == PrimitiveCategory.DOUBLE) {
                         break;
                     }
                 }
             default:
                 throw new UDFArgumentTypeException(0,
-                    "extract_feature() must have List[String] as an argument, but "
+                    "add_feature_index() must have List[Double] as an argument, but "
                         + arguments[0].getTypeName() + " was found.");
         }
 
         argumentOIs = (ListObjectInspector) arguments[0];
 
-        ObjectInspector listElemOI = argumentOIs.getListElementObjectInspector();
+        ObjectInspector listElemOI = PrimitiveObjectInspectorFactory.javaStringObjectInspector;
         ObjectInspector returnElemOI = ObjectInspectorUtils.getStandardObjectInspector(listElemOI);
 
         return ObjectInspectorFactory.getStandardListObjectInspector(returnElemOI);
@@ -82,13 +86,13 @@ public class ExtractFeatureUDFWrapper extends GenericUDF {
         final Object arrayObject = arguments[0].get();
         final ListObjectInspector arrayOI = (ListObjectInspector) argumentOIs;
         @SuppressWarnings("unchecked")
-        final List<String> input = (List<String>) arrayOI.getList(arrayObject);
+        final List<Double> input = (List<Double>) arrayOI.getList(arrayObject);
         retValue = udf.evaluate(input);
         return retValue;
     }
 
     @Override
     public String getDisplayString(String[] children) {
-        return "extract_feature(" + Arrays.toString(children) + ")";
+        return "add_feature_index(" + Arrays.toString(children) + ")";
     }
 }

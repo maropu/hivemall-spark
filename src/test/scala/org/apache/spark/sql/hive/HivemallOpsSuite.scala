@@ -32,17 +32,31 @@ class HivemallOpsSuite extends FunSuite {
   import org.apache.spark.sql.hive.HivemallOpsSuite._
 
   test("add_bias") {
-    assert(regressionTinyData.select(add_bias($"feature")).collect.toSet
+    assert(TinyTrainData.select(add_bias($"feature")).collect.toSet
       == Set(Row(ArrayBuffer("1:0.8", "2:0.2", "0:1.0")),
         Row(ArrayBuffer("2:0.7", "0:1.0")),
         Row(ArrayBuffer("1:0.9", "0:1.0"))))
   }
 
   test("extract_feature") {
-    assert(regressionTinyData.select(extract_feature($"feature")).collect.toSet
+    assert(TinyTrainData.select(extract_feature($"feature")).collect.toSet
       == Set(Row(ArrayBuffer("1", "2")),
         Row(ArrayBuffer("2")),
         Row(ArrayBuffer("1"))))
+  }
+
+  test("extract_weight") {
+    assert(TinyTrainData.select(extract_weight($"feature")).collect.toSet
+      == Set(Row(ArrayBuffer(0.8f, 0.2f)),
+        Row(ArrayBuffer(0.7f)),
+        Row(ArrayBuffer(0.9f))))
+  }
+
+  test("add_feature_index") {
+    assert(DoubleListData.select(add_feature_index($"data")).collect.toSet
+      == Set(Row(ArrayBuffer("1:0.8", "2:0.5")),
+        Row(ArrayBuffer("1:0.3", "2:0.1")),
+        Row(ArrayBuffer("1:0.2"))))
   }
 
   ignore("logress") {
@@ -52,14 +66,31 @@ class HivemallOpsSuite extends FunSuite {
      * This issue was reported in SPARK-6734 and a PR of github
      * was made in #5383.
      */
-    val test = regressionLargeData.train_logregr(add_bias($"feature"), $"label")
+    val test = LargeTrainData.train_logregr(add_bias($"feature"), $"label")
     assert(test.count > 0)
   }
 }
 
 object HivemallOpsSuite {
 
-  val regressionTinyData = {
+  val DoubleListData = {
+    val rowRdd = TestSQLContext.sparkContext.parallelize(
+        Row(0.8 :: 0.5 :: Nil) ::
+        Row(0.3 :: 0.1 :: Nil) ::
+        Row(0.2 :: Nil) ::
+        Nil
+      )
+    val df = TestSQLContext.createDataFrame(
+      rowRdd,
+      StructType(
+        StructField("data", ArrayType(DoubleType), true) ::
+        Nil)
+      )
+    df.registerTempTable("DoubleListData")
+    df
+  }
+
+  val TinyTrainData = {
     val rowRdd = TestSQLContext.sparkContext.parallelize(
         Row(0.0f, "1:0.8" :: "2:0.2" :: Nil) ::
         Row(1.0f, "2:0.7" :: Nil) ::
@@ -73,11 +104,11 @@ object HivemallOpsSuite {
         StructField("feature", ArrayType(StringType), true) ::
         Nil)
       )
-    df.registerTempTable("regressionTinyData")
+    df.registerTempTable("TinyTrainData")
     df
   }
 
-  val regressionLargeData = {
+  val LargeTrainData = {
     val train1 = TestSQLContext.sparkContext.parallelize(
       (0 until 10000).map(i => Row(0.0f, Seq("1:" + Random.nextDouble, "2:" + Random.nextDouble))))
     val train2 = TestSQLContext.sparkContext.parallelize(
@@ -90,7 +121,7 @@ object HivemallOpsSuite {
         StructField("feature", ArrayType(StringType), true) ::
         Nil)
       )
-    df.registerTempTable("regressionLargeData")
+    df.registerTempTable("LargeTrainData")
     df
   }
 }

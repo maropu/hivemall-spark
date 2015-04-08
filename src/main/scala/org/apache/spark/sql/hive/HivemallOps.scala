@@ -76,4 +76,20 @@ object HivemallOps {
   def extract_feature(exprs: Column*): Column = {
     new HiveGenericUdf(new HiveFunctionWrapper("hivemall.ftvec.ExtractFeatureUDFWrapper"), exprs.map(_.expr))
   }
+
+  /**
+   * @see hivemall.ftvec.ExtractWeightUdf
+   * @group ftvec
+   */
+  def extract_weight(exprs: Column*): Column = {
+    new HiveGenericUdf(new HiveFunctionWrapper("hivemall.ftvec.ExtractWeightUDFWrapper"), exprs.map(_.expr))
+  }
+
+  /**
+   * @see hivemall.ftvec.ExtractWeightUdf
+   * @group ftvec
+   */
+  def add_feature_index(exprs: Column*): Column = {
+    new HiveGenericUdf(new HiveFunctionWrapper("hivemall.ftvec.AddFeatureIndexUDFWrapper"), exprs.map(_.expr))
+  }
 }
