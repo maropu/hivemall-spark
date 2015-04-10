@@ -47,3 +47,4 @@ mergeStrategy in assembly := {
     val oldStrategy = (mergeStrategy in assembly).value
     oldStrategy(x)
 }
+

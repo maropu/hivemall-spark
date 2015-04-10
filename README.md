@@ -14,6 +14,8 @@ cd hivemall-spark
 <your spark>/bin/spark-shell --jars hivemall-spark-assembly-0.0.1.jar
 ```
 
+You could also set this hivemall jar at `spark.jar`s in <your spark>/conf/spark-default.conf.
+
 Hivemall in DataFrame
 --------------------
 
