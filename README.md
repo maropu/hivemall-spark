@@ -57,11 +57,11 @@ Current Status
 The current implementation of Spark cannot correctly handle UDF/UDAF/UDTF in Hive.
 Related issues for hivemall-spark are as follows;
 
-* SPARK-6747 Support List<> as a return type in Hive UDF ([#5395](https://github.com/apache/spark/pull/5395))
+* [SPARK-6747] (https://issues.apache.org/jira/browse/SPARK-6747) Support List<> as a return type in Hive UDF ([#5395](https://github.com/apache/spark/pull/5395))
 
-* SPARK-6734 Add UDTF.close support in Generate ([#5383](https://github.com/apache/spark/pull/5383))
+* [SPARK-6734](https://issues.apache.org/jira/browse/SPARK-6734) Add UDTF.close support in Generate ([#5383](https://github.com/apache/spark/pull/5383))
 
-* SPARK-4233 WIP:Simplify the UDAF API (Interface) ([#3247](https://github.com/apache/spark/pull/3247))
+* [SPARK-4233](https://issues.apache.org/jira/browse/SPARK-4233) WIP:Simplify the UDAF API (Interface) ([#3247](https://github.com/apache/spark/pull/3247))
 
 System requirements
 --------------------
