@@ -1,5 +1,5 @@
 This is a simple wrapper implementation of [Hivemall](https://github.com/myui/hivemall/) for Spark.
-This can make various state-of-the-art machine learning algorithms available in DataFrame (under development).
+This can make various state-of-the-art machine learning algorithms available in HiveContext, DataFrame, and ML Pipeline (under development).
 
 Installation
 --------------------
@@ -46,6 +46,12 @@ Hivemall in HiveContext
 sqlContext.sql("SELECT train_logregr(add_bias(feature)) FROM trainTable")
 ```
 
+Hivemall in Spark ML Pipeline
+--------------------
+
+TBD
+
+
 Current Status
 --------------------
 The current implementation of Spark cannot correctly handle UDF/UDAF/UDTF in Hive.
@@ -68,5 +74,9 @@ TODO
 --------------------
 
 * Support the other functions of Hivemall in DataFrame
+
+* Support Hive 0.12
+
+* Support Spark ML Pipeline
 
 * ...
