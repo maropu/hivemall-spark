@@ -66,7 +66,7 @@ Related issues for hivemall-spark are as follows;
 System requirements
 --------------------
 
-* Spark 1.3
+* Spark 1.4 (Expected)
 
 * Hive 0.13
 
