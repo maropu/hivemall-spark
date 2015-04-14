@@ -59,10 +59,37 @@ class HivemallOpsSuite extends FunSuite {
   }
 
   test("add_feature_index") {
-    assert(DoubleListData.select(add_feature_index($"data")).collect.toSet
+   assert(DoubleListData.select(add_feature_index($"data")).collect.toSet
       == Set(Row(ArrayBuffer("1:0.8", "2:0.5")),
         Row(ArrayBuffer("1:0.3", "2:0.1")),
         Row(ArrayBuffer("1:0.2"))))
+  }
+
+  /**
+   * TODO: The test below currently fails because Spark
+   * can't handle Map<K, V> as a return type in Hive UDF correctly.
+   * This issue was reported in SPARK-6921.
+   */
+  ignore("sort_by_feature") {
+    val IntFloatMapData = {
+      val rowRdd = TestSQLContext.sparkContext.parallelize(
+          Row(Map(1 -> 0.3f, 2 -> 0.1f, 3 -> 0.5f)) ::
+          Row(Map(2 -> 0.4f, 1 -> 0.2f)) ::
+          Row(Map(2 -> 0.4f, 3 -> 0.2f, 1 -> 0.1f, 4 -> 0.6f)) ::
+          Nil
+        )
+      TestSQLContext.createDataFrame(
+        rowRdd,
+        StructType(
+          StructField("data", MapType(IntegerType, FloatType), true) ::
+          Nil)
+        )
+    }
+
+    assert(IntFloatMapData.select(sort_by_feature($"data")).collect.toSet
+      == Set(Row(Map(1 -> 0.3f, 2 -> 0.1f, 3 -> 0.5f),
+        Row(Map(1 -> 0.2f, 2 -> 0.4f)),
+        Row(Map(1 -> 0.1f, 2 -> 0.4f, 3 -> 0.2f, 4 -> 0.6f)))))
   }
 
   /**
