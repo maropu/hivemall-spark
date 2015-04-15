@@ -17,7 +17,7 @@
 
 package org.apache.spark.sql.hive
 
-import org.apache.spark.sql.catalyst.expressions.Literal
+import org.apache.spark.sql.catalyst.expressions.{EmptyRow, Literal}
 import org.apache.spark.sql.types._
 import org.scalatest.FunSuite
 
@@ -36,6 +36,8 @@ class HivemallOpsSuite extends FunSuite {
    * An implicit conversion to avoid doing annoying transformation.
    */
   @inline private implicit def toIntLiteral(i: Int) = Column(Literal(i, IntegerType))
+  @inline private implicit def toFloatLiteral(i: Float) = Column(Literal(i, FloatType))
+  @inline private implicit def toDoubleLiteral(i: Double) = Column(Literal(i, DoubleType))
 
   test("add_bias") {
     assert(TinyTrainData.select(add_bias($"feature")).collect.toSet
@@ -63,6 +65,12 @@ class HivemallOpsSuite extends FunSuite {
       == Set(Row(ArrayBuffer("1:0.8", "2:0.5")),
         Row(ArrayBuffer("1:0.3", "2:0.1")),
         Row(ArrayBuffer("1:0.2"))))
+  }
+
+  // TODO: Support testing equality between two floating points
+  test("zscore") {
+   assert(TinyTrainData.select(zscore(1.0f, 0.5d, 0.5d)).collect.toSet
+      == Set(Row(1.0f)))
   }
 
   /**

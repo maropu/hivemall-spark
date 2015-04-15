@@ -163,4 +163,12 @@ object HivemallOps {
       "hivemall.ftvec.SortByFeatureUDF"), exprs.map(_.expr))
   }
 
+  /**
+   * @see hivemall.ftvec.scaling.ZScoreUDF
+   * @group ftvec.scaling
+   */
+  def zscore(exprs: Column*): Column = {
+    new HiveSimpleUdf(new HiveFunctionWrapper(
+      "hivemall.ftvec.scaling.ZScoreUDF"), exprs.map(_.expr))
+  }
 }
