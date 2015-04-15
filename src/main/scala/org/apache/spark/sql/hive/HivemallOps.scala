@@ -164,6 +164,15 @@ object HivemallOps {
   }
 
   /**
+   * @see hivemall.ftvec.scaling.RescaleUDF
+   * @group ftvec.scaling
+   */
+  def rescale(exprs: Column*): Column = {
+    new HiveSimpleUdf(new HiveFunctionWrapper(
+      "hivemall.ftvec.scaling.RescaleUDF"), exprs.map(_.expr))
+  }
+
+  /**
    * @see hivemall.ftvec.scaling.ZScoreUDF
    * @group ftvec.scaling
    */

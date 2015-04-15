@@ -83,6 +83,11 @@ class HivemallOpsSuite extends FunSuite {
   }
 
   // TODO: Support testing equality between two floating points
+  test("rescale") {
+   assert(TinyTrainData.select(rescale(2.0f, 1.0d, 5.0d)).collect.toSet
+      == Set(Row(0.25f)))
+  }
+
   test("zscore") {
    assert(TinyTrainData.select(zscore(1.0f, 0.5d, 0.5d)).collect.toSet
       == Set(Row(1.0f)))
