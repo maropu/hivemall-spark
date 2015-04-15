@@ -61,7 +61,22 @@ class HivemallOpsSuite extends FunSuite {
   }
 
   test("add_feature_index") {
-   assert(DoubleListData.select(add_feature_index($"data")).collect.toSet
+    val DoubleListData = {
+      val rowRdd = TestSQLContext.sparkContext.parallelize(
+          Row(0.8 :: 0.5 :: Nil) ::
+          Row(0.3 :: 0.1 :: Nil) ::
+          Row(0.2 :: Nil) ::
+          Nil
+        )
+      TestSQLContext.createDataFrame(
+        rowRdd,
+        StructType(
+          StructField("data", ArrayType(DoubleType), true) ::
+          Nil)
+        )
+    }
+
+    assert(DoubleListData.select(add_feature_index($"data")).collect.toSet
       == Set(Row(ArrayBuffer("1:0.8", "2:0.5")),
         Row(ArrayBuffer("1:0.3", "2:0.1")),
         Row(ArrayBuffer("1:0.2"))))
@@ -133,23 +148,6 @@ class HivemallOpsSuite extends FunSuite {
 }
 
 object HivemallOpsSuite {
-
-  val DoubleListData = {
-    val rowRdd = TestSQLContext.sparkContext.parallelize(
-        Row(0.8 :: 0.5 :: Nil) ::
-        Row(0.3 :: 0.1 :: Nil) ::
-        Row(0.2 :: Nil) ::
-        Nil
-      )
-    val df = TestSQLContext.createDataFrame(
-      rowRdd,
-      StructType(
-        StructField("data", ArrayType(DoubleType), true) ::
-        Nil)
-      )
-    df.registerTempTable("DoubleListData")
-    df
-  }
 
   val TinyTrainData = {
     val rowRdd = TestSQLContext.sparkContext.parallelize(
