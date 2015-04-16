@@ -180,4 +180,13 @@ object HivemallOps {
     new HiveSimpleUdf(new HiveFunctionWrapper(
       "hivemall.ftvec.scaling.ZScoreUDF"), exprs.map(_.expr))
   }
+
+  /**
+   * @see hivemall.ftvec.scaling.L2NormalizationUDF
+   * @group ftvec.scaling
+   */
+  def normalize(exprs: Column*): Column = {
+    new HiveGenericUdf(new HiveFunctionWrapper(
+      "hivemall.ftvec.scaling.L2NormalizationUDFWrapper"), exprs.map(_.expr))
+  }
 }

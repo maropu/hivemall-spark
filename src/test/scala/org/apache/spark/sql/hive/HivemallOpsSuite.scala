@@ -93,6 +93,13 @@ class HivemallOpsSuite extends FunSuite {
       == Set(Row(1.0f)))
   }
 
+  ignore("normalize") {
+    assert(TinyTrainData.select(normalize($"feature")).collect.toSet
+      == Set(Row(ArrayBuffer("1:0.9701425", "2:0.24253562")),
+        Row(ArrayBuffer("2:1.0")),
+        Row(ArrayBuffer("1:1.0"))))
+  }
+
   /**
    * TODO: The test below currently fails because Spark
    * can't handle Map<K, V> as a return type in Hive UDF correctly.
