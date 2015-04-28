@@ -23,6 +23,7 @@ import org.scalatest.FunSuite
 
 import org.apache.spark.sql._
 import org.apache.spark.sql.hive.HivemallOps._
+import org.apache.spark.sql.hive.HivemallUtils._
 import org.apache.spark.sql.test._
 import org.apache.spark.sql.test.TestSQLContext.implicits._
 
@@ -30,14 +31,7 @@ import scala.collection.mutable.ArrayBuffer
 import scala.util.Random
 
 class HivemallOpsSuite extends FunSuite {
-  import org.apache.spark.sql.hive.HivemallOpsSuite._
-
-  /**
-   * An implicit conversion to avoid doing annoying transformation.
-   */
-  @inline private implicit def toIntLiteral(i: Int) = Column(Literal(i, IntegerType))
-  @inline private implicit def toFloatLiteral(i: Float) = Column(Literal(i, FloatType))
-  @inline private implicit def toDoubleLiteral(i: Double) = Column(Literal(i, DoubleType))
+  import HivemallOpsSuite._
 
   test("add_bias") {
     assert(TinyTrainData.select(add_bias($"feature")).collect.toSet
@@ -181,9 +175,13 @@ object HivemallOpsSuite {
 
   val LargeTrainData = {
     val train1 = TestSQLContext.sparkContext.parallelize(
-      (0 until 10000).map(i => Row(0.0f, Seq("1:" + Random.nextDouble, "2:" + Random.nextDouble))))
+      (0 until 10000).map { i =>
+        Row(0.0f, Seq("1:" + Random.nextDouble, "2:" + Random.nextDouble))
+      })
     val train2 = TestSQLContext.sparkContext.parallelize(
-      (0 until 10000).map(i => Row(1.0f, Seq("1:" + Random.nextDouble, "2:" + (0.5 + Random.nextDouble)))))
+      (0 until 10000).map { i =>
+        Row(1.0f, Seq("1:" + Random.nextDouble, "2:" + (0.5 + Random.nextDouble)))
+      })
     val rowRdd = train1 ++ train2
     val df = TestSQLContext.createDataFrame(
       rowRdd,

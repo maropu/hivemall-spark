@@ -7,6 +7,7 @@ version := "0.0.1"
 scalaVersion := "2.10.4"
 
 // Switch suitable source codes for hive-0.12.x or hive-.13.x
+// TODO: Support Hive 0.12
 unmanagedSourceDirectories in Compile += baseDirectory.value / "extra-src/v0.13.1"
 
 // Enable sbt-assembly
@@ -17,6 +18,7 @@ net.virtualvoid.sbt.graph.Plugin.graphSettings
 libraryDependencies ++= Seq(
   "org.scalatest" % "scalatest_2.10" % "2.2.2",
   "org.apache.spark" % "spark-core_2.10" % "1.3.0",
+  "org.apache.spark" % "spark-mllib_2.10" % "1.3.0",
   "org.apache.spark" % "spark-sql_2.10" % "1.3.0",
   "org.apache.spark" % "spark-hive_2.10" % "1.3.0",
   "org.spark-project.hive" % "hive-exec" % "0.13.1a",
