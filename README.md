@@ -19,6 +19,8 @@ in <your spark>/conf/spark-default.conf.
 
 Hivemall in DataFrame
 --------------------
+DataFrame is a distributed collection of data with names, types, and qualifiers.
+To apply Hivemall fuctions in DataFrame, you type codes below;
 
 ```
 import org.apache.spark.sql._
@@ -36,6 +38,7 @@ val trainTable = sc.parallelize(
 
 sqlContext.createDataFrame(trainTable)
   .train_logregr(add_bias($"feature"), $"label")
+  .groupBy("_c0").agg("_c1" -> "avg") // _c0:feature _c1:weight
 ```
 
 Hivemall in HiveContext
