@@ -1,5 +1,5 @@
 This is a simple wrapper implementation of [Hivemall](https://github.com/myui/hivemall/) for Spark.
-This can make highly scalable machine learning algorithms available in HiveContext, DataFrame, and ML Pipeline.
+This can make highly scalable machine learning algorithms available in DataFrame, HiveContext, and ML Pipeline.
 
 Installation
 --------------------
@@ -19,14 +19,14 @@ in <your spark>/conf/spark-default.conf.
 
 Hivemall in DataFrame
 --------------------
-DataFrame is a distributed collection of data with names, types, and qualifiers.
+[DataFrame](https://spark.apache.org/docs/latest/sql-programming-guide.html#dataframes) is a distributed collection
+of data with names, types, and qualifiers.
 To apply Hivemall fuctions in DataFrame, you type codes below;
 
 ```
 import org.apache.spark.sql._
 import org.apache.spark.sql.types._
 import org.apache.spark.sql.hive.HivemallOps._
-
 import sqlContext.implicits._
 
 case class TrainData(label: Float, feature: Seq[String])
@@ -43,7 +43,8 @@ sqlContext.createDataFrame(trainTable)
 
 Hivemall in HiveContext
 --------------------
-For those try Hivemall in HiveContext, run a script to register the functions of Hivemall in spark-shell and
+For those try Hivemall in [HiveContext](https://spark.apache.org/docs/latest/sql-programming-guide.html#hive-tables),
+run a script to register the functions of Hivemall in spark-shell and
 say a SQL statements as follows;
 
 ```
@@ -60,9 +61,54 @@ sqlContext.sql("
 
 Hivemall in Spark ML Pipeline
 --------------------
+[Spark ML Pipeline](https://spark.apache.org/docs/latest/ml-guide.html) is a set of APIs for machine learning algorithms
+to make it easier to combine multiple algorithms into a single pipeline, or workflow.
 
-TBD
+```
+import org.apache.spark.{SparkConf, SparkContext}
+import org.apache.spark.ml.regression.HivemallLogress
+import org.apache.spark.ml.param.ParamMap
+import org.apache.spark.mllib.linalg.{Vector, Vectors}
+import org.apache.spark.mllib.regression.LabeledPoint
+import org.apache.spark.sql.{Row, SQLContext}
 
+val conf = new SparkConf().setAppName("HivemallExample")
+val sc = new SparkContext(conf)
+val sqlContext = new SQLContext(sc)
+import sqlContext.implicits._
+
+// Training data
+val trainData = sc.parallelize(
+  LabeledPoint(1.0, Vectors.dense(0.0, 1.1, 0.1)) ::
+  LabeledPoint(0.0, Vectors.dense(2.0, 1.0, 1.0)) ::
+  LabeledPoint(0.0, Vectors.dense(2.0, 1.3, 1.0)) ::
+  LabeledPoint(1.0, Vectors.dense(0.0, 1.2, 0.5)) ::
+  Nil)
+
+// Create a HivemallLogress instance
+val lr = HivemallLogress()
+  .setBiasParam(true).setDenseParam(false)
+
+// Learn a logistic regression model
+val model = lr.fit(trainData.toDF)
+
+// Test data
+val testData = sc.parallelize(
+  LabeledPoint(1.0, Vectors.dense(-1.0, 1.5, 1.3)) ::
+  LabeledPoint(0.0, Vectors.dense(3.0, 2.0, -0.1)) ::
+  LabeledPoint(1.0, Vectors.dense(0.0, 2.2, -1.5)) ::
+  Nil)
+
+// Make predictions on the test data using the learned model
+model.transform(testData.toDF)
+  .select("features", "label", "prediction")
+  .collect()
+  .foreach { case Row(features: Vector, label: Double, prediction: Double) =>
+    println(s"($features, $label) -> prediction=$prediction")
+  }
+
+sc.stop()
+```
 
 Current Status
 --------------------
@@ -77,7 +123,7 @@ Related issues for hivemall-spark are as follows;
 
 * [SPARK-4233](https://issues.apache.org/jira/browse/SPARK-4233) WIP:Simplify the UDAF API (Interface) ([#3247](https://github.com/apache/spark/pull/3247))
 
-System requirements
+System Requirements
 --------------------
 
 * Spark 1.4 (Expected)
@@ -95,5 +141,5 @@ TODO
 
 * Register this package as a [spark package](http://spark-packages.org/)
 
-        For easy Installation: <your spark>/bin/spark-shell --packages hivemall-spark:0.0.1
+        For easy installations: <your spark>/bin/spark-shell --packages hivemall-spark:0.0.1
 
