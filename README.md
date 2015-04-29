@@ -1,5 +1,5 @@
 This is a simple wrapper implementation of [Hivemall](https://github.com/myui/hivemall/) for Spark.
-This can make various state-of-the-art machine learning algorithms available in HiveContext, DataFrame, and ML Pipeline (under development).
+This can make highly scalable machine learning algorithms available in HiveContext, DataFrame, and ML Pipeline.
 
 Installation
 --------------------
@@ -11,10 +11,11 @@ cd hivemall-spark
 
 ./bin/sbt assembly
 
-<your spark>/bin/spark-shell --jars hivemall-spark-assembly-0.0.1.jar
+<your spark>/bin/spark-shell --jars <hivemall-spark>/target/scala-2.10/hivemall-spark-assembly-0.0.1.jar
 ```
 
-You could also set this hivemall jar at `spark.jar`s in <your spark>/conf/spark-default.conf.
+To avoid this annoying option in spark-shell, you can set the hivemall jar at `spark.jars`
+in <your spark>/conf/spark-default.conf.
 
 Hivemall in DataFrame
 --------------------
@@ -39,11 +40,19 @@ sqlContext.createDataFrame(trainTable)
 
 Hivemall in HiveContext
 --------------------
+For those try Hivemall in HiveContext, run a script to register the functions of Hivemall in spark-shell and
+say a SQL statements as follows;
 
 ```
 :load <hivemall-spark>/scripts/define-all.sh
 
-sqlContext.sql("SELECT train_logregr(add_bias(feature)) FROM trainTable")
+sqlContext.sql("
+  SELECT model.feature, CAST(AVG(model.weight) AS FLOAT) AS weight
+    FROM (
+      SELECT train_logregr(add_bias(features), CAST(label AS FLOAT)) AS(feature, weight)
+        FROM trainTable
+    ) model
+    GROUP BY model.feature")
 ```
 
 Hivemall in Spark ML Pipeline
@@ -81,4 +90,7 @@ TODO
 
 * Support Spark ML Pipeline
 
-* ...
+* Register this package as a [spark package](http://spark-packages.org/)
+
+        For easy Installation: <your spark>/bin/spark-shell --packages hivemall-spark:0.0.1
+
