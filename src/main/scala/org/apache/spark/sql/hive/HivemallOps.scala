@@ -114,7 +114,7 @@ class HivemallOps(df: DataFrame) {
    */
   def lr_datagen(exprs: Column*): DataFrame = {
     Generate(new HiveGenericUdtf(
-        new HiveFunctionWrapper("hivemall.dataset.LogisticRegressionDataGeneratorUDTF"),
+        new HiveFunctionWrapper("hivemall.dataset.LogisticRegressionDataGeneratorUDTFWrapper"),
         Nil, exprs.map(_.expr)),
       join = false, outer = false, None, df.logicalPlan)
   }

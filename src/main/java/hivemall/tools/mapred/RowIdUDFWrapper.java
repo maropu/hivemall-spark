@@ -44,7 +44,7 @@ import java.util.UUID;
 public class RowIdUDFWrapper extends GenericUDF {
     /**
      * TODO: This class does not work because spark cannot
-     * handle HadoopUtils.getTaskId().
+     * handle HadoopUtils#getTaskId().
      */
     // private RowIdUDF udf = new RowIdUDF();
 
