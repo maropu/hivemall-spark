@@ -21,6 +21,13 @@ sqlContext.sql("CREATE TEMPORARY FUNCTION train_arow_regr AS 'hivemall.regressio
 sqlContext.sql("CREATE TEMPORARY FUNCTION train_logregr AS 'hivemall.regression.LogressUDTF'")
 
 /**
+ * mapred functions
+ */
+
+// sqlContext.sql("DROP TEMPORARY FUNCTION IF EXISTS rowid")
+sqlContext.sql("CREATE TEMPORARY FUNCTION rowid AS 'hivemall.tools.mapred.RowIdUDFWrapper'")
+
+/**
  * Misc functions
  */
 

@@ -80,7 +80,7 @@ class HivemallOpsSuite extends FunSuite {
    * TODO: ISTM the current implementation of Spark cannot handle UDF
    * with no argument correctly. We will need to look into it.
    */
-  ignore("row_number") {
+  ignore("rowid") {
     val DummyInputData = {
       val rowRdd = TestSQLContext.sparkContext.parallelize(
           (0 until 10).map(Row(_))
@@ -93,9 +93,7 @@ class HivemallOpsSuite extends FunSuite {
         )
     }
 
-    DummyInputData.select(row_number()).show
-
-    assert(DummyInputData.select(row_number())
+    assert(DummyInputData.select(rowid())
       .collect.map { case Row(rowid: String) => rowid }.distinct.size == 10)
   }
 

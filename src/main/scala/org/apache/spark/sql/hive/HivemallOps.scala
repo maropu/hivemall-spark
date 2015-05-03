@@ -197,7 +197,7 @@ object HivemallOps {
    * @see hivemall.tools.mapred.RowIdUDF
    * @group tools.mapred
    */
-  def row_number(): Column = {
+  def rowid(): Column = {
     new HiveGenericUdf(new HiveFunctionWrapper(
       "hivemall.tools.mapred.RowIdUDFWrapper"), Nil)
   }
