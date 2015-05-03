@@ -31,6 +31,7 @@ import org.apache.spark.sql.{Column, DataFrame}
  * @groupname ftvec
  * @groupname ftvec.amplify
  * @groupname ftvec.scaling
+ * @groupname tools.mapred
  */
 class HivemallOps(df: DataFrame) {
 
@@ -190,5 +191,14 @@ object HivemallOps {
   def normalize(exprs: Column*): Column = {
     new HiveGenericUdf(new HiveFunctionWrapper(
       "hivemall.ftvec.scaling.L2NormalizationUDFWrapper"), exprs.map(_.expr))
+  }
+
+  /**
+   * @see hivemall.tools.mapred.RowIdUDF
+   * @group tools.mapred
+   */
+  def row_number(): Column = {
+    new HiveGenericUdf(new HiveFunctionWrapper(
+      "hivemall.tools.mapred.RowIdUDFWrapper"), Nil)
   }
 }

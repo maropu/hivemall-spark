@@ -76,6 +76,29 @@ class HivemallOpsSuite extends FunSuite {
         Row(ArrayBuffer("1:0.2"))))
   }
 
+  /**
+   * TODO: ISTM the current implementation of Spark cannot handle UDF
+   * with no argument correctly. We will need to look into it.
+   */
+  ignore("row_number") {
+    val DummyInputData = {
+      val rowRdd = TestSQLContext.sparkContext.parallelize(
+          (0 until 10).map(Row(_))
+        )
+      TestSQLContext.createDataFrame(
+        rowRdd,
+        StructType(
+          StructField("data", IntegerType, true) ::
+          Nil)
+        )
+    }
+
+    DummyInputData.select(row_number()).show
+
+    assert(DummyInputData.select(row_number())
+      .collect.map { case Row(rowid: String) => rowid }.distinct.size == 10)
+  }
+
   // TODO: Support testing equality between two floating points
   test("rescale") {
    assert(TinyTrainData.select(rescale(2.0f, 1.0d, 5.0d)).collect.toSet
