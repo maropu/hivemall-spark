@@ -32,7 +32,7 @@ sqlContext.sql("CREATE TEMPORARY FUNCTION rowid AS 'hivemall.tools.mapred.RowIdU
  */
 
 // sqlContext.sql("DROP TEMPORARY FUNCTION IF EXISTS lr_datagen")
-sqlContext.sql("CREATE TEMPORARY FUNCTION lr_datagen AS 'hivemall.dataset.LogisticRegressionDataGeneratorUDTF'")
+sqlContext.sql("CREATE TEMPORARY FUNCTION lr_datagen AS 'hivemall.dataset.LogisticRegressionDataGeneratorUDTFWrapper'")
 
 /**
  * Misc functions
