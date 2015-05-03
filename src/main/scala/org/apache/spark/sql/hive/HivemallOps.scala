@@ -29,6 +29,8 @@ import org.apache.spark.sql.{Column, DataFrame}
  *
  * @groupname regression
  * @groupname ftvec
+ * @groupname ftvec.amplify
+ * @groupname ftvec.scaling
  */
 class HivemallOps(df: DataFrame) {
 
