@@ -32,6 +32,7 @@ import org.apache.spark.sql.{Column, DataFrame}
  * @groupname ftvec.amplify
  * @groupname ftvec.scaling
  * @groupname tools.mapred
+ * @groupname dataset
  */
 class HivemallOps(df: DataFrame) {
 
@@ -103,6 +104,17 @@ class HivemallOps(df: DataFrame) {
   def rand_amplify(exprs: Column*): DataFrame = {
     Generate(new HiveGenericUdtf(
         new HiveFunctionWrapper("hivemall.ftvec.amplify.RandomAmplifierUDTF"),
+        Nil, exprs.map(_.expr)),
+      join = false, outer = false, None, df.logicalPlan)
+  }
+
+  /**
+   * @see hivemall.dataset.LogisticRegressionDataGeneratorUDTF
+   * @group dataset
+   */
+  def lr_datagen(exprs: Column*): DataFrame = {
+    Generate(new HiveGenericUdtf(
+        new HiveFunctionWrapper("hivemall.dataset.LogisticRegressionDataGeneratorUDTF"),
         Nil, exprs.map(_.expr)),
       join = false, outer = false, None, df.logicalPlan)
   }

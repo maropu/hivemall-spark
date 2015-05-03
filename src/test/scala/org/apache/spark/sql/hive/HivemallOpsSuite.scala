@@ -172,6 +172,10 @@ class HivemallOpsSuite extends FunSuite {
     val test = LargeTrainData.rand_amplify(3, $"*")
     assert(test.count > 0)
   }
+  ignore("lr_datagen") {
+    val test = LargeTrainData.lr_datagen("-n_examples 100 -n_features 10 -seed 100")
+    assert(test.count == 100)
+  }
 }
 
 object HivemallOpsSuite {
