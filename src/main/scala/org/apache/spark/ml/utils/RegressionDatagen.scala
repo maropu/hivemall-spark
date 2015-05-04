@@ -24,12 +24,20 @@ import org.apache.spark.sql.{DataFrame, Row, SQLContext}
 
 object RegressionDatagen {
 
+  /**
+   * Generate data for regression/classification.
+   * See [[hivemall.dataset.LogisticRegressionDataGeneratorUDTF]]
+   * for the details of arguments below.
+   */
   def exec(sc: SQLContext,
            n_examples: Int = 1000,
            n_features: Int = 10,
            n_dims: Int = 200,
            seed: Int = 43,
-           dense: Boolean = false): DataFrame = {
+           dense: Boolean = false,
+           prob_one: Float = 0.6f,
+           sort:Boolean = false,
+           cl: Boolean = false): DataFrame = {
     val df = sc.createDataFrame(
       sc.sparkContext.parallelize(Row(0) :: Nil),
         StructType(
@@ -37,7 +45,9 @@ object RegressionDatagen {
           Nil)
       )
     df.lr_datagen(
-      s"-n_examples $n_examples -n_features $n_features -n_dims $n_dims"
-        + (if (dense) " -dense" else ""))
+      s"-n_examples $n_examples -n_features $n_features -n_dims $n_dims -prob_one $prob_one"
+        + (if (dense) " -dense" else "")
+        + (if (sort) " -sort" else "")
+        + (if (cl) " -cl" else ""))
   }
 }
