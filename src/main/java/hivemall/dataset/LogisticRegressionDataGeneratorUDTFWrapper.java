@@ -69,7 +69,7 @@ public final class LogisticRegressionDataGeneratorUDTFWrapper extends UDTFWithOp
     @Override
     public StructObjectInspector initialize(ObjectInspector[] argOIs) throws UDFArgumentException {
         try {
-            // Bypass a collector for UDTF
+            // Bypass a collector for LogisticRegressionDataGeneratorUDTF
             Field collector = GenericUDTF.class.getDeclaredField("collector");
             collector.setAccessible(true);
             udtf.setCollector((Collector) collector.get(this));

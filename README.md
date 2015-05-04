@@ -143,3 +143,9 @@ TODO
 
         For easy installations: <your spark>/bin/spark-shell --packages hivemall-spark:0.0.1
 
+* Replace LEFT OUTER JOIN in test/prediction phases with map-side CROSS JOIN
+
+        SELECT sigmoid(dot_product(m.weight_vector)) as prob
+          FROM test_data t
+          CROSS JOIN lr_model m
+
