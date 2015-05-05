@@ -21,7 +21,7 @@ import org.apache.spark.ml.UnaryTransformer
 import org.apache.spark.ml.param.{HasDimsParam, HasDenseParam, BooleanParam, ParamMap}
 import org.apache.spark.mllib.feature
 import org.apache.spark.mllib.linalg.{Vectors, VectorUDT, Vector}
-import org.apache.spark.sql.types.DataType
+import org.apache.spark.sql.types.{ArrayType, StringType, DataType}
 
 /**
  * Transform Hivemall features into Spark-specific vectors.
@@ -65,4 +65,10 @@ class HivemallFtVectorizer
   }
 
   override protected def outputDataType: DataType = new VectorUDT()
+
+  /** Validates the input type. Throw an exception if it is invalid */
+  override protected def validateInputType(inputType: DataType): Unit = {
+    require(inputType == ArrayType(StringType, true),
+      s"Input type must be Array[String], but got $inputType.")
+  }
 }
