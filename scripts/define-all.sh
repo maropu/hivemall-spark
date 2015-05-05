@@ -35,6 +35,36 @@ sqlContext.sql("CREATE TEMPORARY FUNCTION rowid AS 'hivemall.tools.mapred.RowIdU
 sqlContext.sql("CREATE TEMPORARY FUNCTION lr_datagen AS 'hivemall.dataset.LogisticRegressionDataGeneratorUDTFWrapper'")
 
 /**
+ * scaling functions
+ */
+
+// sqlContext.sql("DROP TEMPORARY FUNCTION IF EXISTS rescale")
+sqlContext.sql("CREATE TEMPORARY FUNCTION rescale AS 'hivemall.ftvec.scaling.RescaleUDF'")
+
+// sqlContext.sql("DROP TEMPORARY FUNCTION IF EXISTS zscore")
+sqlContext.sql("CREATE TEMPORARY FUNCTION zscore AS 'hivemall.ftvec.scaling.ZScoreUDF'")
+
+// sqlContext.sql("DROP TEMPORARY FUNCTION IF EXISTS normalize")
+sqlContext.sql("CREATE TEMPORARY FUNCTION normalize AS 'hivemall.ftvec.scaling.L2NormalizationUDF'")
+
+/**
+ * hashing functions
+ */
+
+// sqlContext.sql("DROP TEMPORARY FUNCTION IF EXISTS sha1")
+sqlContext.sql("CREATE TEMPORARY FUNCTION sha1 AS 'hivemall.ftvec.hashing.Sha1UDF'")
+
+/**
+ * amplifier functions
+ */
+
+// sqlContext.sql("DROP TEMPORARY FUNCTION IF EXISTS amplify")
+sqlContext.sql("CREATE TEMPORARY FUNCTION amplify AS 'hivemall.ftvec.amplify.AmplifierUDTF'")
+
+// sqlContext.sql("DROP TEMPORARY FUNCTION IF EXISTS rand_amplify")
+sqlContext.sql("CREATE TEMPORARY FUNCTION rand_amplify AS 'hivemall.ftvec.amplify.RandomAmplifierUDTF'")
+
+/**
  * Misc functions
  */
 
@@ -52,19 +82,4 @@ sqlContext.sql("CREATE TEMPORARY FUNCTION extract_weight AS 'hivemall.ftvec.Extr
 
 // sqlContext.sql("DROP TEMPORARY FUNCTION IF EXISTS add_feature_index")
 sqlContext.sql("CREATE TEMPORARY FUNCTION add_feature_index AS 'hivemall.ftvec.AddFeatureIndexUDFWrapper'")
-
-// sqlContext.sql("DROP TEMPORARY FUNCTION IF EXISTS amplify")
-sqlContext.sql("CREATE TEMPORARY FUNCTION amplify AS 'hivemall.ftvec.amplify.AmplifierUDTF'")
-
-// sqlContext.sql("DROP TEMPORARY FUNCTION IF EXISTS rand_amplify")
-sqlContext.sql("CREATE TEMPORARY FUNCTION rand_amplify AS 'hivemall.ftvec.amplify.RandomAmplifierUDTF'")
-
-// sqlContext.sql("DROP TEMPORARY FUNCTION IF EXISTS rescale")
-sqlContext.sql("CREATE TEMPORARY FUNCTION rescale AS 'hivemall.ftvec.scaling.RescaleUDF'")
-
-// sqlContext.sql("DROP TEMPORARY FUNCTION IF EXISTS zscore")
-sqlContext.sql("CREATE TEMPORARY FUNCTION zscore AS 'hivemall.ftvec.scaling.ZScoreUDF'")
-
-// sqlContext.sql("DROP TEMPORARY FUNCTION IF EXISTS normalize")
-sqlContext.sql("CREATE TEMPORARY FUNCTION normalize AS 'hivemall.ftvec.scaling.L2NormalizationUDF'")
 
