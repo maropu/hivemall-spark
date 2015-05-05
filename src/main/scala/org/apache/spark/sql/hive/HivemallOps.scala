@@ -30,6 +30,7 @@ import org.apache.spark.sql.{Column, DataFrame}
  * @groupname regression
  * @groupname ftvec
  * @groupname ftvec.amplify
+ * @groupname ftvec.hashing
  * @groupname ftvec.scaling
  * @groupname tools.mapred
  * @groupname dataset
@@ -176,6 +177,15 @@ object HivemallOps {
   def sort_by_feature(exprs: Column*): Column = {
     new HiveSimpleUdf(new HiveFunctionWrapper(
       "hivemall.ftvec.SortByFeatureUDF"), exprs.map(_.expr))
+  }
+
+  /**
+   * @see hivemall.ftvec.hashing.Sha1UDF
+   * @group ftvec.hashing
+   */
+  def sha1(exprs: Column*): Column = {
+    new HiveSimpleUdf(new HiveFunctionWrapper(
+      "hivemall.ftvec.hashing.Sha1UDF"), exprs.map(_.expr))
   }
 
   /**

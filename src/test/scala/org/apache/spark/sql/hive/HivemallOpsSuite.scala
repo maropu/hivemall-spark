@@ -80,23 +80,16 @@ class HivemallOpsSuite extends FunSuite {
         Row(ArrayBuffer("1:0.2"))))
   }
 
+  test("sha1") {
+    // Assume no exception
+    assert(DummyInputData.select(sha1("test")).count == DummyInputData.count)
+  }
+
   /**
    * TODO: ISTM the current implementation of Spark cannot handle UDF
    * with no argument correctly. We will need to look into it.
    */
   ignore("rowid") {
-    val DummyInputData = {
-      val rowRdd = TestSQLContext.sparkContext.parallelize(
-          (0 until 10).map(Row(_))
-        )
-      TestSQLContext.createDataFrame(
-        rowRdd,
-        StructType(
-          StructField("data", IntegerType, true) ::
-          Nil)
-        )
-    }
-
     assert(DummyInputData.select(rowid())
       .collect.map { case Row(rowid: String) => rowid }.distinct.size == 10)
   }
@@ -185,6 +178,20 @@ class HivemallOpsSuite extends FunSuite {
 }
 
 object HivemallOpsSuite {
+
+  val DummyInputData = {
+    val rowRdd = TestSQLContext.sparkContext.parallelize(
+        (0 until 10).map(Row(_))
+      )
+    val df = TestSQLContext.createDataFrame(
+      rowRdd,
+      StructType(
+        StructField("data", IntegerType, true) ::
+        Nil)
+      )
+    df.registerTempTable("DummyInputData")
+    df
+  }
 
   val TinyTrainData = {
     val rowRdd = TestSQLContext.sparkContext.parallelize(
