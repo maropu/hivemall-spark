@@ -17,7 +17,7 @@
 
 package org.apache.spark.ml.feature
 
-import org.apache.spark.mllib.linalg.SparseVector
+import org.apache.spark.mllib.linalg.{DenseVector, SparseVector}
 import org.apache.spark.sql.Row
 import org.apache.spark.sql.test.TestSQLContext.implicits._
 
@@ -26,8 +26,9 @@ import org.scalatest.FunSuite
 class HivemallFtVectorizerSuite extends FunSuite {
   import org.apache.spark.sql.hive.HivemallOpsSuite._
 
-  test("transform into sparse vectors") {
-    val vectorizer = new HivemallFtVectorizer().setInputCol("feature").setOutputCol("ftvec")
+  test("transform into sparse vectors (default)") {
+    val vectorizer = new HivemallFtVectorizer()
+      .setInputCol("feature").setOutputCol("ftvec").setDimsParam(4)
     val df = vectorizer.transform(TinyTrainData)
     val (s_size, s_indices, s_values) = df.select($"ftvec").map(_.get(0))
       .collect.map { case SparseVector(size, indices, values) =>
@@ -36,19 +37,27 @@ class HivemallFtVectorizerSuite extends FunSuite {
       .ensuring(_.length == 3)
       .unzip3
 
-    // Vector 1
-    assert(s_size(0) == 1024)
+    assert(s_size(0) == 4)  // Vector 1
     assert(s_indices(0) === Seq(1, 2))
-    assert(s_values(0) === Seq(0.8d, 0.2d))
-
-    // Vector 2
-    assert(s_size(1) == 1024)
+    assert(s_values(0) === Seq(.8d, .2d))
+    assert(s_size(1) == 4)  // Vector 2
     assert(s_indices(1) === Seq(2))
-    assert(s_values(1) === Seq(0.7d))
-
-    // Vector 3
-    assert(s_size(2) == 1024)
+    assert(s_values(1) === Seq(.7d))
+    assert(s_size(2) == 4)  // Vector 3
     assert(s_indices(2) === Seq(1))
-    assert(s_values(2) === Seq(0.9d))
+    assert(s_values(2) === Seq(.9d))
+  }
+
+  test("transform into dense vectors") {
+    val vectorizer = new HivemallFtVectorizer()
+      .setInputCol("feature").setOutputCol("ftvec").setDenseParam(true).setDimsParam(4)
+    val df = vectorizer.transform(TinyTrainData)
+    val s_values = df.select($"ftvec").map(_.get(0))
+      .collect.map { case DenseVector(values) => values }.toSeq
+      .ensuring(_.length === 3)
+
+    assert(s_values(0) === Seq(.0d, .8d, .2d, .0d)) // Vector 1
+    assert(s_values(1) === Seq(.0d, .0d, .7d, .0d)) // Vector 2
+    assert(s_values(2) === Seq(.0d, .9d, .0d, .0d)) // Vector 3
   }
 }
