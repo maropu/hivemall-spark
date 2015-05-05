@@ -15,30 +15,19 @@
  * limitations under the License.
  */
 
-package org.apache.spark.ml.feature
+package org.apache.spark.ml.utils
 
-import org.apache.spark.ml.utils.RegressionDatagen
-import org.apache.spark.sql.types._
 import org.apache.spark.sql.test.TestSQLContext
-import org.apache.spark.sql.test.TestSQLContext.implicits._
 
 import org.scalatest.FunSuite
 
-class HivemallAmplifierSuite extends FunSuite {
+class RegressionDatagenSuite extends FunSuite {
 
-  ignore("amplify") {
-    // TODO: Annoying type casts for labels
-    val data = RegressionDatagen.exec(
+  ignore("parallel-gen") {
+    assert(RegressionDatagen.exec(
         TestSQLContext,
-        min_examples = 10000,
-        n_features = 100,
-        n_dims = 1024,
-        dense = false)
-      .select(
-        $"label".cast(DoubleType).as("label"),
-        $"features")
-
-    assert(new HivemallAmplifier().setScaleFactor(3).setBufferNum(1024)
-      .transform(data).count == 30000)
+        n_partitions = 2,
+        min_examples = 100)
+      .count == 100)
   }
 }

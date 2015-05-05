@@ -74,7 +74,7 @@ class HivemallLogressSuite extends FunSuite with Timer {
     // TODO: Annoying type casts for labels
     val trainData = RegressionDatagen.exec(
         TestSQLContext,
-        n_examples = 10000,
+        min_examples = 10000,
         n_features = 100,
         n_dims = 1024,
         dense = false)
@@ -87,7 +87,7 @@ class HivemallLogressSuite extends FunSuite with Timer {
     // Generate a sequence of test data for benchmarks
     val testData = RegressionDatagen.exec(
         TestSQLContext,
-        n_examples = 10000,
+        min_examples = 10000,
         n_features = 100,
         n_dims = 1024,
         dense = false)

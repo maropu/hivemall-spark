@@ -30,16 +30,20 @@ object RegressionDatagen {
    * for the details of arguments below.
    */
   def exec(sc: SQLContext,
-           n_examples: Int = 1000,
+           n_partitions: Int = 2,
+           min_examples: Int = 1000,
            n_features: Int = 10,
            n_dims: Int = 200,
            seed: Int = 43,
            dense: Boolean = false,
            prob_one: Float = 0.6f,
-           sort:Boolean = false,
+           sort: Boolean = false,
            cl: Boolean = false): DataFrame = {
+    // Calculate #examples to generate in each partition
+    val n_examples = (min_examples + n_partitions - 1) / n_partitions
+
     val df = sc.createDataFrame(
-      sc.sparkContext.parallelize(Row(0) :: Nil),
+        sc.sparkContext.parallelize((0 until n_partition).map(Row(_)), n_partition),
         StructType(
           StructField("data", IntegerType, true) ::
           Nil)
