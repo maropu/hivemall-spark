@@ -44,10 +44,12 @@ object RegressionDatagen {
           StructField("data", IntegerType, true) ::
           Nil)
       )
+    import sc.implicits._
     df.lr_datagen(
       s"-n_examples $n_examples -n_features $n_features -n_dims $n_dims -prob_one $prob_one"
         + (if (dense) " -dense" else "")
         + (if (sort) " -sort" else "")
         + (if (cl) " -cl" else ""))
+      .select($"_c0".as("label"), $"_c1".as("feature"))
   }
 }
