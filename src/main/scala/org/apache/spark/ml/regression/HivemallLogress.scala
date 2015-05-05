@@ -43,7 +43,7 @@ class HivemallLogress extends Regressor[Vector, HivemallLogress, HivemallLogress
   // Set default values for parameters
   setBiasParam(true)
   setDenseParam(false)
-  setDimsParam(2^24)
+  setDimsParam(1024)
 
   /** @group setParam */
   def setBiasParam(p: Boolean): this.type = set(biasParam, p)
@@ -140,11 +140,6 @@ class HivemallLogress extends Regressor[Vector, HivemallLogress, HivemallLogress
 
     retModel
   }
-}
-
-// For syntax sugar
-object HivemallLogress {
-  def apply() = new HivemallLogress
 }
 
 /**

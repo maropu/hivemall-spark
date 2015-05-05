@@ -28,13 +28,10 @@ class HivemallLogressSuite extends FunSuite {
   import org.apache.spark.ml.regression.HivemallLogressSuite._
 
   test("tiny training data") {
-    val result = HivemallLogress().setDimsParam(3)
+    assert(new HivemallLogress().setDimsParam(3)
       .fit(TinyTrainData)
       .transform(TinyTestData)
-      .select("features", "label", "prediction")
-      .collect()
-
-    assert(result.length > 0)
+      .count > 0)
   }
 }
 
