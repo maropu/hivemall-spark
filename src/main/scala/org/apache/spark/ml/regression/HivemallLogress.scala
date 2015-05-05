@@ -17,6 +17,8 @@
 
 package org.apache.spark.ml.regression
 
+import java.util.NoSuchElementException
+
 import org.apache.spark.annotation.AlphaComponent
 import org.apache.spark.ml.param._
 import org.apache.spark.mllib.linalg._
@@ -32,6 +34,9 @@ import org.apache.spark.storage.StorageLevel
  */
 private[regression] trait HivemallLogressParams extends RegressorParams
   with HasBiasParam with HasDenseParam with HasDimsParam
+  with HasStepNumParam  // -total_steps
+  with HasExponentParam // -power_t
+  with HasEta0Param     // -eta0
 
 /**
  * Hivemall logistic regression.
@@ -44,6 +49,7 @@ class HivemallLogress extends Regressor[Vector, HivemallLogress, HivemallLogress
   setBiasParam(true)
   setDenseParam(false)
   setDimsParam(1024)
+  setStepNumParam(-1)
 
   /** @group setParam */
   def setBiasParam(p: Boolean): this.type = set(biasParam, p)
@@ -53,6 +59,15 @@ class HivemallLogress extends Regressor[Vector, HivemallLogress, HivemallLogress
 
   /** @group setParam */
   def setDimsParam(p: Int): this.type = set(dimsParam, p)
+
+  /** @group setParam */
+  def setStepNumParam(p: Int): this.type = set(nStepParam, p)
+
+  /** @group setParam */
+  def setPowerParam(p: Double): this.type = set(powerParam, p)
+
+  /** @group setParam */
+  def setEta0Param(p: Double): this.type = set(eta0Param, p)
 
   override protected def train(dataset: DataFrame, paramMap: ParamMap): HivemallLogressModel = {
     // Extract label points from dataset. If dataset is persisted, do not persist labelPoints.
@@ -82,8 +97,25 @@ class HivemallLogress extends Regressor[Vector, HivemallLogress, HivemallLogress
 
     // Process given options for Hivemall
     val options = new StringBuilder
-    if (paramMap(denseParam)) options.append("--dense ")
-    if (paramMap(dimsParam) > 0) options.append(s"--dims ${paramMap(dimsParam)} ")
+    if (paramMap(denseParam)) options.append("-dense ")
+    if (paramMap(dimsParam) > 0) options.append(s"-dims ${paramMap(dimsParam)} ")
+    if (paramMap(nStepParam) > 0) options.append(s"-total_steps ${paramMap(nStepParam)} ")
+
+    try {
+      val p = paramMap(powerParam)
+      options.append(s"-total_steps ${p} ")
+    } catch {
+      case e: NoSuchElementException =>
+        // Do nothing
+    }
+
+    try {
+      val p = paramMap(eta0Param)
+      options.append(s"-eta0 ${p} ")
+    } catch {
+      case e: NoSuchElementException =>
+        // Do nothing
+    }
 
     import dataset.sqlContext.implicits._
 

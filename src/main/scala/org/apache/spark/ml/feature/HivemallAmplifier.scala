@@ -48,12 +48,12 @@ class HivemallAmplifier extends Transformer
   def setScaleFactor(p: Int): this.type = set(scaleParam, p)
 
   /** @group setParam */
-  def setBufferNum(p: Int): this.type = set(NbufferParam, p)
+  def setBufferNum(p: Int): this.type = set(nBufferParam, p)
 
   override def transform(dataset: DataFrame, paramMap: ParamMap): DataFrame = {
     val map = this.paramMap ++ paramMap
     dataset.rand_amplify(
-      map(scaleParam), map(NbufferParam),
+      map(scaleParam), map(nBufferParam),
       // TODO: Replace the arguments below with dataset.col("*")
       dataset.col(map(labelCol)),
       dataset.col(map(featuresCol)))

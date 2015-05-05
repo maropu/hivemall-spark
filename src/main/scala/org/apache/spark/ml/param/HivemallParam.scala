@@ -19,7 +19,7 @@ package org.apache.spark.ml.param
 
 private[ml] trait HasBiasParam extends Params {
   /**
-   * bias param for features
+   * Bias param for features
    * @group param
    */
   val biasParam: BooleanParam =
@@ -31,7 +31,7 @@ private[ml] trait HasBiasParam extends Params {
 
 private[ml] trait HasDenseParam extends Params {
   /**
-   * param for model density
+   * Param for model density
    * @group param
    */
   val denseParam: BooleanParam =
@@ -43,7 +43,7 @@ private[ml] trait HasDenseParam extends Params {
 
 private[ml] trait HasDimsParam extends Params {
   /**
-   * param for feature demensions
+   * Param for feature demensions
    * @group param
    */
   val dimsParam: IntParam =
@@ -53,9 +53,45 @@ private[ml] trait HasDimsParam extends Params {
   def getDimsParam: Int = get(dimsParam)
 }
 
+private[ml] trait HasStepNumParam extends Params {
+  /**
+   * Param for #steps for parameter updates
+   * @group param
+   */
+  val nStepParam: IntParam =
+    new IntParam(this, "nStepParam", "#steps for parameter updates")
+
+  /** @group getParam */
+  def getStepNumParam: Int = get(nStepParam)
+}
+
+private[ml] trait HasExponentParam extends Params {
+  /**
+   * Param for learning rate
+   * @group param
+   */
+  val powerParam: DoubleParam =
+    new DoubleParam(this, "powerParam", "Learning rate")
+
+  /** @group getParam */
+  def getExponentParam: Double = get(powerParam)
+}
+
+private[ml] trait HasEta0Param extends Params {
+  /**
+   * Param for learning rate
+   * @group param
+   */
+  val eta0Param: DoubleParam =
+    new DoubleParam(this, "eta0Param", "Learning rate")
+
+  /** @group getParam */
+  def getEta0Param: Double = get(eta0Param)
+}
+
 private[ml] trait HasScaleFactor extends Params {
   /**
-   * param for the scale factor of amplifier
+   * A scale factor of amplifier
    * @group param
    */
   val scaleParam: IntParam =
@@ -67,12 +103,12 @@ private[ml] trait HasScaleFactor extends Params {
 
 private[ml] trait HasBufferNum extends Params {
   /**
-   * param for #buffers
+   * Param for #buffers
    * @group param
    */
-  val NbufferParam: IntParam =
-    new IntParam(this, "NbufferParam", "The parameter of #buffers")
+  val nBufferParam: IntParam =
+    new IntParam(this, "nBufferParam", "The parameter of #buffers")
 
   /** @group getParam */
-  def getBufferNumParam: Int = get(NbufferParam)
+  def getBufferNumParam: Int = get(nBufferParam)
 }
