@@ -66,7 +66,7 @@ class HivemallFtVectorizer
 
   override protected def outputDataType: DataType = new VectorUDT()
 
-  /** Validates the input type. Throw an exception if it is invalid */
+  /** Validate the input type, and throw an exception if invalid */
   override protected def validateInputType(inputType: DataType): Unit = {
     require(inputType == ArrayType(StringType, true),
       s"Input type must be Array[String], but got $inputType.")

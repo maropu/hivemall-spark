@@ -39,7 +39,7 @@ class HivemallLogressSuite extends FunSuite with Timer {
     new Pipeline().setStages(
       Array(
         new HivemallFtVectorizer()
-          .setInputCol("feature").setOutputCol("ftvec")
+          .setInputCol("features").setOutputCol("ftvec")
           .setDimsParam(1024),
         new HivemallLogress()
           .setFeaturesCol("ftvec")
@@ -55,7 +55,7 @@ class HivemallLogressSuite extends FunSuite with Timer {
     val model = pipeline().fit(
       TinyTrainData.select(
         $"label".cast(DoubleType).as("label"),
-        $"feature"))
+        $"features"))
 
     /**
      * Make predictions on test data
@@ -80,7 +80,7 @@ class HivemallLogressSuite extends FunSuite with Timer {
         dense = false)
       .select(
         $"label".cast(DoubleType).as("label"),
-        $"feature")
+        $"features")
 
     val model = pipeline().fit(trainData)
 

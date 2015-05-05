@@ -34,7 +34,7 @@ class HivemallOpsSuite extends FunSuite {
   import HivemallOpsSuite._
 
   test("add_bias") {
-    assert(TinyTrainData.select(add_bias($"feature")).collect.toSet
+    assert(TinyTrainData.select(add_bias($"features")).collect.toSet
       == Set(
         Row(ArrayBuffer("1:0.8", "2:0.2", "0:1.0")),
         Row(ArrayBuffer("2:0.7", "0:1.0")),
@@ -42,7 +42,7 @@ class HivemallOpsSuite extends FunSuite {
   }
 
   test("extract_feature") {
-    assert(TinyTrainData.select(extract_feature($"feature")).collect.toSet
+    assert(TinyTrainData.select(extract_feature($"features")).collect.toSet
       == Set(
         Row(ArrayBuffer("1", "2")),
         Row(ArrayBuffer("2")),
@@ -50,7 +50,7 @@ class HivemallOpsSuite extends FunSuite {
   }
 
   test("extract_weight") {
-    assert(TinyTrainData.select(extract_weight($"feature")).collect.toSet
+    assert(TinyTrainData.select(extract_weight($"features")).collect.toSet
       == Set(
         Row(ArrayBuffer(0.8f, 0.2f)),
         Row(ArrayBuffer(0.7f)),
@@ -113,7 +113,7 @@ class HivemallOpsSuite extends FunSuite {
   }
 
   ignore("normalize") {
-    assert(TinyTrainData.select(normalize($"feature")).collect.toSet
+    assert(TinyTrainData.select(normalize($"features")).collect.toSet
       == Set(
         Row(ArrayBuffer("1:0.9701425", "2:0.24253562")),
         Row(ArrayBuffer("2:1.0")),
@@ -155,19 +155,19 @@ class HivemallOpsSuite extends FunSuite {
    * was made in #5383.
    */
   ignore("train_adadelta") {
-    val test = LargeTrainData.train_adadelta(add_bias($"feature"), $"label")
+    val test = LargeTrainData.train_adadelta(add_bias($"features"), $"label")
     assert(test.count > 0)
   }
   ignore("train_adagrad") {
-    val test = LargeTrainData.train_adagrad(add_bias($"feature"), $"label")
+    val test = LargeTrainData.train_adagrad(add_bias($"features"), $"label")
     assert(test.count > 0)
   }
   ignore("train_arow_regr") {
-    val test = LargeTrainData.train_arow_regr(add_bias($"feature"), $"label")
+    val test = LargeTrainData.train_arow_regr(add_bias($"features"), $"label")
     assert(test.count > 0)
   }
   ignore("train_logregr") {
-    val test = LargeTrainData.train_logregr(add_bias($"feature"), $"label")
+    val test = LargeTrainData.train_logregr(add_bias($"features"), $"label")
     assert(test.count > 0)
   }
   ignore("amplify") {
@@ -197,7 +197,7 @@ object HivemallOpsSuite {
       rowRdd,
       StructType(
         StructField("label", FloatType, true) ::
-        StructField("feature", ArrayType(StringType), true) ::
+        StructField("features", ArrayType(StringType), true) ::
         Nil)
       )
     df.registerTempTable("TinyTrainData")
@@ -217,7 +217,7 @@ object HivemallOpsSuite {
       rowRdd,
       StructType(
         StructField("label", FloatType, true) ::
-        StructField("feature", ArrayType(StringType), true) ::
+        StructField("features", ArrayType(StringType), true) ::
         Nil)
       )
     df.registerTempTable("TinyTestData")
@@ -238,7 +238,7 @@ object HivemallOpsSuite {
       rowRdd,
       StructType(
         StructField("label", FloatType, true) ::
-        StructField("feature", ArrayType(StringType), true) ::
+        StructField("features", ArrayType(StringType), true) ::
         Nil)
       )
     df.registerTempTable("LargeTrainData")

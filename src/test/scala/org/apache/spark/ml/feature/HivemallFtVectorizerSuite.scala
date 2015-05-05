@@ -28,7 +28,7 @@ class HivemallFtVectorizerSuite extends FunSuite {
 
   test("transform into sparse vectors (default)") {
     val vectorizer = new HivemallFtVectorizer()
-      .setInputCol("feature").setOutputCol("ftvec").setDimsParam(4)
+      .setInputCol("features").setOutputCol("ftvec").setDimsParam(4)
     val df = vectorizer.transform(TinyTrainData)
     val (s_size, s_indices, s_values) = df.select($"ftvec").map(_.get(0))
       .collect.map { case SparseVector(size, indices, values) =>
@@ -50,7 +50,7 @@ class HivemallFtVectorizerSuite extends FunSuite {
 
   test("transform into dense vectors") {
     val vectorizer = new HivemallFtVectorizer()
-      .setInputCol("feature").setOutputCol("ftvec").setDenseParam(true).setDimsParam(4)
+      .setInputCol("features").setOutputCol("ftvec").setDenseParam(true).setDimsParam(4)
     val df = vectorizer.transform(TinyTrainData)
     val s_values = df.select($"ftvec").map(_.get(0))
       .collect.map { case DenseVector(values) => values }.toSeq

@@ -52,3 +52,27 @@ private[ml] trait HasDimsParam extends Params {
   /** @group getParam */
   def getDimsParam: Int = get(dimsParam)
 }
+
+private[ml] trait HasScaleFactor extends Params {
+  /**
+   * param for the scale factor of amplifier
+   * @group param
+   */
+  val scaleParam: IntParam =
+    new IntParam(this, "scaleParam", "The scaling factor of amplifiers")
+
+  /** @group getParam */
+  def getScaleFactorParam: Int = get(scaleParam)
+}
+
+private[ml] trait HasBufferNum extends Params {
+  /**
+   * param for #buffers
+   * @group param
+   */
+  val NbufferParam: IntParam =
+    new IntParam(this, "NbufferParam", "The parameter of #buffers")
+
+  /** @group getParam */
+  def getBufferNumParam: Int = get(NbufferParam)
+}
