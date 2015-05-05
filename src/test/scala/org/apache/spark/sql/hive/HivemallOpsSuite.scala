@@ -80,6 +80,11 @@ class HivemallOpsSuite extends FunSuite {
         Row(ArrayBuffer("1:0.2"))))
   }
 
+  test("mhash") {
+    // Assume no exception
+    assert(DummyInputData.select(mhash("test")).count == DummyInputData.count)
+  }
+
   test("sha1") {
     // Assume no exception
     assert(DummyInputData.select(sha1("test")).count == DummyInputData.count)

@@ -180,6 +180,15 @@ object HivemallOps {
   }
 
   /**
+   * @see hivemall.ftvec.hashing.MurmurHash3UDF
+   * @group ftvec.hashing
+   */
+  def mhash(exprs: Column*): Column = {
+    new HiveSimpleUdf(new HiveFunctionWrapper(
+      "hivemall.ftvec.hashing.MurmurHash3UDF"), exprs.map(_.expr))
+  }
+
+  /**
    * @see hivemall.ftvec.hashing.Sha1UDF
    * @group ftvec.hashing
    */
