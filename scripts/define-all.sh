@@ -51,6 +51,9 @@ sqlContext.sql("CREATE TEMPORARY FUNCTION normalize AS 'hivemall.ftvec.scaling.L
  * hashing functions
  */
 
+// sqlContext.sql("DROP TEMPORARY FUNCTION IF EXISTS mhash")
+sqlContext.sql("CREATE TEMPORARY FUNCTION mhash AS 'hivemall.ftvec.hashing.MurmurHash3UDF'")
+
 // sqlContext.sql("DROP TEMPORARY FUNCTION IF EXISTS sha1")
 sqlContext.sql("CREATE TEMPORARY FUNCTION sha1 AS 'hivemall.ftvec.hashing.Sha1UDF'")
 
