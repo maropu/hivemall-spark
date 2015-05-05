@@ -35,21 +35,24 @@ class HivemallOpsSuite extends FunSuite {
 
   test("add_bias") {
     assert(TinyTrainData.select(add_bias($"feature")).collect.toSet
-      == Set(Row(ArrayBuffer("1:0.8", "2:0.2", "0:1.0")),
+      == Set(
+        Row(ArrayBuffer("1:0.8", "2:0.2", "0:1.0")),
         Row(ArrayBuffer("2:0.7", "0:1.0")),
         Row(ArrayBuffer("1:0.9", "0:1.0"))))
   }
 
   test("extract_feature") {
     assert(TinyTrainData.select(extract_feature($"feature")).collect.toSet
-      == Set(Row(ArrayBuffer("1", "2")),
+      == Set(
+        Row(ArrayBuffer("1", "2")),
         Row(ArrayBuffer("2")),
         Row(ArrayBuffer("1"))))
   }
 
   test("extract_weight") {
     assert(TinyTrainData.select(extract_weight($"feature")).collect.toSet
-      == Set(Row(ArrayBuffer(0.8f, 0.2f)),
+      == Set(
+        Row(ArrayBuffer(0.8f, 0.2f)),
         Row(ArrayBuffer(0.7f)),
         Row(ArrayBuffer(0.9f))))
   }
@@ -71,7 +74,8 @@ class HivemallOpsSuite extends FunSuite {
     }
 
     assert(DoubleListData.select(add_feature_index($"data")).collect.toSet
-      == Set(Row(ArrayBuffer("1:0.8", "2:0.5")),
+      == Set(
+        Row(ArrayBuffer("1:0.8", "2:0.5")),
         Row(ArrayBuffer("1:0.3", "2:0.1")),
         Row(ArrayBuffer("1:0.2"))))
   }
@@ -110,7 +114,8 @@ class HivemallOpsSuite extends FunSuite {
 
   ignore("normalize") {
     assert(TinyTrainData.select(normalize($"feature")).collect.toSet
-      == Set(Row(ArrayBuffer("1:0.9701425", "2:0.24253562")),
+      == Set(
+        Row(ArrayBuffer("1:0.9701425", "2:0.24253562")),
         Row(ArrayBuffer("2:1.0")),
         Row(ArrayBuffer("1:1.0"))))
   }
@@ -137,7 +142,8 @@ class HivemallOpsSuite extends FunSuite {
     }
 
     assert(IntFloatMapData.select(sort_by_feature($"data")).collect.toSet
-      == Set(Row(Map(1 -> 0.3f, 2 -> 0.1f, 3 -> 0.5f),
+      == Set(
+        Row(Map(1 -> 0.3f, 2 -> 0.1f, 3 -> 0.5f),
         Row(Map(1 -> 0.2f, 2 -> 0.4f)),
         Row(Map(1 -> 0.1f, 2 -> 0.4f, 3 -> 0.2f, 4 -> 0.6f)))))
   }

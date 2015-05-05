@@ -101,7 +101,7 @@ class HivemallLogress extends Regressor[Vector, HivemallLogress, HivemallLogress
         options.toString)
       .select($"_c0".cast(IntegerType), $"_c1")
       .groupBy("CAST(_c0, IntegerType)").agg("_c1" -> "avg")
-      .select($"CAST(_c0, IntegerType)".as("feature"), $"AVG(_c1#13)".as("weight"))
+      .select($"CAST(_c0, IntegerType)".as("feature"), $"AVG(_c1#14)".as("weight"))
 
     val retModel = if (hmModel.count > 0) {
       // Extract intercept from trained weights
