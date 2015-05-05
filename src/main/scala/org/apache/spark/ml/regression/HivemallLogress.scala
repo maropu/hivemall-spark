@@ -66,7 +66,7 @@ class HivemallLogress extends Regressor[Vector, HivemallLogress, HivemallLogress
     val hmData = labelPoints.map { x =>
       val features = x.features match {
         case sx: SparseVector =>
-          (0 until sx.size).map {
+          (0 until sx.indices.length).map {
             d => sx.indices(d) + ":" + sx.values(d)
           }
         case dx: DenseVector =>

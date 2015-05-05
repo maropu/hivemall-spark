@@ -204,6 +204,26 @@ object HivemallOpsSuite {
     df
   }
 
+  val TinyTestData = {
+    val rowRdd = TestSQLContext.sparkContext.parallelize(
+        Row(0.0f, "1:0.6" :: "2:0.1" :: Nil) ::
+        Row(1.0f, "2:0.9" :: Nil) ::
+        Row(0.0f, "1:0.2" :: Nil) ::
+        Row(0.0f, "2:0.1" :: Nil) ::
+        Row(0.0f, "0:0.6" :: "2:0.4" :: Nil) ::
+        Nil
+      )
+    val df = TestSQLContext.createDataFrame(
+      rowRdd,
+      StructType(
+        StructField("label", FloatType, true) ::
+        StructField("feature", ArrayType(StringType), true) ::
+        Nil)
+      )
+    df.registerTempTable("TinyTestData")
+    df
+  }
+
   val LargeTrainData = {
     val train1 = TestSQLContext.sparkContext.parallelize(
       (0 until 10000).map { i =>

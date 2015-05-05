@@ -17,58 +17,37 @@
 
 package org.apache.spark.ml.regression
 
+import org.apache.spark.ml.Pipeline
+import org.apache.spark.ml.feature.HivemallFtVectorizer
+import org.apache.spark.mllib.linalg.Vector
 import org.apache.spark.sql.Row
-import org.apache.spark.mllib.linalg.VectorUDT
-import org.apache.spark.sql.test._
-import org.apache.spark.mllib.linalg._
+import org.apache.spark.sql.test.TestSQLContext.implicits._
 import org.apache.spark.sql.types._
 import org.scalatest.FunSuite
 
 class HivemallLogressSuite extends FunSuite {
-  import org.apache.spark.ml.regression.HivemallLogressSuite._
+  import org.apache.spark.sql.hive.HivemallOpsSuite._
 
   test("tiny training data") {
-    assert(new HivemallLogress().setDimsParam(3)
-      .fit(TinyTrainData)
-      .transform(TinyTestData)
-      .count > 0)
+    // Configure a ML pipeline, which consists of two stages: vectorizer and lr
+    val vectorizer = new HivemallFtVectorizer().setInputCol("feature").setOutputCol("ftvec")
+    val lr = new HivemallLogress().setFeaturesCol("ftvec")
+    val pipeline = new Pipeline().setStages(Array(vectorizer, lr))
+
+    // Fit the pipeline to training data
+    // TODO: Annoying type casts for labels
+    val model = pipeline.fit(
+      TinyTrainData.select($"label".cast(DoubleType).as("label"), $"feature"))
+
+    /**
+     * Make predictions on test data
+     *
+     * model.transform(TinyTestData)
+     *   .select("ftvec", "label", "prediction")
+     *   .collect()
+     *   .foreach { case Row(ftvec: Vector, label: Float, prediction: Double) =>
+     *   println(s"($ftvec, $label) -> prediction=$prediction")
+     * }
+     */
   }
-}
-
-// For syntax sugar in SQLContext#createDataFrame()
-case object VectorType extends VectorUDT
-
-object HivemallLogressSuite {
-
-  /**
-   * TODO: Throw an exception in scala reflection
-   * when LabeledPoint used, and why?
-   */
-  val TinyTrainData = TestSQLContext.createDataFrame(
-     TestSQLContext.sparkContext.parallelize(
-        Row(1.0, Vectors.dense(0.0, 1.1, 0.1)) ::
-        Row(0.0, Vectors.dense(2.0, 1.0, 0.9)) ::
-        Row(0.0, Vectors.dense(2.0, 1.3, 1.0)) ::
-        Row(1.0, Vectors.dense(0.0, 1.2, 0.5)) ::
-        Nil
-      ),
-      StructType(
-        StructField("label", DoubleType, true) ::
-        StructField("features", VectorType, true) ::
-        Nil)
-      )
-
-  val TinyTestData = TestSQLContext.createDataFrame(
-     TestSQLContext.sparkContext.parallelize(
-        Row(1.0, Vectors.dense(0.0, 1.1, 0.1)) ::
-        Row(0.0, Vectors.dense(2.0, 1.0, 0.9)) ::
-        Row(0.0, Vectors.dense(2.0, 1.3, 1.0)) ::
-        Row(1.0, Vectors.dense(0.0, 1.2, 0.5)) ::
-        Nil
-      ),
-      StructType(
-        StructField("label", DoubleType, true) ::
-        StructField("features", VectorType, true) ::
-        Nil)
-      )
 }
