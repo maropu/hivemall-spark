@@ -145,7 +145,7 @@ TODO
 
 * Replace LEFT OUTER JOIN in test/prediction phases with map-side CROSS JOIN
 
-        SELECT sigmoid(dot_product(m.weight_vector)) as prob
+        SELECT sigmoid(dot_product(m.weight_vector, t.features)) as prob
           FROM test_data t
           CROSS JOIN lr_model m
 
