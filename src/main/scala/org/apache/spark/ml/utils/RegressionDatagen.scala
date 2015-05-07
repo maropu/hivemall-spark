@@ -39,6 +39,12 @@ object RegressionDatagen {
            prob_one: Float = 0.6f,
            sort: Boolean = false,
            cl: Boolean = false): DataFrame = {
+
+    require(n_partitions > 0, "Non-negative #n_partitions required.")
+    require(min_examples > 0, "Non-negative #min_examples required.")
+    require(n_features > 0, "Non-negative #n_features required.")
+    require(n_dims > 0, "Non-negative #n_dims required.")
+
     // Calculate #examples to generate in each partition
     val n_examples = (min_examples + n_partitions - 1) / n_partitions
 
