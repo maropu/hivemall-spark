@@ -144,19 +144,17 @@ class HivemallLogress extends Regressor[Vector, HivemallLogress, HivemallLogress
 
     val retModel = if (hmModel.count > 0) {
       // Extract intercept from trained weights
-      val intercept = hmModel match {
-        // val intercept = model.where($"feature" === 0) match {
+      val intercept = hmModel.where($"feature" === 0) match {
         case df if df.count == 1 => df.select($"weight").map(_.getDouble(0)).reduce(_ + _)
         case df =>.0d
       }
 
       // Wrap weights with Vector
-      val weights = hmModel.sort($"feature") match {
-        // val weights = model.where($"feature" !== 0).sort($"feature") match {
+      val weights = hmModel.where($"feature" !== 0).sort($"feature") match {
         case d =>
           if (paramMap(denseParam)) {
             // Dense weights
-            Vectors.dense(d.select($"_c1#21").map(_.getDouble(0)).collect)
+            Vectors.dense(d.select($"weight").map(_.getDouble(0)).collect)
           } else {
             // Sparse weights
             val data = d.map(row => (row.getInt(0), row.getDouble(1))).collect
