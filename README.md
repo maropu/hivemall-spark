@@ -66,6 +66,7 @@ to make it easier to combine multiple algorithms into a single pipeline, or work
 
 ```
 import org.apache.spark.ml.regression.HivemallLogress
+import org.apache.spark.ml.feature.HivemallAmplifier
 import org.apache.spark.ml.param.ParamMap
 import org.apache.spark.mllib.linalg.{Vector, Vectors}
 import org.apache.spark.mllib.regression.LabeledPoint
@@ -81,13 +82,19 @@ val trainData = sc.parallelize(
   LabeledPoint(1.0, Vectors.dense(0.0, 1.2, 0.5)) ::
   Nil)
 
-// Create a HivemallLogress instance
-val lr = new HivemallLogress()
-  .setBiasParam(true).setDenseParam(false)
-  .setDenseParam(true)
 
-// Learn a logistic regression model
-val model = lr.fit(trainData.toDF)
+// Configure a ML pipeline, which consists of two stages:
+// HivemallAmplifier and HivemallLogress
+val hivemallPipeline = new Pipeline().setStages(
+  Array(
+    // Amplify the training data
+    new HivemallAmplifier().setScaleFactor(10),
+    // Create a HivemallLogress instance
+    new HivemallLogress().setBiasParam(true).setDenseParam(true))
+  )
+
+// Learn a Hivemall logistic regression model
+val model = hivemallPipeline.fit(trainData.toDF)
 
 // Test data
 val testData = sc.parallelize(

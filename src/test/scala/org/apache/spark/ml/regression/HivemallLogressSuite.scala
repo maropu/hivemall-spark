@@ -35,7 +35,7 @@ class HivemallLogressSuite extends FunSuite with Timer {
 
   test("tiny training data") {
     // Configure a ML pipeline, which consists of two stages:
-    // vectorizer and lr
+    // HivemallFtVectorizer and HivemallLogress
     // TODO: Annoying type casts for labels
     val hivemallPipeline = new Pipeline().setStages(
       Array(
@@ -117,7 +117,7 @@ class HivemallLogressSuite extends FunSuite with Timer {
         $"features")
 
     // Configure a ML pipeline, which consists of two stages:
-    // vectorizer and lr
+    // HivemallFtVectorizer and HivemallLogress
     // TODO: Annoying type casts for labels
     val hivemallPipeline = new Pipeline().setStages(
       Array(
