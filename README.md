@@ -65,16 +65,12 @@ Hivemall in Spark ML Pipeline
 to make it easier to combine multiple algorithms into a single pipeline, or workflow.
 
 ```
-import org.apache.spark.{SparkConf, SparkContext}
 import org.apache.spark.ml.regression.HivemallLogress
 import org.apache.spark.ml.param.ParamMap
 import org.apache.spark.mllib.linalg.{Vector, Vectors}
 import org.apache.spark.mllib.regression.LabeledPoint
-import org.apache.spark.sql.{Row, SQLContext}
+import org.apache.spark.sql.Row
 
-val conf = new SparkConf().setAppName("HivemallExample")
-val sc = new SparkContext(conf)
-val sqlContext = new SQLContext(sc)
 import sqlContext.implicits._
 
 // Training data
@@ -86,8 +82,9 @@ val trainData = sc.parallelize(
   Nil)
 
 // Create a HivemallLogress instance
-val lr = HivemallLogress()
+val lr = new HivemallLogress()
   .setBiasParam(true).setDenseParam(false)
+  .setDenseParam(true)
 
 // Learn a logistic regression model
 val model = lr.fit(trainData.toDF)
@@ -106,8 +103,6 @@ model.transform(testData.toDF)
   .foreach { case Row(features: Vector, label: Double, prediction: Double) =>
     println(s"($features, $label) -> prediction=$prediction")
   }
-
-sc.stop()
 ```
 
 Current Status
