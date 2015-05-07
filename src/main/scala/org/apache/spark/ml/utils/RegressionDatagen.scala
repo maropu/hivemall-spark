@@ -43,7 +43,7 @@ object RegressionDatagen {
     val n_examples = (min_examples + n_partitions - 1) / n_partitions
 
     val df = sc.createDataFrame(
-        sc.sparkContext.parallelize((0 until n_partition).map(Row(_)), n_partition),
+        sc.sparkContext.parallelize((0 until n_partitions).map(Row(_)), n_partitions),
         StructType(
           StructField("data", IntegerType, true) ::
           Nil)

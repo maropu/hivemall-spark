@@ -24,7 +24,7 @@ libraryDependencies ++= Seq(
   "org.spark-project.hive" % "hive-exec" % "0.13.1a",
   "org.spark-project.hive" % "hive-serde" % "0.13.1a",
   "io.github.myui" % "hivemall" % "0.3",
-  "org.xerial" % "xerial-core" % "3.3.5"
+  "org.xerial" % "xerial-core" % "3.2.2"
 )
 
 mergeStrategy in assembly := {

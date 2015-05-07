@@ -18,10 +18,10 @@
 package org.apache.spark.ml.regression
 
 import org.apache.spark.ml.Pipeline
+import org.apache.spark.ml.classification.LogisticRegression
 import org.apache.spark.ml.feature.HivemallFtVectorizer
 import org.apache.spark.ml.utils.RegressionDatagen
-import org.apache.spark.mllib.linalg.Vector
-import org.apache.spark.sql.{DataFrame, Row}
+import org.apache.spark.sql.DataFrame
 import org.apache.spark.sql.test.TestSQLContext
 import org.apache.spark.sql.test.TestSQLContext.implicits._
 import org.apache.spark.sql.types._
@@ -33,10 +33,11 @@ import org.scalatest.FunSuite
 class HivemallLogressSuite extends FunSuite with Timer {
   import org.apache.spark.sql.hive.HivemallOpsSuite._
 
-  def pipeline() = {
+  test("tiny training data") {
     // Configure a ML pipeline, which consists of two stages:
     // vectorizer and lr
-    new Pipeline().setStages(
+    // TODO: Annoying type casts for labels
+    val hivemallPipeline = new Pipeline().setStages(
       Array(
         new HivemallFtVectorizer()
           .setInputCol("features").setOutputCol("ftvec")
@@ -44,15 +45,9 @@ class HivemallLogressSuite extends FunSuite with Timer {
         new HivemallLogress()
           .setFeaturesCol("ftvec")
           .setDimsParam(1024)))
-  }
 
-  // Just process it
-  def exec(df: DataFrame): Unit = df.head(1)
-
-  test("tiny training data") {
     // Fit the pipeline to tiny training data
-    // TODO: Annoying type casts for labels
-    val model = pipeline().fit(
+    val model = hivemallPipeline.fit(
       TinyTrainData.select(
         $"label".cast(DoubleType).as("label"),
         $"features"))
@@ -69,8 +64,47 @@ class HivemallLogressSuite extends FunSuite with Timer {
      */
   }
 
-  ignore("benchmark with generated synthetic data") {
-    // Fit the pipeline to generated synthetic training data
+  ignore("benchmark with mllib logistic regression training") {
+    // TODO: Annoying type casts for labels
+    val synData = RegressionDatagen.exec(
+        TestSQLContext,
+        min_examples = 10000,
+        n_features = 100,
+        n_dims = 1024,
+        dense = false,
+        cl = true) // 0.0 or 0.1 for label of LogisticRegression
+      .select(
+        $"label".cast(DoubleType).as("label"),
+        $"features")
+      .cache
+
+    // Transform into spark-specific vectors
+    val trainData =
+      new HivemallFtVectorizer().setInputCol("features").setOutputCol("ftvec")
+        .setDimsParam(1024)
+        .transform(synData)
+        .cache
+
+    val hivemallLogress = new HivemallLogress()
+        .setFeaturesCol("ftvec")
+        .setDimsParam(1024)
+
+    val mllibLogress = new LogisticRegression()
+        .setFeaturesCol("ftvec")
+        .setMaxIter(10)
+        .setRegParam(0.01)
+
+    time("training benchmark", repeat = 1) {
+      block("hivemall", repeat = 3) {
+        hivemallLogress.fit(trainData)
+      }
+      block("mllib", repeat = 3) {
+        mllibLogress.fit(trainData)
+      }
+    }
+  }
+
+  ignore("benchmark with Hivemall outer-join prediction") {
     // TODO: Annoying type casts for labels
     val trainData = RegressionDatagen.exec(
         TestSQLContext,
@@ -82,7 +116,20 @@ class HivemallLogressSuite extends FunSuite with Timer {
         $"label".cast(DoubleType).as("label"),
         $"features")
 
-    val model = pipeline().fit(trainData)
+    // Configure a ML pipeline, which consists of two stages:
+    // vectorizer and lr
+    // TODO: Annoying type casts for labels
+    val hivemallPipeline = new Pipeline().setStages(
+      Array(
+        new HivemallFtVectorizer()
+          .setInputCol("features").setOutputCol("ftvec")
+          .setDimsParam(1024),
+        new HivemallLogress()
+          .setFeaturesCol("ftvec")
+          .setDimsParam(1024)))
+
+    // Fit the pipeline to generated synthetic training data
+    val model = hivemallPipeline.fit(trainData)
 
     // Generate a sequence of test data for benchmarks
     val testData = RegressionDatagen.exec(
@@ -92,9 +139,15 @@ class HivemallLogressSuite extends FunSuite with Timer {
         n_dims = 1024,
         dense = false)
 
-    time("logistic regression", repeat = 1) {
-      block("prediction with dot products", repeat = 3) {
+    // Just process it
+    def exec(df: DataFrame): Unit = df.head(1)
+
+    time("test/prediction benchmark", repeat = 1) {
+      block("hivemall-spark", repeat = 3) {
         exec(model.transform(testData))
+      }
+      block("hivemall-original", repeat = 3) {
+        // exec(...)
       }
     }
   }
