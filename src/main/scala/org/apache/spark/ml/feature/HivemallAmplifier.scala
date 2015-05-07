@@ -52,6 +52,7 @@ class HivemallAmplifier extends Transformer
 
   override def transform(dataset: DataFrame, paramMap: ParamMap): DataFrame = {
     val map = this.paramMap ++ paramMap
+    // TODO: Handle VectorUDT
     dataset.rand_amplify(
       map(scaleParam), map(nBufferParam),
       // TODO: Replace the arguments below with dataset.col("*")
