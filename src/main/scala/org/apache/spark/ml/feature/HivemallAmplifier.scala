@@ -63,11 +63,11 @@ class HivemallAmplifier extends Transformer
   override def transformSchema(schema: StructType, paramMap: ParamMap): StructType = {
     /** Validate the input type, and throw an exception if invalid */
     val map = this.paramMap ++ paramMap
-    if (schema.fieldNames.contains(map(labelCol))) {
+    if (!schema.fieldNames.contains(map(labelCol))) {
       throw new IllegalArgumentException(
         s"No label column ${map(labelCol)} exists.")
     }
-    if (schema.fieldNames.contains(map(featuresCol))) {
+    if (!schema.fieldNames.contains(map(featuresCol))) {
       throw new IllegalArgumentException(
         s"No features column ${map(featuresCol)} exists.")
     }
