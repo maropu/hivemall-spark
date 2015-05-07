@@ -42,10 +42,11 @@ class HivemallFtVectorizer
 
   override protected def createTransformFunc(paramMap: ParamMap)
       : Seq[String] => Vector = {
-    if (paramMap(denseParam)) {
+    val map = this.paramMap ++ paramMap
+    if (map(denseParam)) {
       // Dense features
       i: Seq[String] => {
-        val features = new Array[Double](paramMap(dimsParam))
+        val features = new Array[Double](map(dimsParam))
         i.map { ft =>
           val s = ft.split(":").ensuring(_.size == 2)
           features(s(0).toInt) = s(1).toDouble
@@ -59,7 +60,7 @@ class HivemallFtVectorizer
           val s = ft.split(":").ensuring(_.size == 2)
           (s(0).toInt, s(1).toDouble)
         }
-        Vectors.sparse(paramMap(dimsParam), features)
+        Vectors.sparse(map(dimsParam), features)
       }
     }
   }

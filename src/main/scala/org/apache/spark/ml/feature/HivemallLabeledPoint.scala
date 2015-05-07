@@ -30,7 +30,7 @@ import org.apache.spark.SparkException
  * @param features List of features for this data point.
  */
 @BeanInfo
-case class HivemallLabeledPoint(label: Float, features: Seq[String]) {
+case class HivemallLabeledPoint(label: Double, features: Seq[String]) {
   override def toString: String = {
     "(%s,%s)".format(label, features)
   }

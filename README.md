@@ -65,32 +65,35 @@ Hivemall in Spark ML Pipeline
 to make it easier to combine multiple algorithms into a single pipeline, or workflow.
 
 ```
+import org.apache.spark.ml.Pipeline
 import org.apache.spark.ml.regression.HivemallLogress
 import org.apache.spark.ml.feature.HivemallAmplifier
+import org.apache.spark.ml.feature.HivemallFtVectorizer
 import org.apache.spark.ml.param.ParamMap
 import org.apache.spark.mllib.linalg.{Vector, Vectors}
-import org.apache.spark.mllib.regression.LabeledPoint
+import org.apache.spark.mllib.regression.HivemallLabeledPoint
 import org.apache.spark.sql.Row
 
 import sqlContext.implicits._
 
 // Training data
 val trainData = sc.parallelize(
-  LabeledPoint(1.0, Vectors.dense(0.0, 1.1, 0.1)) ::
-  LabeledPoint(0.0, Vectors.dense(2.0, 1.0, 1.0)) ::
-  LabeledPoint(0.0, Vectors.dense(2.0, 1.3, 1.0)) ::
-  LabeledPoint(1.0, Vectors.dense(0.0, 1.2, 0.5)) ::
+  HivemallLabeledPoint(1.f, "0:0.0" :: "1:1.1" :: "2:0.1" ::Nil) ::
+  HivemallLabeledPoint(0.f, "0:2.0" :: "1:0.1" :: "2:1.0" ::Nil) ::
+  HivemallLabeledPoint(1.f, "0:2.0" :: "1:1.3" :: "2:1.0" ::Nil) ::
+  HivemallLabeledPoint(0.f, "0:0.0" :: "1:0.2" :: "2:0.5" ::Nil) ::
   Nil)
 
-
-// Configure a ML pipeline, which consists of two stages:
-// HivemallAmplifier and HivemallLogress
+// Configure a ML pipeline, which consists of three stages:
+// HivemallAmplifier, HivemallFtVectorizer, and HivemallLogress
 val hivemallPipeline = new Pipeline().setStages(
   Array(
     // Amplify the training data
     new HivemallAmplifier().setScaleFactor(10),
+    // Transform Hivemall features into Spark-specific vectors
+    new HivemallFtVectorizer().setInputCol("features").setOutputCol("ftvec"),
     // Create a HivemallLogress instance
-    new HivemallLogress().setBiasParam(true).setDenseParam(true))
+    new HivemallLogress().setFeaturesCol("ftvec").setBiasParam(true))
   )
 
 // Learn a Hivemall logistic regression model
@@ -98,14 +101,15 @@ val model = hivemallPipeline.fit(trainData.toDF)
 
 // Test data
 val testData = sc.parallelize(
-  LabeledPoint(1.0, Vectors.dense(-1.0, 1.5, 1.3)) ::
-  LabeledPoint(0.0, Vectors.dense(3.0, 2.0, -0.1)) ::
-  LabeledPoint(1.0, Vectors.dense(0.0, 2.2, -1.5)) ::
+  HivemallLabeledPoint(1.f, "0:1.9" :: "1:1.3" :: "2:0.9" ::Nil) ::
+  HivemallLabeledPoint(0.f, "0:0.0" :: "1:0.3" :: "2:0.4" ::Nil) ::
+  HivemallLabeledPoint(0.f, "0:0.1" :: "1:0.2" :: "2:0.5" ::Nil) ::
+  HivemallLabeledPoint(1.f, "0:1.8" :: "1:1.4" :: "2:0.9" ::Nil) ::
   Nil)
 
 // Make predictions on the test data using the learned model
 model.transform(testData.toDF)
-  .select("features", "label", "prediction")
+  .select("ftvec", "label", "prediction")
   .collect()
   .foreach { case Row(features: Vector, label: Double, prediction: Double) =>
     println(s"($features, $label) -> prediction=$prediction")

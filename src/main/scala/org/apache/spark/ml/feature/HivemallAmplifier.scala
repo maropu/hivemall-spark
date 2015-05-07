@@ -52,12 +52,16 @@ class HivemallAmplifier extends Transformer
 
   override def transform(dataset: DataFrame, paramMap: ParamMap): DataFrame = {
     val map = this.paramMap ++ paramMap
+    import dataset.sqlContext.implicits._
     // TODO: Handle VectorUDT
-    dataset.rand_amplify(
-      map(scaleParam), map(nBufferParam),
-      // TODO: Replace the arguments below with dataset.col("*")
-      dataset.col(map(labelCol)),
-      dataset.col(map(featuresCol)))
+    dataset
+      .rand_amplify(
+        map(scaleParam), map(nBufferParam),
+        // TODO: Replace the arguments below with dataset.col("*")
+        dataset.col(map(labelCol)),
+        dataset.col(map(featuresCol)))
+      // Rename output columns
+      .select($"_c0".as(map(labelCol)), $"_c1".as(map(featuresCol)))
   }
 
   @DeveloperApi
