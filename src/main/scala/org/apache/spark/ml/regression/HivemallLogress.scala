@@ -70,8 +70,10 @@ class HivemallLogress extends Regressor[Vector, HivemallLogress, HivemallLogress
   def setEta0Param(p: Double): this.type = set(eta0Param, p)
 
   override protected def train(dataset: DataFrame, paramMap: ParamMap): HivemallLogressModel = {
+    val map = this.paramMap ++ paramMap
+
     // Extract label points from dataset. If dataset is persisted, do not persist labelPoints.
-    val labelPoints = extractLabeledPoints(dataset, paramMap)
+    val labelPoints = extractLabeledPoints(dataset, map)
     val handlePersistence = dataset.rdd.getStorageLevel == StorageLevel.NONE
     if (handlePersistence) {
       labelPoints.persist(StorageLevel.MEMORY_AND_DISK)
@@ -97,12 +99,12 @@ class HivemallLogress extends Regressor[Vector, HivemallLogress, HivemallLogress
 
     // Process given options for Hivemall
     val options = new StringBuilder
-    if (paramMap(denseParam)) options.append("-dense ")
-    if (paramMap(dimsParam) > 0) options.append(s"-dims ${paramMap(dimsParam)} ")
-    if (paramMap(nStepParam) > 0) options.append(s"-total_steps ${paramMap(nStepParam)} ")
+    if (map(denseParam)) options.append("-dense ")
+    if (map(dimsParam) > 0) options.append(s"-dims ${map(dimsParam)} ")
+    if (map(nStepParam) > 0) options.append(s"-total_steps ${map(nStepParam)} ")
 
     try {
-      val p = paramMap(powerParam)
+      val p = map(powerParam)
       options.append(s"-total_steps ${p} ")
     } catch {
       case e: NoSuchElementException =>
@@ -110,7 +112,7 @@ class HivemallLogress extends Regressor[Vector, HivemallLogress, HivemallLogress
     }
 
     try {
-      val p = paramMap(eta0Param)
+      val p = map(eta0Param)
       options.append(s"-eta0 ${p} ")
     } catch {
       case e: NoSuchElementException =>
@@ -128,7 +130,7 @@ class HivemallLogress extends Regressor[Vector, HivemallLogress, HivemallLogress
           Nil)
       )
       .train_logregr(
-        if (paramMap(denseParam)) add_bias($"features") else $"features",
+        if (map(denseParam)) add_bias($"features") else $"features",
         $"label",
         options.toString)
       .select(
@@ -152,22 +154,22 @@ class HivemallLogress extends Regressor[Vector, HivemallLogress, HivemallLogress
       // Wrap weights with Vector
       val weights = hmModel.where($"feature" !== 0).sort($"feature") match {
         case d =>
-          if (paramMap(denseParam)) {
+          if (map(denseParam)) {
             // Dense weights
             Vectors.dense(d.select($"weight").map(_.getDouble(0)).collect)
           } else {
             // Sparse weights
             val data = d.map(row => (row.getInt(0), row.getDouble(1))).collect
-            Vectors.sparse(data.length, data)
+            Vectors.sparse(map(dimsParam), data)
           }
       }
 
-      new HivemallLogressModel(this, paramMap, weights, intercept)
+      new HivemallLogressModel(this, map, weights, intercept)
     } else {
       // Invalid weights
       new HivemallLogressModel(
-        this, paramMap,
-        Vectors.dense(new Array[Double](paramMap(dimsParam))),
+        this, map,
+        Vectors.dense(new Array[Double](map(dimsParam))),
         .0d)
     }
 
