@@ -17,6 +17,8 @@
 
 package org.apache.spark.sql.hive
 
+import org.apache.spark.mllib.linalg.BLAS
+import org.apache.spark.mllib.linalg.Vector
 import org.apache.spark.sql.catalyst.expressions.Literal
 import org.apache.spark.sql.types._
 import org.apache.spark.sql.{Column, UserDefinedFunction}
@@ -33,4 +35,7 @@ object HivemallUtils {
 
   // Cast String to Integer
   val toIntUdf = UserDefinedFunction((a: String) => a.toInt, IntegerType)
+
+  // Free to access dot-product methods for codegen
+  def dot(x: Vector, y: Vector) = BLAS.dot(x, y)
 }
