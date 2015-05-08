@@ -19,7 +19,7 @@ package org.apache.spark.ml.feature
 
 import org.apache.spark.annotation.DeveloperApi
 
-import org.apache.spark.ml.Transformer
+import org.apache.spark.ml.{TrainOnlyTransfomer, Transformer}
 import org.apache.spark.ml.param._
 import org.apache.spark.sql.DataFrame
 import org.apache.spark.sql.types.StructType
@@ -29,7 +29,7 @@ import org.apache.spark.sql.hive.HivemallUtils._
 /**
  * Transform Hivemall features into Spark-specific vectors.
  */
-class HivemallAmplifier extends Transformer
+class HivemallAmplifier extends TrainOnlyTransfomer
     with HasLabelCol with HasFeaturesCol with HasScaleFactor with HasBufferNum {
 
   // Set default values for parameters
@@ -66,7 +66,7 @@ class HivemallAmplifier extends Transformer
 
   @DeveloperApi
   override def transformSchema(schema: StructType, paramMap: ParamMap): StructType = {
-    /** Validate the input type, and throw an exception if invalid */
+    // Validate the input type, and throw an exception if invalid
     val map = this.paramMap ++ paramMap
     if (!schema.fieldNames.contains(map(labelCol))) {
       throw new IllegalArgumentException(

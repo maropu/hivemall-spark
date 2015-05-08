@@ -64,7 +64,7 @@ Hivemall in Spark ML Pipeline
 to make it easier to combine multiple algorithms into a single pipeline, or workflow.
 
 ```
-import org.apache.spark.ml.Pipeline
+import org.apache.spark.ml.MLPipeline
 import org.apache.spark.ml.regression.HivemallLogress
 import org.apache.spark.ml.feature.HivemallAmplifier
 import org.apache.spark.ml.feature.HivemallFtVectorizer
@@ -85,7 +85,7 @@ val trainData = sc.parallelize(
 
 // Configure a ML pipeline, which consists of three stages:
 // HivemallAmplifier, HivemallFtVectorizer, and HivemallLogress
-val hivemallPipeline = new Pipeline().setStages(
+val hivemallPipeline = new MLPipeline().setStages(
   Array(
     // Amplify the training data
     new HivemallAmplifier().setScaleFactor(10),
