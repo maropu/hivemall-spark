@@ -27,7 +27,7 @@ class UdfCodegeneratorSuite extends FunSuite {
   test("dense model codegen") {
     val weights = Vectors.dense(Array(0.1, 0.4, 0.2, 0.3))
     val intercept: Double = 0.25
-    def codegenFunc = UdfCodegenerator.codegen(weights, intercept)
+    def codegenFunc = ModelCodegenerator.codegen(weights, intercept)
     val denseFtvec = Vectors.dense(Array(0.3, 0.2, 0.1, 0.1))
     assert(codegenFunc(denseFtvec) ~== 0.41)
     val sparseFtvec = Vectors.sparse(4, Array(0, 2), Array(0.2, 0.4))
@@ -37,7 +37,7 @@ class UdfCodegeneratorSuite extends FunSuite {
   test("sparse model codegen") {
     val weights = Vectors.sparse(4, Array(1, 3), Array(0.1, 0.5))
     val intercept: Double = 0.35
-    def codegenFunc = UdfCodegenerator.codegen(weights, intercept)
+    def codegenFunc = ModelCodegenerator.codegen(weights, intercept)
     val denseFtvec = Vectors.dense(Array(0.0, 0.4, 0.8, 0.2))
     assert(codegenFunc(denseFtvec) ~== 0.49)
     val sparseFtvec = Vectors.sparse(4, Array(1, 2), Array(0.1, 0.1))

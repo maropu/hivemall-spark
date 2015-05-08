@@ -19,9 +19,12 @@ package org.apache.spark.sql.codegen
 
 import org.apache.spark.mllib.linalg.{Vector, SparseVector, DenseVector}
 
-object UdfCodegenerator {
+private[sql] object ModelCodegenerator {
   import scala.reflect.runtime.universe._
   import scala.tools.reflect.ToolBox
+
+  // For reflective compilation
+  private val toolBox = runtimeMirror(getClass.getClassLoader).mkToolBox()
 
   /** Codegen a given linear model. */
   def codegen(weights: Vector, intercept: Double): Vector => Double = {
@@ -33,7 +36,7 @@ object UdfCodegenerator {
       case _ =>
         throw new UnsupportedOperationException(s"Unsupported vector type: $weights")
     }
-    runtimeMirror(getClass.getClassLoader).mkToolBox().eval(
+    toolBox.eval(
       q"""
           import org.apache.spark.sql.hive.HivemallUtils._
           import org.apache.spark.mllib.linalg.{Vector, Vectors}

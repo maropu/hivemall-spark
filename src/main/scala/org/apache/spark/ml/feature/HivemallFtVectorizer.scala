@@ -18,8 +18,7 @@
 package org.apache.spark.ml.feature
 
 import org.apache.spark.ml.UnaryTransformer
-import org.apache.spark.ml.param.{HasDimsParam, HasDenseParam, BooleanParam, ParamMap}
-import org.apache.spark.mllib.feature
+import org.apache.spark.ml.param.{HasDimsParam, HasDenseParam, ParamMap}
 import org.apache.spark.mllib.linalg.{Vectors, VectorUDT, Vector}
 import org.apache.spark.sql.types.{ArrayType, StringType, DataType}
 
@@ -43,10 +42,25 @@ class HivemallFtVectorizer
   override protected def createTransformFunc(paramMap: ParamMap)
       : Seq[String] => Vector = {
     val map = this.paramMap ++ paramMap
-    if (map(denseParam)) {
+    HivemallFtVectorizer.func(map(denseParam), map(dimsParam))
+  }
+
+  override protected def outputDataType: DataType = new VectorUDT()
+
+  /** Validate the input type, and throw an exception if invalid */
+  override protected def validateInputType(inputType: DataType): Unit = {
+    require(inputType == ArrayType(StringType, true),
+      s"Input type must be Array[String], but got $inputType.")
+  }
+}
+
+object HivemallFtVectorizer {
+
+  def func(dense: Boolean, dims: Int): Seq[String] => Vector = {
+    if (dense) {
       // Dense features
       i: Seq[String] => {
-        val features = new Array[Double](map(dimsParam))
+        val features = new Array[Double](dims)
         i.map { ft =>
           val s = ft.split(":").ensuring(_.size == 2)
           features(s(0).toInt) = s(1).toDouble
@@ -60,16 +74,8 @@ class HivemallFtVectorizer
           val s = ft.split(":").ensuring(_.size == 2)
           (s(0).toInt, s(1).toDouble)
         }
-        Vectors.sparse(map(dimsParam), features)
+        Vectors.sparse(dims, features)
       }
     }
-  }
-
-  override protected def outputDataType: DataType = new VectorUDT()
-
-  /** Validate the input type, and throw an exception if invalid */
-  override protected def validateInputType(inputType: DataType): Unit = {
-    require(inputType == ArrayType(StringType, true),
-      s"Input type must be Array[String], but got $inputType.")
   }
 }

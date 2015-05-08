@@ -17,11 +17,13 @@
 
 package org.apache.spark.sql.hive
 
+import org.apache.spark.ml.feature.HivemallFtVectorizer
 import org.apache.spark.mllib.linalg.BLAS
 import org.apache.spark.mllib.linalg.Vector
 import org.apache.spark.sql.catalyst.expressions.Literal
+import org.apache.spark.sql.codegen.ModelCodegenerator
 import org.apache.spark.sql.types._
-import org.apache.spark.sql.{Column, UserDefinedFunction}
+import org.apache.spark.sql.Column
 
 object HivemallUtils {
 
@@ -33,9 +35,14 @@ object HivemallUtils {
   @inline implicit def toDoubleLiteral(i: Double) = Column(Literal(i, DoubleType))
   @inline implicit def toStringLiteral(i: String) = Column(Literal(i, StringType))
 
-  // Cast String to Integer
-  val toIntUdf = UserDefinedFunction((a: String) => a.toInt, IntegerType)
-
   // Free to access dot-product methods for codegen
   def dot(x: Vector, y: Vector) = BLAS.dot(x, y)
+
+  // Transform Hivemall features into a Spark-specific vector
+  def toVector(features: Seq[String], dense: Boolean = false, dims: Int = 1024): Vector =
+    HivemallFtVectorizer.func(dense, dims)(features)
+
+  // Codegen a given linear model
+  def codegenModel(weights: Vector, intercept: Double = 0.0): Vector => Double =
+    ModelCodegenerator.codegen(weights, intercept)
 }
