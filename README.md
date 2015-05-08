@@ -190,11 +190,12 @@ TODO
         For easy installations:
           <your spark>/bin/spark-shell --packages hivemall-spark:0.0.1
 
-* Replace LEFT OUTER JOIN in test/prediction phases with map-side CROSS JOIN
+* Improve test/prediction phases by using code generation
 
-        SELECT sigmoid(dot_product(m.weight_vector, t.features)) as prob
-          FROM test_data t
-          CROSS JOIN lr_model m
+        SELECT sigmoid(codegen_lr_model(to_vector(features)) as prob
+          FROM test_data
+
+* Support python APIs for Hivemall
 
 * Support Spark streaming
 
