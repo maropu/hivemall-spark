@@ -23,7 +23,7 @@ libraryDependencies ++= Seq(
   "org.apache.spark" % "spark-hive_2.10" % "1.3.0",
   "org.spark-project.hive" % "hive-exec" % "0.13.1a",
   "org.spark-project.hive" % "hive-serde" % "0.13.1a",
-  "io.github.myui" % "hivemall" % "0.3",
+  "io.github.myui" % "hivemall" % "0.3.1",
   "org.xerial" % "xerial-core" % "3.2.2"
 )
 
