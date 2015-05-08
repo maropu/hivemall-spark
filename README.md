@@ -1,5 +1,5 @@
 This is a simple wrapper implementation of [Hivemall](https://github.com/myui/hivemall/) for Spark.
-This can make highly scalable machine learning algorithms available in DataFrame, HiveContext, and ML Pipeline.
+This can make highly scalable machine learning algorithms available in DataFrame, HiveContext, ML Pipeline, and Streaming.
 
 Installation
 --------------------
@@ -156,6 +156,10 @@ cvModel.transform(testData.toDF)
   }
 ```
 
+Hivemall in Spark Streaming
+--------------------
+TBC
+
 Current Status
 --------------------
 The current implementation of Spark cannot correctly handle UDF/UDAF/UDTF in Hive.
@@ -191,6 +195,8 @@ TODO
         SELECT sigmoid(dot_product(m.weight_vector, t.features)) as prob
           FROM test_data t
           CROSS JOIN lr_model m
+
+* Support Spark streaming
 
 * Support Hive 0.12
 
