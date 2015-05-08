@@ -68,46 +68,87 @@ import org.apache.spark.ml.MLPipeline
 import org.apache.spark.ml.regression.HivemallLogress
 import org.apache.spark.ml.feature.HivemallAmplifier
 import org.apache.spark.ml.feature.HivemallFtVectorizer
-import org.apache.spark.ml.param.ParamMap
 import org.apache.spark.mllib.linalg.{Vector, Vectors}
-import org.apache.spark.mllib.regression.HivemallLabeledPoint
+import org.apache.spark.ml.regression.HivemallLabeledPoint
 import org.apache.spark.sql.Row
 
 import sqlContext.implicits._
 
 // Training data
 val trainData = sc.parallelize(
-  HivemallLabeledPoint(1.f, "0:0.0" :: "1:1.1" :: "2:0.1" ::Nil) ::
-  HivemallLabeledPoint(0.f, "0:2.0" :: "1:0.1" :: "2:1.0" ::Nil) ::
-  HivemallLabeledPoint(1.f, "0:2.0" :: "1:1.3" :: "2:1.0" ::Nil) ::
-  HivemallLabeledPoint(0.f, "0:0.0" :: "1:0.2" :: "2:0.5" ::Nil) ::
+  HivemallLabeledPoint(1., "0:0.0" :: "1:1.1" :: "2:0.1" ::Nil) ::
+  HivemallLabeledPoint(0., "0:2.0" :: "1:0.1" :: "2:1.0" ::Nil) ::
+  HivemallLabeledPoint(1., "0:2.0" :: "1:1.3" :: "2:1.0" ::Nil) ::
+  HivemallLabeledPoint(0., "0:0.0" :: "1:0.2" :: "2:0.5" ::Nil) ::
   Nil)
 
+// Amplify the training data
+val amplifier = new HivemallAmplifier().setScaleFactor(10)
+
+// Transform Hivemall features into Spark-specific vectors
+val vectorizer = new HivemallFtVectorizer().setInputCol("features").setOutputCol("ftvec")
+
+// Create a HivemallLogress instance
+val reg = new HivemallLogress().setFeaturesCol("ftvec").setBiasParam(true)
+
 // Configure a ML pipeline, which consists of three stages:
-// HivemallAmplifier, HivemallFtVectorizer, and HivemallLogress
-val hivemallPipeline = new MLPipeline().setStages(
-  Array(
-    // Amplify the training data
-    new HivemallAmplifier().setScaleFactor(10),
-    // Transform Hivemall features into Spark-specific vectors
-    new HivemallFtVectorizer().setInputCol("features").setOutputCol("ftvec"),
-    // Create a HivemallLogress instance
-    new HivemallLogress().setFeaturesCol("ftvec").setBiasParam(true))
-  )
+// amplifier, vectorizer, and reg
+val hivemallPipeline = new MLPipeline()
+  .setStages(Array(amplifier, vectorizer, reg))
 
 // Learn a Hivemall logistic regression model
-val model = hivemallPipeline.fit(trainData.toDF)
+val model = validator.fit(trainData.toDF)
 
 // Test data
 val testData = sc.parallelize(
-  HivemallLabeledPoint(1.f, "0:1.9" :: "1:1.3" :: "2:0.9" ::Nil) ::
-  HivemallLabeledPoint(0.f, "0:0.0" :: "1:0.3" :: "2:0.4" ::Nil) ::
-  HivemallLabeledPoint(0.f, "0:0.1" :: "1:0.2" :: "2:0.5" ::Nil) ::
-  HivemallLabeledPoint(1.f, "0:1.8" :: "1:1.4" :: "2:0.9" ::Nil) ::
+  HivemallLabeledPoint(1., "0:1.9" :: "1:1.3" :: "2:0.9" ::Nil) ::
+  HivemallLabeledPoint(0., "0:0.0" :: "1:0.3" :: "2:0.4" ::Nil) ::
+  HivemallLabeledPoint(0., "0:0.1" :: "1:0.2" :: "2:0.5" ::Nil) ::
+  HivemallLabeledPoint(1., "0:1.8" :: "1:1.4" :: "2:0.9" ::Nil) ::
   Nil)
 
 // Make predictions on the test data using the learned model
 model.transform(testData.toDF)
+  .select("ftvec", "label", "prediction")
+  .collect()
+  .foreach { case Row(features: Vector, label: Double, prediction: Double) =>
+    println(s"($features, $label) -> prediction=$prediction")
+  }
+```
+
+You can use the Spark framework of [model selection](https://spark.apache.org/docs/latest/ml-guide.html#example-model-selection-via-cross-validation)
+to find the best model or parameters for a given task.
+A code example is as follows;
+
+```
+mport org.apache.spark.ml.evaluation.RegressionEvaluator
+import org.apache.spark.ml.tuning.CrossValidator
+import org.apache.spark.ml.tuning.ParamGridBuilder
+import org.apache.spark.ml.param.ParamMap
+
+// Initialize 'hivemallPipeline'
+
+// A varidator will allow us to jointly choose parameters for all Pipeline stages.
+// This requires an Estimator, a set of Estimator ParamMaps, and an Evaluator
+val validator = new CrossValidator()
+  .setEstimator(hivemallPipeline)
+  .setEvaluator(new RegressionEvaluator)
+
+// ParamGridBuilder is to construct a grid of parameters to search over
+val paramGrid = new ParamGridBuilder()
+  // lr = (eta0Param) / (#iter)^(powerPram)
+  .addGrid(reg.eta0Param, Array(0.10, 0.15, 0.20, 0.25))
+  .addGrid(reg.powerParam, Array(0.01, 0.1))
+  .build()
+
+validator.setEstimatorParamMaps(paramGrid)
+validator.setNumFolds(2) // Use 3+ in practice
+
+// Run cross-validation, and choose the best set of parameters
+val cvModel = validator.fit(trainData.toDF)
+
+// Make predictions on the test data using the learned model
+cvModel.transform(testData.toDF)
   .select("ftvec", "label", "prediction")
   .collect()
   .foreach { case Row(features: Vector, label: Double, prediction: Double) =>
