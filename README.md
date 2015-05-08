@@ -29,16 +29,15 @@ import org.apache.spark.sql.types._
 import org.apache.spark.sql.hive.HivemallOps._
 import sqlContext.implicits._
 
-case class TrainData(label: Float, feature: Seq[String])
-
 val trainTable = sc.parallelize(
-  TrainData(0.0f, "1:0.8" :: "2:0.2" :: Nil) ::
-  TrainData(1.0f, "2:0.7" :: Nil) ::
-  TrainData(0.0f, "1:0.9" :: Nil) :: Nil)
+  HivemallLabeledPoint(0.0f, "1:0.8" :: "2:0.2" :: Nil) ::
+  HivemallLabeledPoint(1.0f, "2:0.7" :: Nil) ::
+  HivemallLabeledPoint(0.0f, "1:0.9" :: Nil) :: Nil)
 
 sqlContext.createDataFrame(trainTable)
   .train_logregr(add_bias($"feature"), $"label")
-  .groupBy("_c0").agg("_c1" -> "avg") // _c0:feature _c1:weight
+  .groupBy("_c0") // _c0:feature _c1:weight
+  .agg("_c1" -> "avg")
 ```
 
 Hivemall in HiveContext
