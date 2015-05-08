@@ -179,19 +179,18 @@ System Requirements
 TODO
 --------------------
 
-* Support the other functions of Hivemall in DataFrame
-
-* Support Hive 0.12
-
-* Support Spark ML Pipeline
+* Support the other functions of Hivemall in DataFrame (Currently only support the implementation of hivemall.regression.*)
 
 * Register this package as a [spark package](http://spark-packages.org/)
 
-        For easy installations: <your spark>/bin/spark-shell --packages hivemall-spark:0.0.1
+        For easy installations:
+          <your spark>/bin/spark-shell --packages hivemall-spark:0.0.1
 
 * Replace LEFT OUTER JOIN in test/prediction phases with map-side CROSS JOIN
 
         SELECT sigmoid(dot_product(m.weight_vector, t.features)) as prob
           FROM test_data t
           CROSS JOIN lr_model m
+
+* Support Hive 0.12
 
