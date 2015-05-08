@@ -50,9 +50,9 @@ say a SQL statements as follows;
 :load <hivemall-spark>/scripts/define-all.sh
 
 sqlContext.sql("
-  SELECT model.feature, CAST(AVG(model.weight) AS FLOAT) AS weight
+  SELECT model.feature, AVG(model.weight) AS weight
     FROM (
-      SELECT train_logregr(add_bias(features), CAST(label AS FLOAT)) AS(feature, weight)
+      SELECT train_logregr(add_bias(features), label AS(feature, weight)
         FROM trainTable
     ) model
     GROUP BY model.feature")
