@@ -34,9 +34,7 @@ class HivemallAmplifierSuite extends FunSuite {
         n_features = 100,
         n_dims = 1024,
         dense = false)
-      .select(
-        $"label".cast(DoubleType).as("label"),
-        $"features")
+      .select($"label", $"features")
 
     assert(new HivemallAmplifier().setScaleFactor(3).setBufferNum(1024)
       .transform(data).count == 30000)

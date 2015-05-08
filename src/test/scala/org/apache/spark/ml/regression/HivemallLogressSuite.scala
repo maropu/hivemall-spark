@@ -36,7 +36,6 @@ class HivemallLogressSuite extends FunSuite with Timer {
   test("tiny training data") {
     // Configure a ML pipeline, which consists of two stages:
     // HivemallFtVectorizer and HivemallLogress
-    // TODO: Annoying type casts for labels
     val hivemallPipeline = new Pipeline().setStages(
       Array(
         new HivemallFtVectorizer()
@@ -48,9 +47,7 @@ class HivemallLogressSuite extends FunSuite with Timer {
 
     // Fit the pipeline to tiny training data
     val model = hivemallPipeline.fit(
-      TinyTrainData.select(
-        $"label".cast(DoubleType).as("label"),
-        $"features"))
+      TinyTrainData.select($"label", $"features"))
 
     /**
      * Make predictions on test data
@@ -58,14 +55,13 @@ class HivemallLogressSuite extends FunSuite with Timer {
      * model.transform(TinyTestData)
      *   .select("ftvec", "label", "prediction")
      *   .collect()
-     *   .foreach { case Row(ftvec: Vector, label: Float, prediction: Double) =>
+     *   .foreach { case Row(ftvec: Vector, label: Double, prediction: Double) =>
      *   println(s"($ftvec, $label) -> prediction=$prediction")
      * }
      */
   }
 
   ignore("benchmark with mllib logistic regression training") {
-    // TODO: Annoying type casts for labels
     val synData = RegressionDatagen.exec(
         TestSQLContext,
         min_examples = 10000,
@@ -73,9 +69,7 @@ class HivemallLogressSuite extends FunSuite with Timer {
         n_dims = 1024,
         dense = false,
         cl = true) // 0.0 or 0.1 for label of LogisticRegression
-      .select(
-        $"label".cast(DoubleType).as("label"),
-        $"features")
+      .select($"label", $"features")
       .cache
 
     // Transform into spark-specific vectors
@@ -105,20 +99,16 @@ class HivemallLogressSuite extends FunSuite with Timer {
   }
 
   ignore("benchmark with Hivemall outer-join prediction") {
-    // TODO: Annoying type casts for labels
     val trainData = RegressionDatagen.exec(
         TestSQLContext,
         min_examples = 10000,
         n_features = 100,
         n_dims = 1024,
         dense = false)
-      .select(
-        $"label".cast(DoubleType).as("label"),
-        $"features")
+      .select($"label", $"features")
 
     // Configure a ML pipeline, which consists of two stages:
     // HivemallFtVectorizer and HivemallLogress
-    // TODO: Annoying type casts for labels
     val hivemallPipeline = new Pipeline().setStages(
       Array(
         new HivemallFtVectorizer()

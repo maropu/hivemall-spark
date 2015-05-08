@@ -101,12 +101,12 @@ class HivemallOpsSuite extends FunSuite {
 
   // TODO: Support testing equality between two floating points
   test("rescale") {
-   assert(TinyTrainData.select(rescale(2.0f, 1.0d, 5.0d)).collect.toSet
+   assert(TinyTrainData.select(rescale(2.0f, 1.0, 5.0)).collect.toSet
       == Set(Row(0.25f)))
   }
 
   test("zscore") {
-   assert(TinyTrainData.select(zscore(1.0f, 0.5d, 0.5d)).collect.toSet
+   assert(TinyTrainData.select(zscore(1.0f, 0.5, 0.5)).collect.toSet
       == Set(Row(1.0f)))
   }
 
@@ -200,15 +200,15 @@ object HivemallOpsSuite {
 
   val TinyTrainData = {
     val rowRdd = TestSQLContext.sparkContext.parallelize(
-        Row(0.0f, "1:0.8" :: "2:0.2" :: Nil) ::
-        Row(1.0f, "2:0.7" :: Nil) ::
-        Row(0.0f, "1:0.9" :: Nil) ::
+        Row(0.0, "1:0.8" :: "2:0.2" :: Nil) ::
+        Row(1.0, "2:0.7" :: Nil) ::
+        Row(0.0, "1:0.9" :: Nil) ::
         Nil
       )
     val df = TestSQLContext.createDataFrame(
       rowRdd,
       StructType(
-        StructField("label", FloatType, true) ::
+        StructField("label", DoubleType, true) ::
         StructField("features", ArrayType(StringType), true) ::
         Nil)
       )
@@ -218,17 +218,17 @@ object HivemallOpsSuite {
 
   val TinyTestData = {
     val rowRdd = TestSQLContext.sparkContext.parallelize(
-        Row(0.0f, "1:0.6" :: "2:0.1" :: Nil) ::
-        Row(1.0f, "2:0.9" :: Nil) ::
-        Row(0.0f, "1:0.2" :: Nil) ::
-        Row(0.0f, "2:0.1" :: Nil) ::
-        Row(0.0f, "0:0.6" :: "2:0.4" :: Nil) ::
+        Row(0.0, "1:0.6" :: "2:0.1" :: Nil) ::
+        Row(1.0, "2:0.9" :: Nil) ::
+        Row(0.0, "1:0.2" :: Nil) ::
+        Row(0.0, "2:0.1" :: Nil) ::
+        Row(0.0, "0:0.6" :: "2:0.4" :: Nil) ::
         Nil
       )
     val df = TestSQLContext.createDataFrame(
       rowRdd,
       StructType(
-        StructField("label", FloatType, true) ::
+        StructField("label", DoubleType, true) ::
         StructField("features", ArrayType(StringType), true) ::
         Nil)
       )
@@ -239,17 +239,17 @@ object HivemallOpsSuite {
   val LargeTrainData = {
     val train1 = TestSQLContext.sparkContext.parallelize(
       (0 until 10000).map { i =>
-        Row(0.0f, Seq("1:" + Random.nextDouble, "2:" + Random.nextDouble))
+        Row(0.0, Seq("1:" + Random.nextDouble, "2:" + Random.nextDouble))
       })
     val train2 = TestSQLContext.sparkContext.parallelize(
       (0 until 10000).map { i =>
-        Row(1.0f, Seq("1:" + Random.nextDouble, "2:" + (0.5 + Random.nextDouble)))
+        Row(1.0, Seq("1:" + Random.nextDouble, "2:" + (0.5 + Random.nextDouble)))
       })
     val rowRdd = train1 ++ train2
     val df = TestSQLContext.createDataFrame(
       rowRdd,
       StructType(
-        StructField("label", FloatType, true) ::
+        StructField("label", DoubleType, true) ::
         StructField("features", ArrayType(StringType), true) ::
         Nil)
       )
