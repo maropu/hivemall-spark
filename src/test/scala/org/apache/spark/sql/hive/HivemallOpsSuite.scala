@@ -17,6 +17,7 @@
 
 package org.apache.spark.sql.hive
 
+import org.apache.spark.ml.utils.RegressionDatagen
 import org.apache.spark.sql.catalyst.expressions.{EmptyRow, Literal}
 import org.apache.spark.sql.types._
 import org.scalatest.FunSuite
@@ -237,23 +238,18 @@ object HivemallOpsSuite {
   }
 
   val LargeTrainData = {
-    val train1 = TestSQLContext.sparkContext.parallelize(
-      (0 until 10000).map { i =>
-        Row(0.0, Seq("1:" + Random.nextDouble, "2:" + Random.nextDouble))
-      })
-    val train2 = TestSQLContext.sparkContext.parallelize(
-      (0 until 10000).map { i =>
-        Row(1.0, Seq("1:" + Random.nextDouble, "2:" + (0.5 + Random.nextDouble)))
-      })
-    val rowRdd = train1 ++ train2
-    val df = TestSQLContext.createDataFrame(
-      rowRdd,
-      StructType(
-        StructField("label", DoubleType, true) ::
-        StructField("features", ArrayType(StringType), true) ::
-        Nil)
-      )
+    val df = RegressionDatagen.exec(
+      TestSQLContext, min_examples = 10000, n_features = 100, n_dims = 65536,
+      dense = false, cl = true)
     df.registerTempTable("LargeTrainData")
+    df
+  }
+
+  val LargeTestData = {
+    val df = RegressionDatagen.exec(
+      TestSQLContext, min_examples = 100, n_features = 100, n_dims = 65536,
+      dense = false, cl = true)
+    df.registerTempTable("LargeTestData")
     df
   }
 }
