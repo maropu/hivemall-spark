@@ -105,7 +105,7 @@ class HivemallLogress extends Regressor[Vector, HivemallLogress, HivemallLogress
 
     try {
       val p = map(powerParam)
-      options.append(s"-total_steps ${p} ")
+      options.append(s"-power_t ${p} ")
     } catch {
       case e: NoSuchElementException =>
         // Do nothing

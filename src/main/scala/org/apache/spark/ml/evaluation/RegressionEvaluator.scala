@@ -72,9 +72,9 @@ with HasPredictionCol with HasLabelCol {
         metrics.explainedVariance
       case "meanAbsoluteError" =>
         metrics.meanAbsoluteError
-      case "meanSqaureError" =>
+      case "meanSquaredError" =>
         metrics.meanSquaredError
-      case "rootMeanSqaureError" =>
+      case "rootMeanSquaredError" =>
         metrics.rootMeanSquaredError
       case "r2" =>
         metrics.r2
