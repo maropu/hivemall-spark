@@ -165,12 +165,12 @@ A learned model with Hivemall is easily applied into the already-implemented onl
 e.g., StreamingLinearRegressionWithSGD.
 
 ```
-import org.apache.spark.ml.regression.HivemallLabeledPoint
+import org.apache.spark.mllib.regression.LabeledPoint
 import org.apache.spark.mllib.regression.StreamingLinearRegressionWithSGD
 
 // Create a DStream instance for a continuous stream of test data and
 // 'ssc' is a instance of StreamingContext
-val testData = ssc.textFileStream("/testing/data/dir").map(HivemallLabeledPoint.parse)
+val testData = ssc.textFileStream("/testing/data/dir").map(LabeledPoint.parse)
 
 // Create a StreamingLinearRegressionWithSGD instance with 'weights'
 // that is learned with Hivemall
@@ -219,7 +219,7 @@ TODO
 
 * Support python APIs for Hivemall
 
-* Support Spark streaming
+* Support Hivemall training for streaming data
 
 * Support Hive 0.12
 
