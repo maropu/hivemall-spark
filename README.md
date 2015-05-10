@@ -24,10 +24,11 @@ of data with names, types, and qualifiers.
 To apply Hivemall fuctions in DataFrame, you type codes below;
 
 ```
+import org.apache.spark.ml.regression.HivemallLabeledPoint
 import org.apache.spark.sql._
 import org.apache.spark.sql.types._
 import org.apache.spark.sql.hive.HivemallOps._
-import sqlContext.implicits._
+import sqlContext.implicits._ // sqlContext is a instance of SQLContext
 
 val trainTable = sc.parallelize(
   HivemallLabeledPoint(0.0f, "1:0.8" :: "2:0.2" :: Nil) ::
@@ -121,7 +122,7 @@ to find the best model or parameters for a given task.
 A code example is as follows;
 
 ```
-mport org.apache.spark.ml.evaluation.RegressionEvaluator
+import org.apache.spark.ml.evaluation.RegressionEvaluator
 import org.apache.spark.ml.tuning.CrossValidator
 import org.apache.spark.ml.tuning.ParamGridBuilder
 import org.apache.spark.ml.param.ParamMap
@@ -158,7 +159,28 @@ cvModel.transform(testData.toDF)
 
 Hivemall in Spark Streaming
 --------------------
-TBC
+[Spark Streaming](https://spark.apache.org/docs/latest/streaming-programming-guide.html) is an extension of the core Spark API
+that enables scalable, high-throughput, fault-tolerant stream processing of live data streams.
+A learned model with Hivemall is easily applied into the already-implemented online interface in MLlib,
+e.g., StreamingLinearRegressionWithSGD.
+
+```
+import org.apache.spark.ml.regression.HivemallLabeledPoint
+import org.apache.spark.mllib.regression.StreamingLinearRegressionWithSGD
+
+// Create a DStream instance for a continuous stream of test data and
+// 'ssc' is a instance of StreamingContext
+val testData = ssc.textFileStream("/testing/data/dir").map(HivemallLabeledPoint.parse)
+
+// Create a StreamingLinearRegressionWithSGD instance with 'weights'
+// that is learned with Hivemall
+val model = new StreamingLinearRegressionWithSGD()
+  .setInitialWeights(weights)
+
+// Start predicting the input streaming data
+model.predictOnValues(testData.map(lp => (lp.label, lp.features))).print()
+ssc.start()
+```
 
 Current Status
 --------------------
