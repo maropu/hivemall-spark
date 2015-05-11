@@ -23,13 +23,11 @@ import org.apache.spark.mllib.linalg.Vector
 import org.apache.spark.sql.catalyst.expressions.Literal
 import org.apache.spark.sql.codegen.ModelCodegenerator
 import org.apache.spark.sql.types._
-import org.apache.spark.sql.Column
+import org.apache.spark.sql.{Row, DataFrame, Column}
 
 object HivemallUtils {
 
-  /**
-   * An implicit conversion to avoid doing annoying transformation.
-   */
+  /** An implicit conversion to avoid doing annoying transformation. */
   @inline implicit def toIntLiteral(i: Int) = Column(Literal(i, IntegerType))
   @inline implicit def toFloatLiteral(i: Float) = Column(Literal(i, FloatType))
   @inline implicit def toDoubleLiteral(i: Double) = Column(Literal(i, DoubleType))
@@ -46,14 +44,38 @@ object HivemallUtils {
       s"Column $colName must be of type $dataType but was actually $actualDataType.")
   }
 
-  // Free to access dot-product methods for codegen
+  /**
+   * Transform a Hivemall model in a relation into
+   * (weights: Vector, intercept: Double).
+   */
+  def transformHivemallModel(df: DataFrame, dense: Boolean = false, dims: Int = 1024)
+      : (Vector, Double) = {
+    checkColumnType(df.schema, "feature", StringType)
+    checkColumnType(df.schema, "weight", FloatType)
+
+    import df.sqlContext.implicits._
+    val intercept = df
+      .where($"feature" === "0")
+      .select($"weight")
+      .map { case Row(weight: Float) => weight }
+      .reduce(_ + _)
+    val weights = df
+      .select($"feature", $"weight")
+      .where($"feature" !== "0")
+      .map { case Row(label: String, feature: Float) => s"${label}:$feature" }
+      .collect.toSeq
+
+    (toVector(weights, dense, dims), intercept.toDouble)
+  }
+
+  /** Free to access dot-product methods for codegen. */
   def dot(x: Vector, y: Vector): Double = BLAS.dot(x, y)
 
-  // Transform Hivemall features into a Spark-specific vector
+  /** Transform Hivemall features into a Spark-specific vector. */
   def toVector(features: Seq[String], dense: Boolean = false, dims: Int = 1024): Vector =
     HivemallFtVectorizer.func(dense, dims)(features)
 
-  // Codegen a given linear model
+  /** Codegen a given linear model. */
   def codegenModel(weights: Vector, intercept: Double = 0.0): Vector => Double =
     ModelCodegenerator.codegen(weights, intercept)
 }
