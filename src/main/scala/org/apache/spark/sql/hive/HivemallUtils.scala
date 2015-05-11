@@ -35,8 +35,19 @@ object HivemallUtils {
   @inline implicit def toDoubleLiteral(i: Double) = Column(Literal(i, DoubleType))
   @inline implicit def toStringLiteral(i: String) = Column(Literal(i, StringType))
 
+  /**
+   * Check whether the given schema contains a column of the required data type.
+   * @param colName  column name
+   * @param dataType  required column data type
+   */
+  def checkColumnType(schema: StructType, colName: String, dataType: DataType): Unit = {
+    val actualDataType = schema(colName).dataType
+    require(actualDataType.equals(dataType),
+      s"Column $colName must be of type $dataType but was actually $actualDataType.")
+  }
+
   // Free to access dot-product methods for codegen
-  def dot(x: Vector, y: Vector) = BLAS.dot(x, y)
+  def dot(x: Vector, y: Vector): Double = BLAS.dot(x, y)
 
   // Transform Hivemall features into a Spark-specific vector
   def toVector(features: Seq[String], dense: Boolean = false, dims: Int = 1024): Vector =
