@@ -202,6 +202,10 @@ System Requirements
 
 * Hive 0.13
 
+Presentations
+------------
+[Hivemall Meetup#1](http://eventdots.jp/event/458208) - [Slide](http://www.slideshare.net/maropu0804/20150512-hivemall-meetup1)
+
 TODO
 --------------------
 
