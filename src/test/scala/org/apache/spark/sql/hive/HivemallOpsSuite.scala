@@ -91,11 +91,7 @@ class HivemallOpsSuite extends FunSuite {
     assert(DummyInputData.select(sha1("test")).count == DummyInputData.count)
   }
 
-  /**
-   * TODO: ISTM the current implementation of Spark cannot handle UDF
-   * with no argument correctly. We will need to look into it.
-   */
-  ignore("rowid") {
+  test("rowid") {
     assert(DummyInputData.select(rowid())
       .collect.map { case Row(rowid: String) => rowid }.distinct.size == 10)
   }

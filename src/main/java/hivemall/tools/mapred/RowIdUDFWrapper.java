@@ -20,6 +20,7 @@ package hivemall.tools.mapred;
 import org.apache.hadoop.hive.ql.exec.UDFArgumentException;
 import org.apache.hadoop.hive.ql.exec.UDFArgumentLengthException;
 import org.apache.hadoop.hive.ql.metadata.HiveException;
+import org.apache.hadoop.hive.ql.udf.UDFType;
 import org.apache.hadoop.hive.ql.udf.generic.GenericUDF;
 import org.apache.hadoop.hive.serde2.objectinspector.ObjectInspector;
 import org.apache.hadoop.hive.serde2.objectinspector.primitive.PrimitiveObjectInspectorFactory;
@@ -41,6 +42,7 @@ import java.util.UUID;
  *   at org.apache.hadoop.hive.ql.exec.FunctionRegistry.invoke(FunctionRegistry.java:1243)
  *   at org.apache.spark.sql.hive.HiveSimpleUdf.eval(hiveUdfs.scala:118)
  */
+@UDFType(deterministic = false, stateful = true)
 public class RowIdUDFWrapper extends GenericUDF {
     /**
      * TODO: This class does not work because spark cannot
@@ -73,7 +75,7 @@ public class RowIdUDFWrapper extends GenericUDF {
          * TODO: Check if it is unique over all tasks
          * in executors of Spark.
          */
-        return taskId + "-" + UUID.randomUUID() + "-"+ sequence;
+        return taskId + "-" + UUID.randomUUID() + "-" + sequence;
     }
 
     @Override
