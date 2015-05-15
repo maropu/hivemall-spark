@@ -111,7 +111,7 @@ class HivemallOpsSuite extends FunSuite {
       == Set(Row(1.0f)))
   }
 
-  ignore("normalize") {
+  test("normalize") {
     assert(TinyTrainData.select(normalize($"features")).collect.toSet
       == Set(
         Row(ArrayBuffer("1:0.9701425", "2:0.24253562")),
