@@ -25,6 +25,9 @@ import org.apache.hadoop.hive.ql.udf.generic.GenericUDF;
 import org.apache.hadoop.hive.serde2.objectinspector.*;
 import org.apache.hadoop.hive.serde2.objectinspector.ObjectInspector.Category;
 import org.apache.hadoop.hive.serde2.objectinspector.PrimitiveObjectInspector.PrimitiveCategory;
+import org.apache.hadoop.hive.serde2.objectinspector.ObjectInspectorConverters.Converter;
+import org.apache.hadoop.hive.serde2.objectinspector.ObjectInspectorFactory.ObjectInspectorOptions;
+import org.apache.hadoop.hive.serde2.objectinspector.primitive.PrimitiveObjectInspectorFactory;
 import org.apache.hadoop.io.Text;
 
 import java.util.ArrayList;
@@ -43,8 +46,8 @@ import java.util.List;
 public class L2NormalizationUDFWrapper extends GenericUDF {
     private L2NormalizationUDF udf = new L2NormalizationUDF();
 
-    private List<Text> retValue = new ArrayList<Text>();
-    private ListObjectInspector argumentOIs = null;
+    private transient List<Text> retValue = new ArrayList<Text>();
+    private transient Converter toListText = null;
 
     @Override
     public ObjectInspector initialize(ObjectInspector[] arguments) throws UDFArgumentException {
@@ -68,29 +71,25 @@ public class L2NormalizationUDFWrapper extends GenericUDF {
                         + arguments[0].getTypeName() + " was found.");
         }
 
-        argumentOIs = (ListObjectInspector) arguments[0];
+        // Create a ObjectInspector converter for arguments
+        ObjectInspector outputElemOI =
+                ObjectInspectorFactory.getReflectionObjectInspector(
+                        Text.class, ObjectInspectorOptions.JAVA);
+        ObjectInspector outputOI =
+                ObjectInspectorFactory.getStandardListObjectInspector(outputElemOI);
+        toListText = ObjectInspectorConverters.getConverter(arguments[0], outputOI);
 
-        ObjectInspector listElemOI = argumentOIs.getListElementObjectInspector();
+        ObjectInspector listElemOI = PrimitiveObjectInspectorFactory.javaStringObjectInspector;
         ObjectInspector returnElemOI = ObjectInspectorUtils.getStandardObjectInspector(listElemOI);
-
         return ObjectInspectorFactory.getStandardListObjectInspector(returnElemOI);
     }
 
     @Override
     public Object evaluate(DeferredObject[] arguments) throws HiveException {
         assert(arguments.length == 1);
-        final Object arrayObject = arguments[0].get();
-        final ListObjectInspector arrayOI = (ListObjectInspector) argumentOIs;
-        /**
-         * TODO: Why not List<String> but List<Text>?
-         */
         @SuppressWarnings("unchecked")
-        final List<String> arg0 = (List<String>) arrayOI.getList(arrayObject);
-        List<Text> input = new ArrayList<Text>();
-        for (String s : arg0) {
-            input.add(new Text(s));
-        }
-        retValue = udf.evaluate(new ArrayList<Text>(input));
+        final List<Text> input = (List<Text>) toListText.convert(arguments[0].get());
+        retValue = udf.evaluate(input);
         return retValue;
     }
 
