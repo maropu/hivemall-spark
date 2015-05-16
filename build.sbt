@@ -4,7 +4,7 @@ name := "hivemall-spark"
 
 version := "0.0.1"
 
-scalaVersion := "2.11.6"
+scalaVersion := "2.10.4"
 
 // Switch suitable source codes for hive-0.12.x or hive-.13.x
 // TODO: Support Hive 0.12
@@ -15,16 +15,21 @@ assemblySettings
 
 net.virtualvoid.sbt.graph.Plugin.graphSettings
 
+// scalacOptions ++= Seq("-language:experimental.macros")
+
+resolvers += Resolver.sonatypeRepo("releases")
+addCompilerPlugin("org.scalamacros" % "paradise" % "2.1.0-M5" cross CrossVersion.full)
+
 libraryDependencies ++= Seq(
-  "org.scalatest" % "scalatest_2.11" % "2.2.4",
-  "org.apache.spark" % "spark-core_2.11" % "1.3.0",
-  "org.apache.spark" % "spark-mllib_2.11" % "1.3.0",
-  "org.apache.spark" % "spark-sql_2.11" % "1.3.0",
-  "org.apache.spark" % "spark-hive_2.11" % "1.3.0",
+  "org.scalatest" % "scalatest_2.10" % "2.2.4",
+  "org.apache.spark" % "spark-core_2.10" % "1.3.0",
+  "org.apache.spark" % "spark-mllib_2.10" % "1.3.0",
+  "org.apache.spark" % "spark-sql_2.10" % "1.3.0",
+  "org.apache.spark" % "spark-hive_2.10" % "1.3.0",
   "org.spark-project.hive" % "hive-exec" % "0.13.1a",
   "org.spark-project.hive" % "hive-serde" % "0.13.1a",
   "io.github.myui" % "hivemall" % "0.3.1",
-  "org.xerial" % "xerial-core" % "3.3.6"
+  "org.xerial" % "xerial-core" % "3.2.3"
 )
 
 mergeStrategy in assembly := {

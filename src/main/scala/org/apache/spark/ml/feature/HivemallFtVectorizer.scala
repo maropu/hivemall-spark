@@ -71,7 +71,8 @@ object HivemallFtVectorizer {
       // Sparse features
       i: Seq[String] => {
         val features = i.map { ft =>
-          val s = ft.split(":").ensuring(_.size == 2)
+          // val s = ft.split(":").ensuring(_.size == 2)
+          val s = ft.split(":")
           (s(0).toInt, s(1).toDouble)
         }
         Vectors.sparse(dims, features)
