@@ -18,7 +18,6 @@
 package org.apache.spark.sql.hive
 
 import org.apache.spark.ml.utils.RegressionDatagen
-import org.apache.spark.sql.catalyst.expressions.{EmptyRow, Literal}
 import org.apache.spark.sql.types._
 import org.scalatest.FunSuite
 
@@ -29,14 +28,13 @@ import org.apache.spark.sql.test._
 import org.apache.spark.sql.test.TestSQLContext.implicits._
 
 import scala.collection.mutable.ArrayBuffer
-import scala.util.Random
 
 class HivemallOpsSuite extends FunSuite {
   import HivemallOpsSuite._
 
   test("add_bias") {
     assert(TinyTrainData.select(add_bias($"features")).collect.toSet
-      == Set(
+      === Set(
         Row(ArrayBuffer("1:0.8", "2:0.2", "0:1.0")),
         Row(ArrayBuffer("2:0.7", "0:1.0")),
         Row(ArrayBuffer("1:0.9", "0:1.0"))))
@@ -44,7 +42,7 @@ class HivemallOpsSuite extends FunSuite {
 
   test("extract_feature") {
     assert(TinyTrainData.select(extract_feature($"features")).collect.toSet
-      == Set(
+      === Set(
         Row(ArrayBuffer("1", "2")),
         Row(ArrayBuffer("2")),
         Row(ArrayBuffer("1"))))
@@ -52,7 +50,7 @@ class HivemallOpsSuite extends FunSuite {
 
   test("extract_weight") {
     assert(TinyTrainData.select(extract_weight($"features")).collect.toSet
-      == Set(
+      === Set(
         Row(ArrayBuffer(0.8f, 0.2f)),
         Row(ArrayBuffer(0.7f)),
         Row(ArrayBuffer(0.9f))))
@@ -75,7 +73,7 @@ class HivemallOpsSuite extends FunSuite {
     }
 
     assert(DoubleListData.select(add_feature_index($"data")).collect.toSet
-      == Set(
+      === Set(
         Row(ArrayBuffer("1:0.8", "2:0.5")),
         Row(ArrayBuffer("1:0.3", "2:0.1")),
         Row(ArrayBuffer("1:0.2"))))
@@ -99,17 +97,17 @@ class HivemallOpsSuite extends FunSuite {
   // TODO: Support testing equality between two floating points
   test("rescale") {
    assert(TinyTrainData.select(rescale(2.0f, 1.0, 5.0)).collect.toSet
-      == Set(Row(0.25f)))
+      === Set(Row(0.25f)))
   }
 
   test("zscore") {
    assert(TinyTrainData.select(zscore(1.0f, 0.5, 0.5)).collect.toSet
-      == Set(Row(1.0f)))
+      === Set(Row(1.0f)))
   }
 
   test("normalize") {
     assert(TinyTrainData.select(normalize($"features")).collect.toSet
-      == Set(
+      === Set(
         Row(ArrayBuffer("1:0.9701425", "2:0.24253562")),
         Row(ArrayBuffer("2:1.0")),
         Row(ArrayBuffer("1:1.0"))))
@@ -137,7 +135,7 @@ class HivemallOpsSuite extends FunSuite {
     }
 
     assert(IntFloatMapData.select(sort_by_feature($"data")).collect.toSet
-      == Set(
+      === Set(
         Row(Map(1 -> 0.3f, 2 -> 0.1f, 3 -> 0.5f),
         Row(Map(1 -> 0.2f, 2 -> 0.4f)),
         Row(Map(1 -> 0.1f, 2 -> 0.4f, 3 -> 0.2f, 4 -> 0.6f)))))
@@ -175,7 +173,7 @@ class HivemallOpsSuite extends FunSuite {
   }
   ignore("lr_datagen") {
     val test = LargeTrainData.lr_datagen("-n_examples 100 -n_features 10 -seed 100")
-    assert(test.count == 100)
+    assert(test.count.toInt == 100)
   }
 }
 

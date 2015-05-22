@@ -37,13 +37,13 @@ class HivemallFtVectorizerSuite extends FunSuite {
       .ensuring(_.length == 3)
       .unzip3
 
-    assert(s_size(0) == 4)  // Vector 1
+    assert(s_size(0) === 4)  // Vector 1
     assert(s_indices(0) === Seq(1, 2))
     assert(s_values(0) === Seq(.8d, .2d))
-    assert(s_size(1) == 4)  // Vector 2
+    assert(s_size(1) === 4)  // Vector 2
     assert(s_indices(1) === Seq(2))
     assert(s_values(1) === Seq(.7d))
-    assert(s_size(2) == 4)  // Vector 3
+    assert(s_size(2) === 4)  // Vector 3
     assert(s_indices(2) === Seq(1))
     assert(s_values(2) === Seq(.9d))
   }

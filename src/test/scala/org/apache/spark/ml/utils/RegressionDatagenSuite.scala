@@ -28,6 +28,6 @@ class RegressionDatagenSuite extends FunSuite {
         TestSQLContext,
         n_partitions = 2,
         min_examples = 100)
-      .count == 100)
+      .count === 100)
   }
 }

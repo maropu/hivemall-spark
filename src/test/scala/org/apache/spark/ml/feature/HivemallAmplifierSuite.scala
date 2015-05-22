@@ -37,6 +37,6 @@ class HivemallAmplifierSuite extends FunSuite {
       .select($"label", $"features")
 
     assert(new HivemallAmplifier().setScaleFactor(3).setBufferNum(1024)
-      .transform(data).count == 30000)
+      .transform(data).count === 30000)
   }
 }
