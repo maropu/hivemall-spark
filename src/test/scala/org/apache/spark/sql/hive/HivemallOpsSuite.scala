@@ -33,6 +33,11 @@ class HivemallOpsSuite extends FunSuite {
   import org.apache.spark.test.TestDoubleWrapper._
   import HivemallOpsSuite._
 
+  test("hivemall_version") {
+    assert(DummyInputData.select(hivemall_version()).head
+      === Row("0.3.1"))
+  }
+
   test("add_bias") {
     assert(TinyTrainData.select(add_bias($"features")).collect.toSet
       === Set(

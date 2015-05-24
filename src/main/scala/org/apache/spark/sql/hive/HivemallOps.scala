@@ -27,12 +27,14 @@ import org.apache.spark.sql.{Column, DataFrame}
 /**
  * A wrapper of hivemall for DataFrame.
  *
+ * @groupname misc
  * @groupname regression
  * @groupname ftvec
  * @groupname ftvec.amplify
  * @groupname ftvec.hashing
  * @groupname ftvec.scaling
  * @groupname tools.mapred
+ * @groupname tools.math
  * @groupname dataset
  */
 class HivemallOps(df: DataFrame) {
@@ -133,6 +135,15 @@ object HivemallOps {
    * An implicit conversion to avoid doing annoying transformation.
    */
   @inline private implicit def toColumn(expr: Expression) = Column(expr)
+
+  /**
+   * @see hivemall.HivemallVersionUDF
+   * @group misc
+   */
+  def hivemall_version(): Column = {
+    new HiveSimpleUdf(new HiveFunctionWrapper(
+      "hivemall.HivemallVersionUDF"), Nil)
+  }
 
   /**
    * @see hivemall.ftvec.AddBiasUDF
