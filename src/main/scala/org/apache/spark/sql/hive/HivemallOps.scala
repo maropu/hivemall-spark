@@ -232,4 +232,13 @@ object HivemallOps {
     new HiveGenericUdf(new HiveFunctionWrapper(
       "hivemall.tools.mapred.RowIdUDFWrapper"), Nil)
   }
+
+  /**
+   * @see hivemall.tools.math.SigmoidUDF
+   * @group tools.math
+   */
+  def sigmoid(exprs: Column*): Column = {
+    new HiveSimpleUdf(new HiveFunctionWrapper(
+      "hivemall.tools.math.SigmodUDF"), exprs.map(_.expr))
+  }
 }

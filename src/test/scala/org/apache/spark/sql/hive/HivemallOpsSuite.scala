@@ -30,6 +30,7 @@ import org.apache.spark.sql.test.TestSQLContext.implicits._
 import scala.collection.mutable.ArrayBuffer
 
 class HivemallOpsSuite extends FunSuite {
+  import org.apache.spark.test.TestDoubleWrapper._
   import HivemallOpsSuite._
 
   test("add_bias") {
@@ -91,7 +92,7 @@ class HivemallOpsSuite extends FunSuite {
 
   test("rowid") {
     assert(DummyInputData.select(rowid())
-      .collect.map { case Row(rowid: String) => rowid }.distinct.size == 10)
+      .collect.map { case Row(rowid: String) => rowid }.distinct.size == 4)
   }
 
   // TODO: Support testing equality between two floating points
@@ -111,6 +112,14 @@ class HivemallOpsSuite extends FunSuite {
         Row(ArrayBuffer("1:0.9701425", "2:0.24253562")),
         Row(ArrayBuffer("2:1.0")),
         Row(ArrayBuffer("1:1.0"))))
+  }
+
+  test("sigmoid") {
+    val rows = DummyInputData.select(sigmoid($"data".cast(FloatType))).collect
+    assert(rows(0).getFloat(0) ~== 0.5f)
+    assert(rows(1).getFloat(0) ~== 0.731f)
+    assert(rows(2).getFloat(0) ~== 0.880f)
+    assert(rows(3).getFloat(0) ~== 0.952f)
   }
 
   /**
@@ -181,7 +190,7 @@ object HivemallOpsSuite {
 
   val DummyInputData = {
     val rowRdd = TestSQLContext.sparkContext.parallelize(
-        (0 until 10).map(Row(_))
+        (0 until 4).map(Row(_))
       )
     val df = TestSQLContext.createDataFrame(
       rowRdd,

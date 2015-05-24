@@ -20,7 +20,7 @@ package org.apache.spark.test
 // TODO: Any same function in o.a.spark.*?
 class TestDoubleWrapper(d: Double) {
   // Check an equality between Double values
-  def ~==(d: Double): Boolean = Math.abs(this.d - d) < 0.0001
+  def ~==(d: Double): Boolean = Math.abs(this.d - d) < 0.001
 }
 
 object TestDoubleWrapper {
