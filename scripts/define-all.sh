@@ -2,8 +2,6 @@
  * A bootstrap script to register UDF on spark-shell
  */
 
-implicit val sqlContext = new org.apache.spark.sql.hive.HiveContext(sc)
-
 /**
  * Regression functions
  */
@@ -98,6 +96,8 @@ sqlContext.sql("CREATE TEMPORARY FUNCTION add_feature_index AS 'hivemall.ftvec.A
  */
 import org.apache.spark.sql.{SQLContext, DataFrame}
 import org.apache.spark.sql.hive.HivemallUtils
+
+implicit val sqlCtx = sqlContext
 
 sqlContext.udf.register(
   "to_vector",
