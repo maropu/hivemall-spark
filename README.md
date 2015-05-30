@@ -11,7 +11,9 @@ cd hivemall-spark
 
 ./bin/sbt assembly
 
-<your spark>/bin/spark-shell --jars <hivemall-spark>/target/scala-2.10/hivemall-spark-assembly-0.0.1.jar
+<your spark>/bin/spark-shell --jars hivemall-spark-assembly-0.0.1.jar
+
+scala> sqlContext.sql("add jar hivemall-spark-assembly-0.0.1.jar")
 ```
 
 To avoid this annoying option in spark-shell, you can set the hivemall jar at `spark.jars`
