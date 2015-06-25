@@ -90,26 +90,3 @@ sqlContext.sql("CREATE TEMPORARY FUNCTION extract_weight AS 'hivemall.ftvec.Extr
 
 // sqlContext.sql("DROP TEMPORARY FUNCTION IF EXISTS add_feature_index")
 sqlContext.sql("CREATE TEMPORARY FUNCTION add_feature_index AS 'hivemall.ftvec.AddFeatureIndexUDFWrapper'")
-
-/**
- * Some useful extensions for hivemall-spark
- */
-import org.apache.spark.sql.{SQLContext, DataFrame}
-import org.apache.spark.sql.hive.HivemallUtils
-
-implicit val sqlCtx = sqlContext
-
-sqlContext.udf.register(
-  "to_vector",
-  (model: Seq[String], dense: Boolean, dims: Int) =>
-    HivemallUtils.toVector(model, dense, dims)
-  )
-
-def registerModelUdf(name: String, model: DataFrame, dense: Boolean, dims: Int)
-    (implicit sqlContext: SQLContext) = {
-  val (weights, intercept) = HivemallUtils.transformHivemallModel(model, dense, dims)
-  val codegenFunc = HivemallUtils.codegenModel(weights, intercept)
-  sqlContext.udf.register(name, codegenFunc)
-  codegenFunc
-}
-
