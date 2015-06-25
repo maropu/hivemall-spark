@@ -17,9 +17,7 @@
 
 package org.apache.spark.sql.hive
 
-import hivemall.regression.LogressUDTF
-import hivemall.ftvec.AddBiasUDFWrapper
-
+import org.apache.spark.sql.catalyst.analysis.UnresolvedAttribute
 import org.apache.spark.sql.catalyst.expressions.Expression
 import org.apache.spark.sql.catalyst.plans.logical.{Generate, LogicalPlan}
 import org.apache.spark.sql.{Column, DataFrame}
@@ -45,6 +43,11 @@ class HivemallOps(df: DataFrame) {
   @inline private implicit def toDataFrame(logicalPlan: LogicalPlan) =
     DataFrame(df.sqlContext, logicalPlan)
 
+  // For internal use only
+  // TODO: Support 'conv' as an output column
+  @inline private def outputAttr =
+    Seq("feature", "weight").map(UnresolvedAttribute(_))
+
   /**
    * @see hivemall.regression.AdaDeltaUDTF
    * @group regression
@@ -52,8 +55,9 @@ class HivemallOps(df: DataFrame) {
   def train_adadelta(exprs: Column*): DataFrame = {
     Generate(new HiveGenericUdtf(
         new HiveFunctionWrapper("hivemall.regression.AdaDeltaUDTF"),
-        Nil, exprs.map(_.expr)),
-      join = false, outer = false, None, df.logicalPlan)
+        exprs.map(_.expr)),
+      join = false, outer = false, None, outputAttr,
+      df.logicalPlan)
   }
 
   /**
@@ -63,8 +67,9 @@ class HivemallOps(df: DataFrame) {
   def train_adagrad(exprs: Column*): DataFrame = {
     Generate(new HiveGenericUdtf(
         new HiveFunctionWrapper("hivemall.regression.AdaGradUDTF"),
-        Nil, exprs.map(_.expr)),
-      join = false, outer = false, None, df.logicalPlan)
+        exprs.map(_.expr)),
+      join = false, outer = false, None, outputAttr,
+      df.logicalPlan)
   }
 
   /**
@@ -74,8 +79,9 @@ class HivemallOps(df: DataFrame) {
   def train_arow_regr(exprs: Column*): DataFrame = {
     Generate(new HiveGenericUdtf(
         new HiveFunctionWrapper("hivemall.regression.AROWRegressionUDTF"),
-        Nil, exprs.map(_.expr)),
-      join = false, outer = false, None, df.logicalPlan)
+        exprs.map(_.expr)),
+      join = false, outer = false, None, outputAttr,
+      df.logicalPlan)
   }
 
   /**
@@ -85,8 +91,9 @@ class HivemallOps(df: DataFrame) {
   def train_logregr(exprs: Column*): DataFrame = {
     Generate(new HiveGenericUdtf(
         new HiveFunctionWrapper("hivemall.regression.LogressUDTF"),
-        Nil, exprs.map(_.expr)),
-      join = false, outer = false, None, df.logicalPlan)
+        exprs.map(_.expr)),
+      join = false, outer = false, None, outputAttr,
+      df.logicalPlan)
   }
 
   /**
@@ -96,8 +103,9 @@ class HivemallOps(df: DataFrame) {
   def amplify(exprs: Column*): DataFrame = {
     Generate(new HiveGenericUdtf(
         new HiveFunctionWrapper("hivemall.ftvec.amplify.AmplifierUDTF"),
-        Nil, exprs.map(_.expr)),
-      join = false, outer = false, None, df.logicalPlan)
+        exprs.map(_.expr)),
+      join = false, outer = false, None, outputAttr,
+      df.logicalPlan)
   }
 
   /**
@@ -107,8 +115,9 @@ class HivemallOps(df: DataFrame) {
   def rand_amplify(exprs: Column*): DataFrame = {
     Generate(new HiveGenericUdtf(
         new HiveFunctionWrapper("hivemall.ftvec.amplify.RandomAmplifierUDTF"),
-        Nil, exprs.map(_.expr)),
-      join = false, outer = false, None, df.logicalPlan)
+        exprs.map(_.expr)),
+      join = false, outer = false, None, outputAttr,
+      df.logicalPlan)
   }
 
   /**
@@ -118,8 +127,9 @@ class HivemallOps(df: DataFrame) {
   def lr_datagen(exprs: Column*): DataFrame = {
     Generate(new HiveGenericUdtf(
         new HiveFunctionWrapper("hivemall.dataset.LogisticRegressionDataGeneratorUDTFWrapper"),
-        Nil, exprs.map(_.expr)),
-      join = false, outer = false, None, df.logicalPlan)
+        exprs.map(_.expr)),
+      join = false, outer = false, None, outputAttr,
+      df.logicalPlan)
   }
 }
 

@@ -17,21 +17,19 @@
 
 package org.apache.spark.sql.hive
 
-import org.apache.spark.ml.utils.RegressionDatagen
-import org.apache.spark.sql.types._
-import org.scalatest.FunSuite
-
 import org.apache.spark.sql._
 import org.apache.spark.sql.hive.HivemallOps._
 import org.apache.spark.sql.hive.HivemallUtils._
-import org.apache.spark.sql.test._
 import org.apache.spark.sql.test.TestSQLContext.implicits._
+import org.apache.spark.sql.test._
+import org.apache.spark.sql.types._
+import org.scalatest.FunSuite
 
 import scala.collection.mutable.ArrayBuffer
 
 class HivemallOpsSuite extends FunSuite {
+  import org.apache.spark.sql.hive.HivemallOpsSuite._
   import org.apache.spark.test.TestDoubleWrapper._
-  import HivemallOpsSuite._
 
   test("hivemall_version") {
     assert(DummyInputData.select(hivemall_version()).head
@@ -160,35 +158,36 @@ class HivemallOpsSuite extends FunSuite {
    * can't handle HiveGenericUDTF correctly.
    * This issue was reported in SPARK-6734 and a PR of github
    * was made in #5383.
+   *
+   * ignore("train_adadelta") {
+   *   val test = LargeTrainData.train_adadelta(add_bias($"features"), $"label")
+   *   assert(test.count > 0)
+   * }
+   * ignore("train_adagrad") {
+   *   val test = LargeTrainData.train_adagrad(add_bias($"features"), $"label")
+   *   assert(test.count > 0)
+   * }
+   * ignore("train_arow_regr") {
+   *   val test = LargeTrainData.train_arow_regr(add_bias($"features"), $"label")
+   *   assert(test.count > 0)
+   * }
+   * ignore("train_logregr") {
+   *   val test = LargeTrainData.train_logregr(add_bias($"features"), $"label")
+   *   assert(test.count > 0)
+   * }
+   * ignore("amplify") {
+   *   val test = LargeTrainData.amplify(3, $"*")
+   *   assert(test.count > 0)
+   * }
+   * ignore("rand_amplify") {
+   *   val test = LargeTrainData.rand_amplify(3, $"*")
+   *   assert(test.count > 0)
+   * }
+   * ignore("lr_datagen") {
+   *   val test = LargeTrainData.lr_datagen("-n_examples 100 -n_features 10 -seed 100")
+   *   assert(test.count.toInt == 100)
+   * }
    */
-  ignore("train_adadelta") {
-    val test = LargeTrainData.train_adadelta(add_bias($"features"), $"label")
-    assert(test.count > 0)
-  }
-  ignore("train_adagrad") {
-    val test = LargeTrainData.train_adagrad(add_bias($"features"), $"label")
-    assert(test.count > 0)
-  }
-  ignore("train_arow_regr") {
-    val test = LargeTrainData.train_arow_regr(add_bias($"features"), $"label")
-    assert(test.count > 0)
-  }
-  ignore("train_logregr") {
-    val test = LargeTrainData.train_logregr(add_bias($"features"), $"label")
-    assert(test.count > 0)
-  }
-  ignore("amplify") {
-    val test = LargeTrainData.amplify(3, $"*")
-    assert(test.count > 0)
-  }
-  ignore("rand_amplify") {
-    val test = LargeTrainData.rand_amplify(3, $"*")
-    assert(test.count > 0)
-  }
-  ignore("lr_datagen") {
-    val test = LargeTrainData.lr_datagen("-n_examples 100 -n_features 10 -seed 100")
-    assert(test.count.toInt == 100)
-  }
 }
 
 object HivemallOpsSuite {
@@ -245,19 +244,21 @@ object HivemallOpsSuite {
     df
   }
 
-  val LargeTrainData = {
-    val df = RegressionDatagen.exec(
-      TestSQLContext, min_examples = 10000, n_features = 100, n_dims = 65536,
-      dense = false, cl = true)
-    df.registerTempTable("LargeTrainData")
-    df
-  }
-
-  val LargeTestData = {
-    val df = RegressionDatagen.exec(
-      TestSQLContext, min_examples = 100, n_features = 100, n_dims = 65536,
-      dense = false, cl = true)
-    df.registerTempTable("LargeTestData")
-    df
-  }
+  /**
+   * val LargeTrainData = {
+   *   val df = RegressionDatagen.exec(
+   *     TestSQLContext, min_examples = 10000, n_features = 100, n_dims = 65536,
+   *     dense = false, cl = true)
+   *   df.registerTempTable("LargeTrainData")
+   *   df
+   * }
+   *
+   * val LargeTestData = {
+   *   val df = RegressionDatagen.exec(
+   *     TestSQLContext, min_examples = 100, n_features = 100, n_dims = 65536,
+   *     dense = false, cl = true)
+   *   df.registerTempTable("LargeTestData")
+   *   df
+   * }
+   */
 }

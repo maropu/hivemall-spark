@@ -17,21 +17,17 @@
 
 package org.apache.spark.sql.hive
 
-import org.apache.spark.ml.feature.HivemallFtVectorizer
-import org.apache.spark.mllib.linalg.BLAS
-import org.apache.spark.mllib.linalg.Vector
+import org.apache.spark.sql.Column
 import org.apache.spark.sql.catalyst.expressions.Literal
-import org.apache.spark.sql.codegen.ModelCodegenerator
 import org.apache.spark.sql.types._
-import org.apache.spark.sql.{Row, DataFrame, Column}
 
 object HivemallUtils {
 
   /** An implicit conversion to avoid doing annoying transformation. */
-  @inline implicit def toIntLiteral(i: Int) = Column(Literal(i, IntegerType))
-  @inline implicit def toFloatLiteral(i: Float) = Column(Literal(i, FloatType))
-  @inline implicit def toDoubleLiteral(i: Double) = Column(Literal(i, DoubleType))
-  @inline implicit def toStringLiteral(i: String) = Column(Literal(i, StringType))
+  @inline implicit def toIntLiteral(i: Int) = Column(Literal.create(i, IntegerType))
+  @inline implicit def toFloatLiteral(i: Float) = Column(Literal.create(i, FloatType))
+  @inline implicit def toDoubleLiteral(i: Double) = Column(Literal.create(i, DoubleType))
+  @inline implicit def toStringLiteral(i: String) = Column(Literal.create(i, StringType))
 
   /**
    * Check whether the given schema contains a column of the required data type.
@@ -43,39 +39,4 @@ object HivemallUtils {
     require(actualDataType.equals(dataType),
       s"Column $colName must be of type $dataType but was actually $actualDataType.")
   }
-
-  /**
-   * Transform a Hivemall model in a relation into
-   * (weights: Vector, intercept: Double).
-   */
-  def transformHivemallModel(df: DataFrame, dense: Boolean = false, dims: Int = 1024)
-      : (Vector, Double) = {
-    checkColumnType(df.schema, "feature", StringType)
-    checkColumnType(df.schema, "weight", FloatType)
-
-    import df.sqlContext.implicits._
-    val intercept = df
-      .where($"feature" === "0")
-      .select($"weight")
-      .map { case Row(weight: Float) => weight }
-      .reduce(_ + _)
-    val weights = df
-      .select($"feature", $"weight")
-      .where($"feature" !== "0")
-      .map { case Row(label: String, feature: Float) => s"${label}:$feature" }
-      .collect.toSeq
-
-    (toVector(weights, dense, dims), intercept.toDouble)
-  }
-
-  /** Free to access dot-product methods for codegen. */
-  def dot(x: Vector, y: Vector): Double = BLAS.dot(x, y)
-
-  /** Transform Hivemall features into a Spark-specific vector. */
-  def toVector(features: Seq[String], dense: Boolean = false, dims: Int = 1024): Vector =
-    HivemallFtVectorizer.func(dense, dims)(features)
-
-  /** Codegen a given linear model. */
-  def codegenModel(weights: Vector, intercept: Double = 0.0): Vector => Double =
-    ModelCodegenerator.codegen(weights, intercept)
 }
