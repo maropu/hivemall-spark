@@ -6,8 +6,8 @@ version := "0.0.1"
 
 scalaVersion := "2.10.4"
 
-// Switch suitable source codes for hive-0.12.x or hive-.13.x
-// TODO: Support Hive 0.12
+// Since spark-v1.4.0, it only bundles Hive jars of version 0.13.1.
+// https://spark.apache.org/docs/latest/sql-programming-guide.html#interacting-with-different-versions-of-hive-metastore
 unmanagedSourceDirectories in Compile += baseDirectory.value / "extra-src/v0.13.1"
 
 // Enable sbt-assembly
