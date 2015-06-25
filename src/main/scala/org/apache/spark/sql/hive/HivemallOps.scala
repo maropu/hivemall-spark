@@ -18,7 +18,7 @@
 package org.apache.spark.sql.hive
 
 import org.apache.spark.sql.catalyst.analysis.UnresolvedAttribute
-import org.apache.spark.sql.catalyst.expressions.Expression
+import org.apache.spark.sql.catalyst.expressions.{Expression, NamedExpression}
 import org.apache.spark.sql.catalyst.plans.logical.{Generate, LogicalPlan}
 import org.apache.spark.sql.{Column, DataFrame}
 
@@ -43,11 +43,6 @@ class HivemallOps(df: DataFrame) {
   @inline private implicit def toDataFrame(logicalPlan: LogicalPlan) =
     DataFrame(df.sqlContext, logicalPlan)
 
-  // For internal use only
-  // TODO: Support 'conv' as an output column
-  @inline private def outputAttr =
-    Seq("feature", "weight").map(UnresolvedAttribute(_))
-
   /**
    * @see hivemall.regression.AdaDeltaUDTF
    * @group regression
@@ -56,7 +51,8 @@ class HivemallOps(df: DataFrame) {
     Generate(new HiveGenericUdtf(
         new HiveFunctionWrapper("hivemall.regression.AdaDeltaUDTF"),
         exprs.map(_.expr)),
-      join = false, outer = false, None, outputAttr,
+      join=false, outer=false, None,
+      Seq("feature", "weight").map(UnresolvedAttribute(_)),
       df.logicalPlan)
   }
 
@@ -68,7 +64,8 @@ class HivemallOps(df: DataFrame) {
     Generate(new HiveGenericUdtf(
         new HiveFunctionWrapper("hivemall.regression.AdaGradUDTF"),
         exprs.map(_.expr)),
-      join = false, outer = false, None, outputAttr,
+      join=false, outer=false, None,
+      Seq("feature", "weight").map(UnresolvedAttribute(_)),
       df.logicalPlan)
   }
 
@@ -80,7 +77,8 @@ class HivemallOps(df: DataFrame) {
     Generate(new HiveGenericUdtf(
         new HiveFunctionWrapper("hivemall.regression.AROWRegressionUDTF"),
         exprs.map(_.expr)),
-      join = false, outer = false, None, outputAttr,
+      join=false, outer=false, None,
+      Seq("feature", "weight", "conv").map(UnresolvedAttribute(_)),
       df.logicalPlan)
   }
 
@@ -92,7 +90,8 @@ class HivemallOps(df: DataFrame) {
     Generate(new HiveGenericUdtf(
         new HiveFunctionWrapper("hivemall.regression.LogressUDTF"),
         exprs.map(_.expr)),
-      join = false, outer = false, None, outputAttr,
+      join=false, outer=false, None,
+      Seq("feature", "weight").map(UnresolvedAttribute(_)),
       df.logicalPlan)
   }
 
@@ -101,10 +100,15 @@ class HivemallOps(df: DataFrame) {
    * @group ftvec.amplify
    */
   def amplify(exprs: Column*): DataFrame = {
+    val outputAttr = exprs.drop(1).map {
+      case Column(expr: NamedExpression) => UnresolvedAttribute(expr.name)
+      case Column(expr: Expression) => UnresolvedAttribute(expr.prettyString)
+    }
     Generate(new HiveGenericUdtf(
         new HiveFunctionWrapper("hivemall.ftvec.amplify.AmplifierUDTF"),
         exprs.map(_.expr)),
-      join = false, outer = false, None, outputAttr,
+      join=false, outer=false, None,
+      outputAttr,
       df.logicalPlan)
   }
 
@@ -113,10 +117,15 @@ class HivemallOps(df: DataFrame) {
    * @group ftvec.amplify
    */
   def rand_amplify(exprs: Column*): DataFrame = {
+    val outputAttr = exprs.drop(2).map {
+      case Column(expr: NamedExpression) => UnresolvedAttribute(expr.name)
+      case Column(expr: Expression) => UnresolvedAttribute(expr.prettyString)
+    }
     Generate(new HiveGenericUdtf(
         new HiveFunctionWrapper("hivemall.ftvec.amplify.RandomAmplifierUDTF"),
         exprs.map(_.expr)),
-      join = false, outer = false, None, outputAttr,
+      join=false, outer=false, None,
+      outputAttr,
       df.logicalPlan)
   }
 
@@ -128,7 +137,8 @@ class HivemallOps(df: DataFrame) {
     Generate(new HiveGenericUdtf(
         new HiveFunctionWrapper("hivemall.dataset.LogisticRegressionDataGeneratorUDTFWrapper"),
         exprs.map(_.expr)),
-      join = false, outer = false, None, outputAttr,
+      join=false, outer=false, None,
+      Seq("label", "features").map(UnresolvedAttribute(_)),
       df.logicalPlan)
   }
 }

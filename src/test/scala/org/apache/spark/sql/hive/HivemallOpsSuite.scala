@@ -153,41 +153,53 @@ class HivemallOpsSuite extends FunSuite {
         Row(Map(1 -> 0.1f, 2 -> 0.4f, 3 -> 0.2f, 4 -> 0.6f)))))
   }
 
-  /**
-   * TODO: The tests below currently fail because Spark
-   * can't handle HiveGenericUDTF correctly.
-   * This issue was reported in SPARK-6734 and a PR of github
-   * was made in #5383.
-   *
-   * ignore("train_adadelta") {
-   *   val test = LargeTrainData.train_adadelta(add_bias($"features"), $"label")
-   *   assert(test.count > 0)
-   * }
-   * ignore("train_adagrad") {
-   *   val test = LargeTrainData.train_adagrad(add_bias($"features"), $"label")
-   *   assert(test.count > 0)
-   * }
-   * ignore("train_arow_regr") {
-   *   val test = LargeTrainData.train_arow_regr(add_bias($"features"), $"label")
-   *   assert(test.count > 0)
-   * }
-   * ignore("train_logregr") {
-   *   val test = LargeTrainData.train_logregr(add_bias($"features"), $"label")
-   *   assert(test.count > 0)
-   * }
-   * ignore("amplify") {
-   *   val test = LargeTrainData.amplify(3, $"*")
-   *   assert(test.count > 0)
-   * }
-   * ignore("rand_amplify") {
-   *   val test = LargeTrainData.rand_amplify(3, $"*")
-   *   assert(test.count > 0)
-   * }
-   * ignore("lr_datagen") {
-   *   val test = LargeTrainData.lr_datagen("-n_examples 100 -n_features 10 -seed 100")
-   *   assert(test.count.toInt == 100)
-   * }
-   */
+  test("train_logregr") {
+    assert(
+      TinyTrainData
+        .train_logregr(add_bias($"features"), $"label")
+        .groupBy("feature")
+        .agg("weight" -> "avg")
+        .count() > 0)
+  }
+
+  test("train_adadelta") {
+    assert(
+      TinyTrainData
+        .train_adadelta(add_bias($"features"), $"label")
+        .groupBy("feature")
+        .agg("weight" -> "avg")
+        .count() > 0)
+  }
+
+  test("train_adagrad") {
+    assert(
+      TinyTrainData
+        .train_adagrad(add_bias($"features"), $"label")
+        .groupBy("feature")
+        .agg("weight" -> "avg")
+        .count() > 0)
+  }
+
+  test("train_arow_regr") {
+    assert(
+      TinyTrainData
+        .train_arow_regr(add_bias($"features"), $"label")
+        .groupBy("feature")
+        .agg("weight" -> "avg")
+        .count() > 0)
+  }
+
+  test("amplify") {
+    assert(TinyTrainData.amplify(3, $"label", $"features").count() == 9)
+  }
+
+  test("rand_amplify") {
+    assert(TinyTrainData.rand_amplify(3, 128, $"label", $"features").count() == 9)
+  }
+
+  ignore("lr_datagen") {
+    assert(TinyTrainData.lr_datagen("-n_examples 100 -n_features 10 -seed 100") == 100)
+  }
 }
 
 object HivemallOpsSuite {
@@ -243,21 +255,4 @@ object HivemallOpsSuite {
     df.registerTempTable("TinyTestData")
     df
   }
-
-  /**
-   * val LargeTrainData = {
-   *   val df = RegressionDatagen.exec(
-   *     TestSQLContext, min_examples=10000, n_features=100, n_dims=65536,
-   *     dense=false, cl=true)
-   *   df.registerTempTable("LargeTrainData")
-   *   df
-   * }
-   * val LargeTestData = {
-   *   val df = RegressionDatagen.exec(
-   *     TestSQLContext, min_examples=100, n_features=100, n_dims=65536,
-   *     dense=false, cl=true)
-   *   df.registerTempTable("LargeTestData")
-   *   df
-   * }
-   */
 }
