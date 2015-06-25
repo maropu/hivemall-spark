@@ -18,7 +18,6 @@
 package hivemall.dataset;
 
 import hivemall.UDTFWithOptions;
-import hivemall.dataset.LogisticRegressionDataGeneratorUDTF;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Options;
 import org.apache.hadoop.hive.ql.exec.UDFArgumentException;
@@ -69,7 +68,7 @@ public final class LogisticRegressionDataGeneratorUDTFWrapper extends UDTFWithOp
     @Override
     public StructObjectInspector initialize(ObjectInspector[] argOIs) throws UDFArgumentException {
         try {
-            // Bypass a collector for LogisticRegressionDataGeneratorUDTF
+            // Extract a collector for LogisticRegressionDataGeneratorUDTF
             Field collector = GenericUDTF.class.getDeclaredField("collector");
             collector.setAccessible(true);
             udtf.setCollector((Collector) collector.get(this));

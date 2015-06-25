@@ -23,20 +23,13 @@ import org.apache.spark.sql.types._
 
 object HivemallUtils {
 
-  /** An implicit conversion to avoid doing annoying transformation. */
+  /**
+   * An implicit conversion to avoid doing annoying transformation.
+   * This class must be in o.a.spark.sql._ because
+   * a Column class is private.
+   */
   @inline implicit def toIntLiteral(i: Int) = Column(Literal.create(i, IntegerType))
   @inline implicit def toFloatLiteral(i: Float) = Column(Literal.create(i, FloatType))
   @inline implicit def toDoubleLiteral(i: Double) = Column(Literal.create(i, DoubleType))
   @inline implicit def toStringLiteral(i: String) = Column(Literal.create(i, StringType))
-
-  /**
-   * Check whether the given schema contains a column of the required data type.
-   * @param colName  column name
-   * @param dataType  required column data type
-   */
-  def checkColumnType(schema: StructType, colName: String, dataType: DataType): Unit = {
-    val actualDataType = schema(colName).dataType
-    require(actualDataType.equals(dataType),
-      s"Column $colName must be of type $dataType but was actually $actualDataType.")
-  }
 }

@@ -17,10 +17,9 @@
 
 package org.apache.spark.sql.hive
 
-import org.apache.spark.sql._
+import org.apache.spark.sql.Row
 import org.apache.spark.sql.hive.HivemallOps._
 import org.apache.spark.sql.hive.HivemallUtils._
-import org.apache.spark.sql.test.TestSQLContext.implicits._
 import org.apache.spark.sql.test._
 import org.apache.spark.sql.types._
 import org.scalatest.FunSuite
@@ -29,6 +28,7 @@ import scala.collection.mutable.ArrayBuffer
 
 class HivemallOpsSuite extends FunSuite {
   import org.apache.spark.sql.hive.HivemallOpsSuite._
+  import org.apache.spark.sql.test.TestSQLContext.implicits._
   import org.apache.spark.test.TestDoubleWrapper._
 
   test("hivemall_version") {
@@ -252,7 +252,6 @@ object HivemallOpsSuite {
    *   df.registerTempTable("LargeTrainData")
    *   df
    * }
-   *
    * val LargeTestData = {
    *   val df = RegressionDatagen.exec(
    *     TestSQLContext, min_examples = 100, n_features = 100, n_dims = 65536,
