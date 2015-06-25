@@ -247,15 +247,15 @@ object HivemallOpsSuite {
   /**
    * val LargeTrainData = {
    *   val df = RegressionDatagen.exec(
-   *     TestSQLContext, min_examples = 10000, n_features = 100, n_dims = 65536,
-   *     dense = false, cl = true)
+   *     TestSQLContext, min_examples=10000, n_features=100, n_dims=65536,
+   *     dense=false, cl=true)
    *   df.registerTempTable("LargeTrainData")
    *   df
    * }
    * val LargeTestData = {
    *   val df = RegressionDatagen.exec(
-   *     TestSQLContext, min_examples = 100, n_features = 100, n_dims = 65536,
-   *     dense = false, cl = true)
+   *     TestSQLContext, min_examples=100, n_features=100, n_dims=65536,
+   *     dense=false, cl=true)
    *   df.registerTempTable("LargeTestData")
    *   df
    * }

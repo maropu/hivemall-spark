@@ -55,11 +55,6 @@ object RegressionDatagen {
           Nil)
       )
     import sc.implicits._
-    /**
-     * TODO: This throws java.lang.ClassCastException because
-     * HiveInspectors.toInspector has a bug in spark.
-     * Need to fix it later.
-     */
     df.lr_datagen(
       s"-n_examples $n_examples -n_features $n_features -n_dims $n_dims -prob_one $prob_one"
         + (if (dense) " -dense" else "")
