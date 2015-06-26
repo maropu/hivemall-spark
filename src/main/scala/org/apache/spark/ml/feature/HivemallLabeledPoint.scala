@@ -17,7 +17,11 @@
 
 package org.apache.spark.ml.feature
 
-import scala.beans.BeanInfo
+import java.util.StringTokenizer
+
+import hivemall.HivemallException
+
+import scala.collection.mutable.ListBuffer
 
 /**
  * Class that represents the features and labels of a data point for Hivemall.
@@ -25,9 +29,51 @@ import scala.beans.BeanInfo
  * @param label Label for this data point.
  * @param features List of features for this data point.
  */
-@BeanInfo
 case class HivemallLabeledPoint(label: Double, features: Seq[String]) {
   override def toString: String = {
-    "(%s,%s)".format(label, features)
+    "%s,%s".format(label, features.mkString("[", ",", "]"))
+  }
+}
+
+object HivemallLabeledPoint {
+
+  // Simple parser for HivemallLabeledPoint
+  def parse(s: String) = {
+    val (label, features) = s.indexOf(',') match {
+      case d if d >= 0 => (s.substring(0, d - 1), s.substring(d + 1))
+      case _ => throw new HivemallException("Can't parse an input.")
+    }
+    HivemallLabeledPoint(
+      label.toDouble,
+      parseTuple(new StringTokenizer(features, "[],", true)))
+  }
+
+  private def parseTuple(tokenizer: StringTokenizer): Seq[String] = {
+    val items = ListBuffer.empty[String]
+    var parsing = true
+    var allowComma = false
+    while (parsing && tokenizer.hasMoreTokens()) {
+      val token = tokenizer.nextToken()
+      if (token == "[") {
+        items ++= parseTuple(tokenizer)
+        parsing = false
+        allowComma = true
+      } else if (token == ",") {
+        if (allowComma) {
+          allowComma = false
+        } else {
+          throw new HivemallException("Found ',' at a wrong position.")
+        }
+      } else if (token == "]") {
+        parsing = false
+      } else {
+        items.append(token)
+        allowComma = true
+      }
+    }
+    if (parsing) {
+      throw new HivemallException(s"A tuple must end with ']'.")
+    }
+    items
   }
 }
