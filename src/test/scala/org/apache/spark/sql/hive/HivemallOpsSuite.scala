@@ -153,15 +153,6 @@ class HivemallOpsSuite extends FunSuite {
         Row(Map(1 -> 0.1f, 2 -> 0.4f, 3 -> 0.2f, 4 -> 0.6f)))))
   }
 
-  test("train_logregr") {
-    assert(
-      TinyTrainData
-        .train_logregr(add_bias($"features"), $"label")
-        .groupBy("feature")
-        .agg("weight" -> "avg")
-        .count() > 0)
-  }
-
   test("train_adadelta") {
     assert(
       TinyTrainData
@@ -187,6 +178,51 @@ class HivemallOpsSuite extends FunSuite {
         .groupBy("feature")
         .agg("weight" -> "avg")
         .count() > 0)
+  }
+
+  test("train_logregr") {
+    assert(
+      TinyTrainData
+        .train_logregr(add_bias($"features"), $"label")
+        .groupBy("feature")
+        .agg("weight" -> "avg")
+        .count() > 0)
+  }
+
+  test("train_pa1_regr") {
+    assert(
+      TinyTrainData
+        .train_pa1_regr(add_bias($"features"), $"label")
+        .groupBy("feature")
+        .agg("weight" -> "avg")
+        .count() > 0)
+  }
+
+  test("train_pa1a_regr") {
+    assert(
+      TinyTrainData
+        .train_pa1a_regr(add_bias($"features"), $"label")
+        .groupBy("feature")
+        .agg("weight" -> "avg")
+        .count() > 0)
+  }
+
+  test("train_pa2_regr") {
+    assert(
+      TinyTrainData
+        .train_pa2_regr(add_bias($"features"), $"label")
+        .groupBy("feature")
+        .agg("weight" -> "avg")
+        .count() > 0)
+  }
+
+  test("train_pa2a_regr") {
+    assert(
+      TinyTrainData
+        .train_pa2a_regr(add_bias($"features"), $"label")
+        .groupBy("feature")
+        .agg("weight" -> "avg")
+        .count() > 1)
   }
 
   test("amplify") {

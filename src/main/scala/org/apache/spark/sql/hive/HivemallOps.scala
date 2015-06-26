@@ -96,6 +96,58 @@ class HivemallOps(df: DataFrame) {
   }
 
   /**
+   * @see hivemall.regression.PassiveAggressiveRegressionUDTF
+   * @group regression
+   */
+  def train_pa1_regr(exprs: Column*): DataFrame = {
+     Generate(new HiveGenericUdtf(
+        new HiveFunctionWrapper("hivemall.regression.PassiveAggressiveRegressionUDTF"),
+        exprs.map(_.expr)),
+      join=false, outer=false, None,
+      Seq("feature", "weight").map(UnresolvedAttribute(_)),
+      df.logicalPlan)
+  }
+
+  /**
+   * @see hivemall.regression.PassiveAggressiveRegressionUDTF.PA1a
+   * @group regression
+   */
+  def train_pa1a_regr(exprs: Column*): DataFrame = {
+     Generate(new HiveGenericUdtf(
+        new HiveFunctionWrapper("hivemall.regression.PassiveAggressiveRegressionUDTF$PA1a"),
+        exprs.map(_.expr)),
+      join=false, outer=false, None,
+      Seq("feature", "weight").map(UnresolvedAttribute(_)),
+      df.logicalPlan)
+  }
+
+  /**
+   * @see hivemall.regression.PassiveAggressiveRegressionUDTF.PA2
+   * @group regression
+   */
+  def train_pa2_regr(exprs: Column*): DataFrame = {
+     Generate(new HiveGenericUdtf(
+        new HiveFunctionWrapper("hivemall.regression.PassiveAggressiveRegressionUDTF$PA2"),
+        exprs.map(_.expr)),
+      join=false, outer=false, None,
+      Seq("feature", "weight").map(UnresolvedAttribute(_)),
+      df.logicalPlan)
+  }
+
+  /**
+   * @see hivemall.regression.PassiveAggressiveRegressionUDTF.PA2a
+   * @group regression
+   */
+  def train_pa2a_regr(exprs: Column*): DataFrame = {
+     Generate(new HiveGenericUdtf(
+        new HiveFunctionWrapper("hivemall.regression.PassiveAggressiveRegressionUDTF$PA2a"),
+        exprs.map(_.expr)),
+      join=false, outer=false, None,
+      Seq("feature", "weight").map(UnresolvedAttribute(_)),
+      df.logicalPlan)
+  }
+
+  /**
    * @see hivemall.ftvec.amplify.AmplifierUDTF
    * @group ftvec.amplify
    */
