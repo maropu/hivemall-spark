@@ -83,6 +83,32 @@ class HivemallOps(df: DataFrame) {
   }
 
   /**
+   * @see hivemall.regression.AROWRegressionUDTF$AROWe
+   * @group regression
+   */
+  def train_arowe_regr(exprs: Column*): DataFrame = {
+    Generate(new HiveGenericUdtf(
+        new HiveFunctionWrapper("hivemall.regression.AROWRegressionUDTF$AROWe"),
+        exprs.map(_.expr)),
+      join=false, outer=false, None,
+      Seq("feature", "weight", "conv").map(UnresolvedAttribute(_)),
+      df.logicalPlan)
+  }
+
+  /**
+   * @see hivemall.regression.AROWRegressionUDTF$AROWe2
+   * @group regression
+   */
+  def train_arowe2_regr(exprs: Column*): DataFrame = {
+    Generate(new HiveGenericUdtf(
+        new HiveFunctionWrapper("hivemall.regression.AROWRegressionUDTF$AROWe2"),
+        exprs.map(_.expr)),
+      join=false, outer=false, None,
+      Seq("feature", "weight", "conv").map(UnresolvedAttribute(_)),
+      df.logicalPlan)
+  }
+
+  /**
    * @see hivemall.regression.LogressUDTF
    * @group regression
    */

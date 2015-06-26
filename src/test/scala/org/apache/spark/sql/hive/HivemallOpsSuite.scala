@@ -180,6 +180,24 @@ class HivemallOpsSuite extends FunSuite {
         .count() > 0)
   }
 
+  test("train_arowe_regr") {
+    assert(
+      TinyTrainData
+        .train_arowe_regr(add_bias($"features"), $"label")
+        .groupBy("feature")
+        .agg("weight" -> "avg")
+        .count() > 0)
+  }
+
+  test("train_arowe2_regr") {
+    assert(
+      TinyTrainData
+        .train_arowe_regr(add_bias($"features"), $"label")
+        .groupBy("feature")
+        .agg("weight" -> "avg")
+        .count() > 0)
+  }
+
   test("train_logregr") {
     assert(
       TinyTrainData

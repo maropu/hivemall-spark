@@ -30,6 +30,12 @@ sqlContext.sql("CREATE TEMPORARY FUNCTION train_adagrad AS 'hivemall.regression.
 // sqlContext.sql("DROP TEMPORARY FUNCTION IF EXISTS train_arow_regr")
 sqlContext.sql("CREATE TEMPORARY FUNCTION train_arow_regr AS 'hivemall.regression.AROWRegressionUDTF'")
 
+// sqlContext.sql("DROP TEMPORARY FUNCTION IF EXISTS train_arowe_regr")
+sqlContext.sql("CREATE TEMPORARY FUNCTION train_arow_regr AS 'hivemall.regression.AROWRegressionUDTF$AROWe'")
+
+// sqlContext.sql("DROP TEMPORARY FUNCTION IF EXISTS train_arowe2_regr")
+sqlContext.sql("CREATE TEMPORARY FUNCTION train_arow_regr AS 'hivemall.regression.AROWRegressionUDTF$AROWe2'")
+
 /**
  * mapred functions
  */
