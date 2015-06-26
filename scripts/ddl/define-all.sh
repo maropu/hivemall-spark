@@ -6,6 +6,21 @@
  * Regression functions
  */
 
+// sqlContext.sql("DROP TEMPORARY FUNCTION IF EXISTS train_logregr")
+sqlContext.sql("CREATE TEMPORARY FUNCTION train_logregr AS 'hivemall.regression.LogressUDTF'")
+
+// sqlContext.sql("DROP TEMPORARY FUNCTION IF EXISTS train_pa1_regr")
+sqlContext.sql("CREATE TEMPORARY FUNCTION train_pa1_regr AS 'hivemall.regression.PassiveAggressiveRegressionUDTF'")
+
+// sqlContext.sql("DROP TEMPORARY FUNCTION IF EXISTS train_pa1a_regr")
+sqlContext.sql("CREATE TEMPORARY FUNCTION train_pa1a_regr AS 'hivemall.regression.PassiveAggressiveRegressionUDTF$PA1a'")
+
+// sqlContext.sql("DROP TEMPORARY FUNCTION IF EXISTS train_pa2_regr")
+sqlContext.sql("CREATE TEMPORARY FUNCTION train_pa2_regr AS 'hivemall.regression.PassiveAggressiveRegressionUDTF$PA2'")
+
+// sqlContext.sql("DROP TEMPORARY FUNCTION IF EXISTS train_pa2a_regr")
+sqlContext.sql("CREATE TEMPORARY FUNCTION train_pa2a_regr AS 'hivemall.regression.PassiveAggressiveRegressionUDTF$PA2a'")
+
 // sqlContext.sql("DROP TEMPORARY FUNCTION IF EXISTS train_adadelta")
 sqlContext.sql("CREATE TEMPORARY FUNCTION train_adadelta AS 'hivemall.regression.AdaDeltaUDTF'")
 
@@ -14,9 +29,6 @@ sqlContext.sql("CREATE TEMPORARY FUNCTION train_adagrad AS 'hivemall.regression.
 
 // sqlContext.sql("DROP TEMPORARY FUNCTION IF EXISTS train_arow_regr")
 sqlContext.sql("CREATE TEMPORARY FUNCTION train_arow_regr AS 'hivemall.regression.AROWRegressionUDTF'")
-
-// sqlContext.sql("DROP TEMPORARY FUNCTION IF EXISTS train_logregr")
-sqlContext.sql("CREATE TEMPORARY FUNCTION train_logregr AS 'hivemall.regression.LogressUDTF'")
 
 /**
  * mapred functions
