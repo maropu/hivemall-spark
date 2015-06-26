@@ -41,7 +41,7 @@ object HivemallLabeledPoint {
   def parse(s: String) = {
     val (label, features) = s.indexOf(',') match {
       case d if d >= 0 => (s.substring(0, d - 1), s.substring(d + 1))
-      case _ => throw new HivemallException("Can't parse an input.")
+      case _ => ("0.0", "[]") // Dummy
     }
     HivemallLabeledPoint(
       label.toDouble,
@@ -51,16 +51,16 @@ object HivemallLabeledPoint {
   private def parseTuple(tokenizer: StringTokenizer): Seq[String] = {
     val items = ListBuffer.empty[String]
     var parsing = true
-    var allowComma = false
+    var allowDelim = false
     while (parsing && tokenizer.hasMoreTokens()) {
       val token = tokenizer.nextToken()
       if (token == "[") {
         items ++= parseTuple(tokenizer)
         parsing = false
-        allowComma = true
+        allowDelim = true
       } else if (token == ",") {
-        if (allowComma) {
-          allowComma = false
+        if (allowDelim) {
+          allowDelim = false
         } else {
           throw new HivemallException("Found ',' at a wrong position.")
         }
@@ -68,7 +68,7 @@ object HivemallLabeledPoint {
         parsing = false
       } else {
         items.append(token)
-        allowComma = true
+        allowDelim = true
       }
     }
     if (parsing) {
