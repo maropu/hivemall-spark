@@ -50,7 +50,7 @@ run a script to register the functions of Hivemall in spark-shell and
 say a SQL statements as follows;
 
 ```
-:load <hivemall-spark>/scripts/define-all.sh
+:load <hivemall-spark>/scripts/ddl/define-all.sh
 
 sqlContext.sql("
   SELECT model.feature, AVG(model.weight) AS weight
