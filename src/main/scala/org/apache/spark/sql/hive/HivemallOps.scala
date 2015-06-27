@@ -18,8 +18,9 @@
 package org.apache.spark.sql.hive
 
 import org.apache.spark.sql.catalyst.analysis.UnresolvedAttribute
-import org.apache.spark.sql.catalyst.expressions.{Expression, NamedExpression}
+import org.apache.spark.sql.catalyst.expressions.{ScalaUdf, Expression, NamedExpression}
 import org.apache.spark.sql.catalyst.plans.logical.{Generate, LogicalPlan}
+import org.apache.spark.sql.types.StringType
 import org.apache.spark.sql.{Column, DataFrame}
 
 /**
@@ -255,19 +256,41 @@ object HivemallOps {
   /**
    * @see hivemall.ftvec.ExtractFeatureUdf
    * @group ftvec
+   *
+   * TODO: This throws java.lang.ClassCastException because
+   * HiveInspectors.toInspector has a bug in spark.
+   * Need to fix it later.
    */
   def extract_feature(exprs: Column*): Column = {
-    new HiveGenericUdf(new HiveFunctionWrapper(
-      "hivemall.ftvec.ExtractFeatureUDFWrapper"), exprs.map(_.expr))
+    // new HiveGenericUdf(new HiveFunctionWrapper(
+    //   "hivemall.ftvec.ExtractFeatureUDFWrapper"), exprs.map(_.expr))
+    val f: String => String = (s: String) => {
+      s.split(':') match {
+        case d if d.size == 2 => d(0)
+        case _ => ""
+      }
+    }
+    Column(ScalaUdf(f, StringType, exprs.map(_.expr)))
   }
 
   /**
    * @see hivemall.ftvec.ExtractWeightUdf
    * @group ftvec
+   *
+   * TODO: This throws java.lang.ClassCastException because
+   * HiveInspectors.toInspector has a bug in spark.
+   * Need to fix it later.
    */
   def extract_weight(exprs: Column*): Column = {
-    new HiveGenericUdf(new HiveFunctionWrapper(
-      "hivemall.ftvec.ExtractWeightUDFWrapper"), exprs.map(_.expr))
+    // new HiveGenericUdf(new HiveFunctionWrapper(
+    //   "hivemall.ftvec.ExtractWeightUDFWrapper"), exprs.map(_.expr))
+    val f: String => String = (s: String) => {
+      s.split(':') match {
+        case d if d.size == 2 => d(1)
+        case _ => ""
+      }
+    }
+    Column(ScalaUdf(f, StringType, exprs.map(_.expr)))
   }
 
   /**

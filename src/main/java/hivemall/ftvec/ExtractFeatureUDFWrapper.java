@@ -42,9 +42,7 @@ import java.util.List;
  */
 public class ExtractFeatureUDFWrapper extends GenericUDF {
     private ExtractFeatureUDF udf = new ExtractFeatureUDF();
-
-    private List<Text> retValue = new ArrayList<Text>();
-    private ListObjectInspector argumentOIs = null;
+    private PrimitiveObjectInspector argOI = null;
 
     @Override
     public ObjectInspector initialize(ObjectInspector[] arguments) throws UDFArgumentException {
@@ -52,39 +50,27 @@ public class ExtractFeatureUDFWrapper extends GenericUDF {
             throw new UDFArgumentLengthException(
                     "extract_feature() has an only single argument.");
         }
-
         switch(arguments[0].getCategory()) {
-            case LIST:
-                ObjectInspector elmOI = ((ListObjectInspector) arguments[0]).getListElementObjectInspector();
-                if(elmOI.getCategory().equals(Category.PRIMITIVE)) {
-                    if (((PrimitiveObjectInspector) elmOI).getPrimitiveCategory()
-                            == PrimitiveCategory.STRING) {
-                        break;
-                    }
+            case PRIMITIVE:
+                argOI = (PrimitiveObjectInspector) arguments[0];
+                if (argOI.getPrimitiveCategory()
+                        == PrimitiveCategory.STRING) {
+                    break;
                 }
             default:
                 throw new UDFArgumentTypeException(0,
-                    "extract_feature() must have List[String] as an argument, but "
+                    "extract_feature() must have String as an argument, but "
                         + arguments[0].getTypeName() + " was found.");
         }
-
-        argumentOIs = (ListObjectInspector) arguments[0];
-
-        ObjectInspector listElemOI = argumentOIs.getListElementObjectInspector();
-        ObjectInspector returnElemOI = ObjectInspectorUtils.getStandardObjectInspector(listElemOI);
-
-        return ObjectInspectorFactory.getStandardListObjectInspector(returnElemOI);
+        ObjectInspector retOI = ObjectInspectorUtils.getStandardObjectInspector(argOI);
+        return ObjectInspectorFactory.getStandardListObjectInspector(retOI);
     }
 
     @Override
     public Object evaluate(DeferredObject[] arguments) throws HiveException {
         assert(arguments.length == 1);
-        final Object arrayObject = arguments[0].get();
-        final ListObjectInspector arrayOI = (ListObjectInspector) argumentOIs;
-        @SuppressWarnings("unchecked")
-        final List<String> input = (List<String>) arrayOI.getList(arrayObject);
-        retValue = udf.evaluate(input);
-        return retValue;
+        final String input = (String) argOI.getPrimitiveJavaObject(arguments[0].get());
+        return udf.evaluate(input);
     }
 
     @Override

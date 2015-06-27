@@ -45,19 +45,13 @@ class HivemallOpsSuite extends FunSuite {
   }
 
   test("extract_feature") {
-    assert(TinyTrainData.select(extract_feature($"features")).collect.toSet
-      === Set(
-        Row(ArrayBuffer("1", "2")),
-        Row(ArrayBuffer("2")),
-        Row(ArrayBuffer("1"))))
+    assert(TinyTrainData.select(extract_feature("1:0.8")).collect.toSet
+      === Set(Row("1")))
   }
 
   test("extract_weight") {
-    assert(TinyTrainData.select(extract_weight($"features")).collect.toSet
-      === Set(
-        Row(ArrayBuffer(0.8f, 0.2f)),
-        Row(ArrayBuffer(0.7f)),
-        Row(ArrayBuffer(0.9f))))
+    assert(TinyTrainData.select(extract_weight("3:0.1")).collect.toSet
+      === Set(Row("0.1")))
   }
 
   test("add_feature_index") {
