@@ -54,6 +54,12 @@ class HivemallOpsSuite extends FunSuite {
       === Set(Row("0.1")))
   }
 
+  test("explode_array") {
+    assert(TinyTrainData.explode_array("features")
+        .select($"feature").collect.toSet
+      === Set(Row("1:0.8"), Row("2:0.2"), Row("2:0.7"), Row("1:0.9")))
+  }
+
   test("add_feature_index") {
     val DoubleListData = {
       val rowRdd = TestSQLContext.sparkContext.parallelize(

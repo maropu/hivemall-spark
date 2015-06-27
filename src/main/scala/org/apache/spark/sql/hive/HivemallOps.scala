@@ -21,7 +21,10 @@ import org.apache.spark.sql.catalyst.analysis.UnresolvedAttribute
 import org.apache.spark.sql.catalyst.expressions.{ScalaUdf, Expression, NamedExpression}
 import org.apache.spark.sql.catalyst.plans.logical.{Generate, LogicalPlan}
 import org.apache.spark.sql.types.StringType
-import org.apache.spark.sql.{Column, DataFrame}
+import org.apache.spark.sql.{Row, Column, DataFrame}
+
+// Used in explode_array()
+case class Ft(feature: String)
 
 /**
  * A wrapper of hivemall for DataFrame.
@@ -219,6 +222,16 @@ class HivemallOps(df: DataFrame) {
       join=false, outer=false, None,
       Seq("label", "features").map(UnresolvedAttribute(_)),
       df.logicalPlan)
+  }
+
+  /**
+   * Split Seq[String] into pieces.
+   * @group ftvec
+   */
+  def explode_array(input: String): DataFrame = {
+    df.explode(df.col(input)) { case Row(v: Seq[_]) =>
+      v.map(s => Ft(s.asInstanceOf[String]))
+    }
   }
 }
 
