@@ -29,13 +29,13 @@ import scala.collection.mutable.ListBuffer
  * @param label Label for this data point.
  * @param features List of features for this data point.
  */
-case class HivemallLabeledPoint(label: Double, features: Seq[String]) {
+case class HmLabeledPoint(label: Double, features: Seq[String]) {
   override def toString: String = {
     "%s,%s".format(label, features.mkString("[", ",", "]"))
   }
 }
 
-object HivemallLabeledPoint {
+object HmLabeledPoint {
 
   // Simple parser for HivemallLabeledPoint
   def parse(s: String) = {
@@ -43,7 +43,7 @@ object HivemallLabeledPoint {
       case d if d >= 0 => (s.substring(0, d - 1), s.substring(d + 1))
       case _ => ("0.0", "[]") // Dummy
     }
-    HivemallLabeledPoint(
+    HmLabeledPoint(
       label.toDouble,
       parseTuple(new StringTokenizer(features, "[],", true)))
   }

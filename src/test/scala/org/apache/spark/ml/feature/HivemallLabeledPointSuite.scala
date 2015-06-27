@@ -22,12 +22,12 @@ import org.scalatest.FunSuite
 class HivemallLabeledPointSuite extends FunSuite {
 
   test("toString") {
-    val lp = HivemallLabeledPoint(1.0, Seq("1:0.5", "3:0.3", "8:0.1"))
+    val lp = HmLabeledPoint(1.0, Seq("1:0.5", "3:0.3", "8:0.1"))
     assert(lp.toString === "1.0,[1:0.5,3:0.3,8:0.1]")
   }
 
   test("parse") {
-    val lp = HivemallLabeledPoint.parse("1.0,[1:0.5,3:0.3,8:0.1]")
+    val lp = HmLabeledPoint.parse("1.0,[1:0.5,3:0.3,8:0.1]")
     assert(lp.label === 1.0)
     assert(lp.features === Seq("1:0.5", "3:0.3", "8:0.1"))
   }
