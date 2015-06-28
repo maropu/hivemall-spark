@@ -212,6 +212,20 @@ class HivemallOps(df: DataFrame) {
   }
 
   /**
+   * Shufle data inside partitions.
+   * @group ftvec.amplify
+   */
+  def part_amplify(xtimes: Int): DataFrame = {
+    val rdd = df.rdd.mapPartitions { iter =>
+      val elems = iter.flatMap { row =>
+        Seq.fill[Row](xtimes)(row)
+      }
+      scala.util.Random.shuffle(elems)
+    }
+    df.sqlContext.createDataFrame(rdd, df.schema)
+  }
+
+  /**
    * @see hivemall.dataset.LogisticRegressionDataGeneratorUDTF
    * @group dataset
    */

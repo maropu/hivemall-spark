@@ -251,6 +251,10 @@ class HivemallOpsSuite extends FunSuite {
     assert(TinyTrainData.rand_amplify(3, 128, $"label", $"features").count() == 9)
   }
 
+  test("part_amplify") {
+    assert(TinyTrainData.part_amplify(3).count() == 9)
+  }
+
   ignore("lr_datagen") {
     assert(TinyTrainData.lr_datagen("-n_examples 100 -n_features 10 -seed 100") == 100)
   }
