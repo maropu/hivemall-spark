@@ -1,5 +1,3 @@
-import AssemblyKeys._
-
 name := "hivemall-spark"
 
 version := "0.0.1"
@@ -10,12 +8,16 @@ scalaVersion := "2.10.4"
 // https://spark.apache.org/docs/latest/sql-programming-guide.html#interacting-with-different-versions-of-hive-metastore
 unmanagedSourceDirectories in Compile += baseDirectory.value / "extra-src/v0.13.1"
 
-// Enable sbt-assembly
-assemblySettings
-
 net.virtualvoid.sbt.graph.Plugin.graphSettings
 
 // scalacOptions ++= Seq("-language:experimental.macros")
+
+// spark-package settings
+// spName := "maropu/hivemall-spark"
+// sparkVersion := "1.4.0"
+// sparkComponents ++= Seq("sql", "mllib", "hive")
+// licenses += "Apache-2.0" -> url("http://opensource.org/licenses/Apache-2.0")
+// credentials += Credentials(Path.userHome / ".ivy2" / ".sbtcredentials")
 
 // resolvers += Resolver.sonatypeRepo("releases")
 // addCompilerPlugin("org.scalamacros" % "paradise" % "2.1.0-M5" cross CrossVersion.full)

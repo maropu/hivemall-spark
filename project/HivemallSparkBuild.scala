@@ -8,8 +8,8 @@ object HivemallSparkBuild extends Build {
     base = file("."),
     settings = Project.defaultSettings ++ Seq(
       name := "hivemall-spark",
-      organization := "hivemall",
-      version := "0.1-SNAPSHOT",
+      organization := "maropu",
+      version := "0.0.1",
       scalaVersion := "2.10.4"
       // add other settings here
     )
