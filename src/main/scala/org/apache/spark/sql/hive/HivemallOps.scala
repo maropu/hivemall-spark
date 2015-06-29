@@ -24,7 +24,7 @@ import org.apache.spark.sql.types.StringType
 import org.apache.spark.sql.{Row, Column, DataFrame}
 
 // Used in explode_array()
-case class Ft(feature: String)
+private[spark] case class Feature(feature: String)
 
 /**
  * A wrapper of hivemall for DataFrame.
@@ -244,7 +244,7 @@ class HivemallOps(df: DataFrame) {
    */
   def explode_array(input: String): DataFrame = {
     df.explode(df.col(input)) { case Row(v: Seq[_]) =>
-      v.map(s => Ft(s.asInstanceOf[String]))
+      v.map(s => Feature(s.asInstanceOf[String]))
     }
   }
 }

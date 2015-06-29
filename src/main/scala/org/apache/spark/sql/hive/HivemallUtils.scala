@@ -17,11 +17,16 @@
 
 package org.apache.spark.sql.hive
 
-import org.apache.spark.sql.Column
+import org.apache.spark.mllib.linalg.{BLAS, Vector, Vectors}
 import org.apache.spark.sql.catalyst.expressions.Literal
+import org.apache.spark.sql.functions._
 import org.apache.spark.sql.types._
+import org.apache.spark.sql.{Column, DataFrame, Row, UserDefinedFunction}
 
 object HivemallUtils {
+
+  // # of maximum dimensions for feature vectors
+  val maxDims = 100000000
 
   /**
    * An implicit conversion to avoid doing annoying transformation.
@@ -29,7 +34,76 @@ object HivemallUtils {
    * a Column class is private.
    */
   @inline implicit def toIntLiteral(i: Int) = Column(Literal.create(i, IntegerType))
+
   @inline implicit def toFloatLiteral(i: Float) = Column(Literal.create(i, FloatType))
+
   @inline implicit def toDoubleLiteral(i: Double) = Column(Literal.create(i, DoubleType))
+
   @inline implicit def toStringLiteral(i: String) = Column(Literal.create(i, StringType))
+
+  /**
+   * Check whether the given schema contains a column of the required data type.
+   * @param colName  column name
+   * @param dataType  required column data type
+   */
+  def checkColumnType(schema: StructType, colName: String, dataType: DataType): Unit = {
+    val actualDataType = schema(colName).dataType
+    require(actualDataType.equals(dataType),
+      s"Column $colName must be of type $dataType but was actually $actualDataType.")
+  }
+
+  /**
+   * Make up a function object from a Hivemall model.
+   */
+  def funcModel(df: DataFrame, dense: Boolean = false, dims: Int = maxDims): UserDefinedFunction = {
+    checkColumnType(df.schema, "feature", StringType)
+    checkColumnType(df.schema, "weight", DoubleType)
+
+    import df.sqlContext.implicits._
+    val intercept = df
+      .where($"feature" === "0")
+      .select($"weight")
+      .map { case Row(weight: Double) => weight}
+      .reduce(_ + _)
+    val weights = funcVectorizerImpl(dense, dims)(
+      df.select($"feature", $"weight")
+        .where($"feature" !== "0")
+        .map { case Row(label: String, feature: Double) => s"${label}:$feature"}
+        .collect.toSeq)
+
+    udf((input: Vector) => BLAS.dot(input, weights) + intercept)
+  }
+
+  /**
+   * Make up a function object to transform Hivemall features into Vector.
+   */
+  def funcVectorizer(dense: Boolean = false, dims: Int = maxDims)
+    : UserDefinedFunction = {
+    udf(funcVectorizerImpl(dense, dims))
+  }
+
+  private def funcVectorizerImpl(dense: Boolean, dims: Int)
+    : Seq[String] => Vector = {
+    if (dense) {
+      // Dense features
+      i: Seq[String] => {
+        val features = new Array[Double](dims)
+        i.map { ft =>
+          val s = ft.split(":").ensuring(_.size == 2)
+          features(s(0).toInt) = s(1).toDouble
+        }
+        Vectors.dense(features)
+      }
+    } else {
+      // Sparse features
+      i: Seq[String] => {
+        val features = i.map { ft =>
+          // val s = ft.split(":").ensuring(_.size == 2)
+          val s = ft.split(":")
+          (s(0).toInt, s(1).toDouble)
+        }
+        Vectors.sparse(dims, features)
+      }
+    }
+  }
 }
