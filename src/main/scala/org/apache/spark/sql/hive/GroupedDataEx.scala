@@ -81,6 +81,9 @@ class GroupedDataEx protected[sql](
         case "voted_avg" => new HiveUdaf(
           new HiveFunctionWrapper("hivemall.ensemble.bagging.VotedAvgUDAF"),
           Seq(df(colName).expr))
+        case "weight_voted_avg" => new HiveUdaf(
+          new HiveFunctionWrapper("hivemall.ensemble.bagging.WeightVotedAvgUDAF"),
+          Seq(df(colName).expr))
         case _ => strToExpr(expr)(df(colName).expr)
       }
       Alias(a, a.prettyString)()

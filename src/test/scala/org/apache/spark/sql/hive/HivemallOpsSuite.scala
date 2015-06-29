@@ -247,6 +247,10 @@ class HivemallOpsSuite extends FunSuite {
     assert(TinyScoreData.groupby().agg("score" -> "voted_avg").count() > 0)
   }
 
+  test("weight_voted_avg") {
+    assert(TinyScoreData.groupby().agg("score" -> "weight_voted_avg").count() > 0)
+  }
+
   test("amplify") {
     assert(TinyTrainData.amplify(3, $"label", $"features").count() == 9)
   }
