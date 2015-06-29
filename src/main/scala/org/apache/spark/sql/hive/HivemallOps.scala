@@ -21,7 +21,7 @@ import org.apache.spark.sql.catalyst.analysis.UnresolvedAttribute
 import org.apache.spark.sql.catalyst.expressions.{ScalaUdf, Expression, NamedExpression}
 import org.apache.spark.sql.catalyst.plans.logical.{Generate, LogicalPlan}
 import org.apache.spark.sql.types.StringType
-import org.apache.spark.sql.{Row, Column, DataFrame}
+import org.apache.spark.sql._
 
 // Used in explode_array()
 private[spark] case class Feature(feature: String)
@@ -31,6 +31,8 @@ private[spark] case class Feature(feature: String)
  *
  * @groupname misc
  * @groupname regression
+ * @groupname ensemble
+ * @groupname ensemble.bagging
  * @groupname ftvec
  * @groupname ftvec.amplify
  * @groupname ftvec.hashing
@@ -176,6 +178,40 @@ class HivemallOps(df: DataFrame) {
       Seq("feature", "weight").map(UnresolvedAttribute(_)),
       df.logicalPlan)
   }
+
+  /**
+   * Groups the [[DataFrame]] using the specified columns, so we can run aggregation on them.
+   * See [[GroupedDataEx]] for all the available aggregate functions.
+   *
+   * TODO: This class bypasses the original GroupData
+   * so as to support user-defined aggregations.
+   * Need a more smart injection into existing DataFrame APIs.
+   *
+   * A list of added UDAF:
+   *  - voted_avg
+   *  - weight_voted_avg
+   *  - wvoted_avg
+   *  - max_label
+   *  - maxrow
+   *  - argmin_kld
+   */
+  def groupby(cols: Column*): GroupedDataEx = {
+    new GroupedDataEx(df, cols.map(_.expr), GroupedData.GroupByType)
+  }
+
+  /**
+  /**
+   * @see hivemall.ensemble.bagging.VotedAvgUDAF
+   * @group ensemble.bagging
+   */
+  def voted_avg(exprs: Column*): DataFrame = {
+     XXX(new HiveUdaf(
+        new HiveFunctionWrapper("hivemall.ensemble.bagging.VotedAvgUDAF"),
+        exprs.map(_.expr)),
+      join=false, outer=false, None,
+      Seq("feature", "weight").map(UnresolvedAttribute(_)),
+      df.logicalPlan)
+  }*/
 
   /**
    * @see hivemall.ftvec.amplify.AmplifierUDTF

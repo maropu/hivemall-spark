@@ -37,6 +37,13 @@ sqlContext.sql("CREATE TEMPORARY FUNCTION train_arow_regr AS 'hivemall.regressio
 sqlContext.sql("CREATE TEMPORARY FUNCTION train_arow_regr AS 'hivemall.regression.AROWRegressionUDTF$AROWe2'")
 
 /**
+ * Voting functions
+ */
+
+// sqlContext.sql("DROP TEMPORARY FUNCTION IF EXISTS voted_avg")
+sqlContext.sql("CREATE TEMPORARY FUNCTION voted_avg AS 'hivemall.ensemble.bagging.VotedAvgUDAF'")
+
+/**
  * mapred functions
  */
 

@@ -157,7 +157,7 @@ class HivemallOpsSuite extends FunSuite {
     assert(
       TinyTrainData
         .train_adadelta(add_bias($"features"), $"label")
-        .groupBy("feature")
+        .groupby("feature")
         .agg("weight" -> "avg")
         .count() > 0)
   }
@@ -166,7 +166,7 @@ class HivemallOpsSuite extends FunSuite {
     assert(
       TinyTrainData
         .train_adagrad(add_bias($"features"), $"label")
-        .groupBy("feature")
+        .groupby("feature")
         .agg("weight" -> "avg")
         .count() > 0)
   }
@@ -175,7 +175,7 @@ class HivemallOpsSuite extends FunSuite {
     assert(
       TinyTrainData
         .train_arow_regr(add_bias($"features"), $"label")
-        .groupBy("feature")
+        .groupby("feature")
         .agg("weight" -> "avg")
         .count() > 0)
   }
@@ -184,7 +184,7 @@ class HivemallOpsSuite extends FunSuite {
     assert(
       TinyTrainData
         .train_arowe_regr(add_bias($"features"), $"label")
-        .groupBy("feature")
+        .groupby("feature")
         .agg("weight" -> "avg")
         .count() > 0)
   }
@@ -193,7 +193,7 @@ class HivemallOpsSuite extends FunSuite {
     assert(
       TinyTrainData
         .train_arowe_regr(add_bias($"features"), $"label")
-        .groupBy("feature")
+        .groupby("feature")
         .agg("weight" -> "avg")
         .count() > 0)
   }
@@ -202,7 +202,7 @@ class HivemallOpsSuite extends FunSuite {
     assert(
       TinyTrainData
         .train_logregr(add_bias($"features"), $"label")
-        .groupBy("feature")
+        .groupby("feature")
         .agg("weight" -> "avg")
         .count() > 0)
   }
@@ -211,7 +211,7 @@ class HivemallOpsSuite extends FunSuite {
     assert(
       TinyTrainData
         .train_pa1_regr(add_bias($"features"), $"label")
-        .groupBy("feature")
+        .groupby("feature")
         .agg("weight" -> "avg")
         .count() > 0)
   }
@@ -220,7 +220,7 @@ class HivemallOpsSuite extends FunSuite {
     assert(
       TinyTrainData
         .train_pa1a_regr(add_bias($"features"), $"label")
-        .groupBy("feature")
+        .groupby("feature")
         .agg("weight" -> "avg")
         .count() > 0)
   }
@@ -229,7 +229,7 @@ class HivemallOpsSuite extends FunSuite {
     assert(
       TinyTrainData
         .train_pa2_regr(add_bias($"features"), $"label")
-        .groupBy("feature")
+        .groupby("feature")
         .agg("weight" -> "avg")
         .count() > 0)
   }
@@ -238,9 +238,13 @@ class HivemallOpsSuite extends FunSuite {
     assert(
       TinyTrainData
         .train_pa2a_regr(add_bias($"features"), $"label")
-        .groupBy("feature")
+        .groupby("feature")
         .agg("weight" -> "avg")
-        .count() > 1)
+        .count() > 0)
+  }
+
+  test("voted_avg") {
+    assert(TinyScoreData.groupby().agg("score" -> "voted_avg").count() > 0)
   }
 
   test("amplify") {
@@ -311,6 +315,21 @@ object HivemallOpsSuite {
         Nil)
       )
     df.registerTempTable("TinyTestData")
+    df
+  }
+
+  val TinyScoreData = {
+    val rowRdd = TestSQLContext.sparkContext.parallelize(
+        Row(0.8f) :: Row(-0.3f) :: Row(0.2f) ::
+        Nil
+      )
+    val df = TestSQLContext.createDataFrame(
+      rowRdd,
+      StructType(
+        StructField("score", FloatType, true) ::
+        Nil)
+      )
+    df.registerTempTable("TinyScoreData")
     df
   }
 }
