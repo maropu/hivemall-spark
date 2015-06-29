@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/maropu/hivemall-spark.svg?branch=master)](https://travis-ci.org/maropu/hivemall-spark)
+
 This is a simple wrapper implementation of [Hivemall](https://github.com/myui/hivemall/) for Spark.
 This can make highly scalable machine learning algorithms available in DataFrame and HiveContext.
 
@@ -44,7 +46,7 @@ More details can be found in [tutorials](./tutorials).
 Hivemall in HiveContext
 --------------------
 For those try Hivemall in [HiveContext](https://spark.apache.org/docs/latest/sql-programming-guide.html#hive-tables),
-run a script to register the functions of Hivemall in spark-shell and
+run a script to register the user-defined functions of Hivemall in spark-shell and
 say a SQL statements as follows;
 
 ```
