@@ -276,7 +276,6 @@ object HivemallOpsSuite {
         StructField("data", IntegerType, true) ::
         Nil)
       )
-    df.registerTempTable("DummyInputData")
     df
   }
 
@@ -294,7 +293,6 @@ object HivemallOpsSuite {
         StructField("features", ArrayType(StringType), true) ::
         Nil)
       )
-    df.registerTempTable("TinyTrainData")
     df
   }
 
@@ -314,7 +312,6 @@ object HivemallOpsSuite {
         StructField("features", ArrayType(StringType), true) ::
         Nil)
       )
-    df.registerTempTable("TinyTestData")
     df
   }
 
@@ -329,7 +326,6 @@ object HivemallOpsSuite {
         StructField("score", FloatType, true) ::
         Nil)
       )
-    df.registerTempTable("TinyScoreData")
     df
   }
 }
