@@ -190,7 +190,6 @@ class HivemallOps(df: DataFrame) {
    * A list of added UDAF:
    *  - voted_avg
    *  - weight_voted_avg
-   *  - wvoted_avg
    *  - max_label
    *  - maxrow
    *  - argmin_kld

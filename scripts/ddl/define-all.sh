@@ -43,6 +43,9 @@ sqlContext.sql("CREATE TEMPORARY FUNCTION train_arow_regr AS 'hivemall.regressio
 // sqlContext.sql("DROP TEMPORARY FUNCTION IF EXISTS voted_avg")
 sqlContext.sql("CREATE TEMPORARY FUNCTION voted_avg AS 'hivemall.ensemble.bagging.VotedAvgUDAF'")
 
+// sqlContext.sql("DROP TEMPORARY FUNCTION IF EXISTS weight_voted_avg")
+sqlContext.sql("CREATE TEMPORARY FUNCTION weight_voted_avg AS 'hivemall.ensemble.bagging.WeightVotedAvgUDAF'")
+
 /**
  * mapred functions
  */

@@ -70,10 +70,6 @@ class GroupedDataEx protected[sql](
    * A list of added UDAF in [[GroupedDataEx]]:
    *  - voted_avg
    *  - weight_voted_avg
-   *  - wvoted_avg
-   *  - max_label
-   *  - maxrow
-   *  - argmin_kld
    */
   override def agg(exprs: Map[String, String]): DataFrame = {
     toDF(exprs.map { case (colName, expr) =>
