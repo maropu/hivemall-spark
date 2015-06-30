@@ -279,7 +279,7 @@ class HivemallOpsSuite extends FunSuite {
         .count() > 0)
   }
 
-  ignore("train_cw") {
+  test("train_cw") {
     assert(
       TinyTrainData
         .train_cw(add_bias($"features"), $"label")
@@ -288,7 +288,7 @@ class HivemallOpsSuite extends FunSuite {
         .count() > 0)
   }
 
-  ignore("train_arow") {
+  test("train_arow") {
     assert(
       TinyTrainData
         .train_arow(add_bias($"features"), $"label")
@@ -297,10 +297,28 @@ class HivemallOpsSuite extends FunSuite {
         .count() > 0)
   }
 
-  ignore("train_arowh") {
+  test("train_arowh") {
     assert(
       TinyTrainData
         .train_arowh(add_bias($"features"), $"label")
+        .groupby("feature")
+        .agg("weight" -> "avg")
+        .count() > 0)
+  }
+
+  test("train_scw") {
+    assert(
+      TinyTrainData
+        .train_scw(add_bias($"features"), $"label")
+        .groupby("feature")
+        .agg("weight" -> "avg")
+        .count() > 0)
+  }
+
+  test("train_scw2") {
+    assert(
+      TinyTrainData
+        .train_scw2(add_bias($"features"), $"label")
         .groupby("feature")
         .agg("weight" -> "avg")
         .count() > 0)

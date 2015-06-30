@@ -241,7 +241,7 @@ class HivemallOps(df: DataFrame) {
         new HiveFunctionWrapper("hivemall.classifier.ConfidenceWeightedUDTF"),
         exprs.map(_.expr)),
       join=false, outer=false, None,
-      Seq("feature", "weight").map(UnresolvedAttribute(_)),
+      Seq("feature", "weight", "conv").map(UnresolvedAttribute(_)),
       df.logicalPlan)
   }
 
@@ -254,7 +254,7 @@ class HivemallOps(df: DataFrame) {
         new HiveFunctionWrapper("hivemall.classifier.AROWClassifierUDTF"),
         exprs.map(_.expr)),
       join=false, outer=false, None,
-      Seq("feature", "weight").map(UnresolvedAttribute(_)),
+      Seq("feature", "weight", "conv").map(UnresolvedAttribute(_)),
       df.logicalPlan)
   }
 
@@ -267,7 +267,33 @@ class HivemallOps(df: DataFrame) {
         new HiveFunctionWrapper("hivemall.classifier.AROWClassifierUDTF$AROWh"),
         exprs.map(_.expr)),
       join=false, outer=false, None,
-      Seq("feature", "weight").map(UnresolvedAttribute(_)),
+      Seq("feature", "weight", "conv").map(UnresolvedAttribute(_)),
+      df.logicalPlan)
+  }
+
+  /**
+   * @see hivemall.classifier.SoftConfideceWeightedUDTF$SCW1
+   * @group classifier
+   */
+  def train_scw(exprs: Column*): DataFrame = {
+     Generate(new HiveGenericUdtf(
+        new HiveFunctionWrapper("hivemall.classifier.SoftConfideceWeightedUDTF$SCW1"),
+        exprs.map(_.expr)),
+      join=false, outer=false, None,
+      Seq("feature", "weight", "conv").map(UnresolvedAttribute(_)),
+      df.logicalPlan)
+  }
+
+  /**
+   * @see hivemall.classifier.SoftConfideceWeightedUDTF$SCW1
+   * @group classifier
+   */
+  def train_scw2(exprs: Column*): DataFrame = {
+     Generate(new HiveGenericUdtf(
+        new HiveFunctionWrapper("hivemall.classifier.SoftConfideceWeightedUDTF$SCW2"),
+        exprs.map(_.expr)),
+      join=false, outer=false, None,
+      Seq("feature", "weight", "conv").map(UnresolvedAttribute(_)),
       df.logicalPlan)
   }
 
