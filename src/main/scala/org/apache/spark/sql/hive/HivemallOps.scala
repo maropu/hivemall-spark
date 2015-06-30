@@ -233,6 +233,19 @@ class HivemallOps(df: DataFrame) {
   }
 
   /**
+   * @see hivemall.classifier.ConfidenceWeightedUDTF
+   * @group classifier
+   */
+  def train_cw(exprs: Column*): DataFrame = {
+     Generate(new HiveGenericUdtf(
+        new HiveFunctionWrapper("hivemall.classifier.ConfidenceWeightedUDTF"),
+        exprs.map(_.expr)),
+      join=false, outer=false, None,
+      Seq("feature", "weight").map(UnresolvedAttribute(_)),
+      df.logicalPlan)
+  }
+
+  /**
    * Groups the [[DataFrame]] using the specified columns, so we can run aggregation on them.
    * See [[GroupedDataEx]] for all the available aggregate functions.
    *
