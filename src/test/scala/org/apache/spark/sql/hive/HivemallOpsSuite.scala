@@ -288,6 +288,24 @@ class HivemallOpsSuite extends FunSuite {
         .count() > 0)
   }
 
+  ignore("train_arow") {
+    assert(
+      TinyTrainData
+        .train_arow(add_bias($"features"), $"label")
+        .groupby("feature")
+        .agg("weight" -> "avg")
+        .count() > 0)
+  }
+
+  ignore("train_arowh") {
+    assert(
+      TinyTrainData
+        .train_arowh(add_bias($"features"), $"label")
+        .groupby("feature")
+        .agg("weight" -> "avg")
+        .count() > 0)
+  }
+
   test("voted_avg") {
     assert(TinyScoreData.groupby().agg("score" -> "voted_avg").count() > 0)
   }

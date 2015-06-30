@@ -18,6 +18,15 @@ sqlContext.sql("CREATE TEMPORARY FUNCTION train_pa1 AS 'hivemall.classifier.Pass
 // sqlContext.sql("DROP TEMPORARY FUNCTION IF EXISTS train_pa2")
 sqlContext.sql("CREATE TEMPORARY FUNCTION train_pa2 AS 'hivemall.classifier.PassiveAggressiveUDTF$PA2'")
 
+// sqlContext.sql("DROP TEMPORARY FUNCTION IF EXISTS train_cw")
+sqlContext.sql("CREATE TEMPORARY FUNCTION train_cw AS 'hivemall.classifier.ConfidenceWeightedUDTF'")
+
+// sqlContext.sql("DROP TEMPORARY FUNCTION IF EXISTS train_arow")
+sqlContext.sql("CREATE TEMPORARY FUNCTION train_arow AS 'hivemall.classifier.AROWClassifierUDTF'")
+
+// sqlContext.sql("DROP TEMPORARY FUNCTION IF EXISTS train_arowh")
+sqlContext.sql("CREATE TEMPORARY FUNCTION train_arowh AS 'hivemall.classifier.AROWClassifierUDTF$AROWh'")
+
 /**
  * Regression functions
  */

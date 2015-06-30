@@ -246,6 +246,32 @@ class HivemallOps(df: DataFrame) {
   }
 
   /**
+   * @see hivemall.classifier.AROWClassifierUDTF
+   * @group classifier
+   */
+  def train_arow(exprs: Column*): DataFrame = {
+     Generate(new HiveGenericUdtf(
+        new HiveFunctionWrapper("hivemall.classifier.AROWClassifierUDTF"),
+        exprs.map(_.expr)),
+      join=false, outer=false, None,
+      Seq("feature", "weight").map(UnresolvedAttribute(_)),
+      df.logicalPlan)
+  }
+
+  /**
+   * @see hivemall.classifier.AROWClassifierUDTF$AROWh
+   * @group classifier
+   */
+  def train_arowh(exprs: Column*): DataFrame = {
+     Generate(new HiveGenericUdtf(
+        new HiveFunctionWrapper("hivemall.classifier.AROWClassifierUDTF$AROWh"),
+        exprs.map(_.expr)),
+      join=false, outer=false, None,
+      Seq("feature", "weight").map(UnresolvedAttribute(_)),
+      df.logicalPlan)
+  }
+
+  /**
    * Groups the [[DataFrame]] using the specified columns, so we can run aggregation on them.
    * See [[GroupedDataEx]] for all the available aggregate functions.
    *
