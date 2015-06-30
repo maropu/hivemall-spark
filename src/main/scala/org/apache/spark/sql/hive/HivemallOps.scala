@@ -181,6 +181,19 @@ class HivemallOps(df: DataFrame) {
   }
 
   /**
+   * @see hivemall.classifier.PerceptronUDTF
+   * @group classifier
+   */
+  def train_perceptron(exprs: Column*): DataFrame = {
+     Generate(new HiveGenericUdtf(
+        new HiveFunctionWrapper("hivemall.classifier.PerceptronUDTF"),
+        exprs.map(_.expr)),
+      join=false, outer=false, None,
+      Seq("feature", "weight").map(UnresolvedAttribute(_)),
+      df.logicalPlan)
+  }
+
+  /**
    * @see hivemall.classifier.PassiveAggressiveUDTF
    * @group classifier
    */

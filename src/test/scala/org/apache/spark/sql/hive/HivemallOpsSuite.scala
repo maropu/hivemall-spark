@@ -243,6 +243,15 @@ class HivemallOpsSuite extends FunSuite {
         .count() > 0)
   }
 
+  test("train_perceptron") {
+    assert(
+      TinyTrainData
+        .train_perceptron(add_bias($"features"), $"label")
+        .groupby("feature")
+        .agg("weight" -> "avg")
+        .count() > 0)
+  }
+
   test("train_pa") {
     assert(
       TinyTrainData

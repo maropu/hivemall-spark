@@ -6,6 +6,9 @@
  * Classifier functions
  */
 
+// sqlContext.sql("DROP TEMPORARY FUNCTION IF EXISTS train_perceptron")
+sqlContext.sql("CREATE TEMPORARY FUNCTION train_perceptron AS 'hivemall.classifier.PerceptronUDTF'")
+
 // sqlContext.sql("DROP TEMPORARY FUNCTION IF EXISTS train_pa")
 sqlContext.sql("CREATE TEMPORARY FUNCTION train_pa AS 'hivemall.classifier.PassiveAggressiveUDTF'")
 
