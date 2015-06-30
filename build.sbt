@@ -13,23 +13,17 @@ net.virtualvoid.sbt.graph.Plugin.graphSettings
 // scalacOptions ++= Seq("-language:experimental.macros")
 
 // spark-package settings
-// spName := "maropu/hivemall-spark"
-// sparkVersion := "1.4.0"
-// sparkComponents ++= Seq("sql", "mllib", "hive")
-// licenses += "Apache-2.0" -> url("http://opensource.org/licenses/Apache-2.0")
-// credentials += Credentials(Path.userHome / ".ivy2" / ".sbtcredentials")
+spName := "maropu/hivemall-spark"
+sparkVersion := "1.4.0"
+sparkComponents ++= Seq("sql", "mllib", "hive")
+licenses += "Apache-2.0" -> url("http://opensource.org/licenses/Apache-2.0")
+credentials += Credentials(Path.userHome / ".ivy2" / ".sbtcredentials")
 
 // resolvers += Resolver.sonatypeRepo("releases")
 // addCompilerPlugin("org.scalamacros" % "paradise" % "2.1.0-M5" cross CrossVersion.full)
 
 libraryDependencies ++= Seq(
   "org.scalatest" % "scalatest_2.10" % "2.2.4",
-  "org.apache.spark" % "spark-core_2.10" % "1.4.0",
-  "org.apache.spark" % "spark-mllib_2.10" % "1.4.0",
-  "org.apache.spark" % "spark-sql_2.10" % "1.4.0",
-  "org.apache.spark" % "spark-hive_2.10" % "1.4.0",
-  "org.spark-project.hive" % "hive-exec" % "0.13.1a",
-  "org.spark-project.hive" % "hive-serde" % "0.13.1a",
   "io.github.myui" % "hivemall" % "0.3.1",
   "org.xerial" % "xerial-core" % "3.2.3"
 )

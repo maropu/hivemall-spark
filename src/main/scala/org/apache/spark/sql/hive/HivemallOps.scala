@@ -31,6 +31,7 @@ private[spark] case class Feature(feature: String)
  *
  * @groupname misc
  * @groupname regression
+ * @groupname classifier
  * @groupname ensemble
  * @groupname ensemble.bagging
  * @groupname ftvec
@@ -173,6 +174,45 @@ class HivemallOps(df: DataFrame) {
   def train_pa2a_regr(exprs: Column*): DataFrame = {
      Generate(new HiveGenericUdtf(
         new HiveFunctionWrapper("hivemall.regression.PassiveAggressiveRegressionUDTF$PA2a"),
+        exprs.map(_.expr)),
+      join=false, outer=false, None,
+      Seq("feature", "weight").map(UnresolvedAttribute(_)),
+      df.logicalPlan)
+  }
+
+  /**
+   * @see hivemall.classifier.PassiveAggressiveUDTF
+   * @group classifier
+   */
+  def train_pa(exprs: Column*): DataFrame = {
+     Generate(new HiveGenericUdtf(
+        new HiveFunctionWrapper("hivemall.classifier.PassiveAggressiveUDTF"),
+        exprs.map(_.expr)),
+      join=false, outer=false, None,
+      Seq("feature", "weight").map(UnresolvedAttribute(_)),
+      df.logicalPlan)
+  }
+
+  /**
+   * @see hivemall.classifier.PassiveAggressiveUDTF$PA1
+   * @group classifier
+   */
+  def train_pa1(exprs: Column*): DataFrame = {
+     Generate(new HiveGenericUdtf(
+        new HiveFunctionWrapper("hivemall.classifier.PassiveAggressiveUDTF$PA1"),
+        exprs.map(_.expr)),
+      join=false, outer=false, None,
+      Seq("feature", "weight").map(UnresolvedAttribute(_)),
+      df.logicalPlan)
+  }
+
+  /**
+   * @see hivemall.classifier.PassiveAggressiveUDTF$PA2
+   * @group classifier
+   */
+  def train_pa2(exprs: Column*): DataFrame = {
+     Generate(new HiveGenericUdtf(
+        new HiveFunctionWrapper("hivemall.classifier.PassiveAggressiveUDTF$PA2"),
         exprs.map(_.expr)),
       join=false, outer=false, None,
       Seq("feature", "weight").map(UnresolvedAttribute(_)),

@@ -243,6 +243,33 @@ class HivemallOpsSuite extends FunSuite {
         .count() > 0)
   }
 
+  test("train_pa") {
+    assert(
+      TinyTrainData
+        .train_pa(add_bias($"features"), $"label")
+        .groupby("feature")
+        .agg("weight" -> "avg")
+        .count() > 0)
+  }
+
+  test("train_pa1") {
+    assert(
+      TinyTrainData
+        .train_pa1(add_bias($"features"), $"label")
+        .groupby("feature")
+        .agg("weight" -> "avg")
+        .count() > 0)
+  }
+
+  test("train_pa2") {
+    assert(
+      TinyTrainData
+        .train_pa2(add_bias($"features"), $"label")
+        .groupby("feature")
+        .agg("weight" -> "avg")
+        .count() > 0)
+  }
+
   test("voted_avg") {
     assert(TinyScoreData.groupby().agg("score" -> "voted_avg").count() > 0)
   }
