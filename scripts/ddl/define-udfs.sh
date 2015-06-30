@@ -27,6 +27,9 @@ sqlContext.sql("CREATE TEMPORARY FUNCTION train_arow AS 'hivemall.classifier.ARO
 // sqlContext.sql("DROP TEMPORARY FUNCTION IF EXISTS train_arowh")
 sqlContext.sql("CREATE TEMPORARY FUNCTION train_arowh AS 'hivemall.classifier.AROWClassifierUDTF$AROWh'")
 
+// sqlContext.sql("DROP TEMPORARY FUNCTION IF EXISTS train_adagrad_rda")
+sqlContext.sql("CREATE TEMPORARY FUNCTION train_arowh AS 'hivemall.classifier.AdaGradRDAUDTF'")
+
 /**
  * Regression functions
  */

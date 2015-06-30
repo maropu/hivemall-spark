@@ -324,6 +324,15 @@ class HivemallOpsSuite extends FunSuite {
         .count() > 0)
   }
 
+  test("train_adagrad_rda") {
+    assert(
+      TinyTrainData
+        .train_adagrad_rda(add_bias($"features"), $"label")
+        .groupby("feature")
+        .agg("weight" -> "avg")
+        .count() > 0)
+  }
+
   test("voted_avg") {
     assert(TinyScoreData.groupby().agg("score" -> "voted_avg").count() > 0)
   }
