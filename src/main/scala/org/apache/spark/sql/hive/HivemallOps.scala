@@ -488,12 +488,12 @@ class HivemallOps(df: DataFrame) {
    * @group ftvec.amplify
    */
   def part_amplify(xtimes: Int): DataFrame = {
-    val rdd = df.rdd.mapPartitions { iter =>
-      val elems = iter.flatMap { row =>
+    val rdd = df.rdd.mapPartitions({ iter =>
+      val elems = iter.flatMap{ row =>
         Seq.fill[Row](xtimes)(row)
       }
       scala.util.Random.shuffle(elems)
-    }
+    }, true)
     df.sqlContext.createDataFrame(rdd, df.schema)
   }
 
