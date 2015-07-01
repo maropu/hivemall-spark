@@ -7,9 +7,9 @@ Installation
 --------------------
 
 ```
-# $SPARK_HOME/bin/spark-shell --packages maropu:hivemall-spark:0.0.2
+# $SPARK_HOME/bin/spark-shell --packages maropu:hivemall-spark:0.0.3
 
-scala> sqlContext.sql("add jar maropu_hivemall-spark-0.0.2.jar")
+scala> sqlContext.sql("add jar maropu_hivemall-spark-0.0.3.jar")
 ```
 
 Hivemall in DataFrame

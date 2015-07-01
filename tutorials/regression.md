@@ -15,7 +15,7 @@ Data preparation
 # bunzip2 E2006.test.bz2 | awk -f conv.awk > E2006.test.lp
 
 // Invoke a spark-shell with hivemall-spark
-# bin/spark-shell --packages maropu:hivemall-spark:0.0.2 --master=local-cluster[2,1,1024]
+# bin/spark-shell --packages maropu:hivemall-spark:0.0.3 --master=local-cluster[2,1,1024]
 
 scala> :load define-dfs.sh
 
