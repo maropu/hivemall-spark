@@ -31,7 +31,7 @@ scala> val trainTable = sc.parallelize(
 scala> sqlContext.createDataFrame(trainTable)
   .train_logregr($"label", add_bias($"feature"))
   .groupBy("feature")
-  .agg("weight" -> "avg")
+  .agg("weight"->"avg")
 ```
 
 More details can be found in [tutorials](./tutorials).
