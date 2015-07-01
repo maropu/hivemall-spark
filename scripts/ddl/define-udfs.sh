@@ -6,7 +6,7 @@
 sqlContext.sql("CREATE TEMPORARY FUNCTION hivemall_version AS 'hivemall.HivemallVersionUDF'")
 
 /**
- * Classifier functions
+ * Binary classification
  */
 
 // sqlContext.sql("DROP TEMPORARY FUNCTION IF EXISTS train_perceptron")
@@ -32,6 +32,31 @@ sqlContext.sql("CREATE TEMPORARY FUNCTION train_arowh AS 'hivemall.classifier.AR
 
 // sqlContext.sql("DROP TEMPORARY FUNCTION IF EXISTS train_adagrad_rda")
 sqlContext.sql("CREATE TEMPORARY FUNCTION train_arowh AS 'hivemall.classifier.AdaGradRDAUDTF'")
+
+/**
+ * Multiclass classification
+ */
+
+// sqlContext.sql("DROP TEMPORARY FUNCTION IF EXISTS train_multiclass_perceptron")
+sqlContext.sql("CREATE TEMPORARY FUNCTION train_multiclass_perceptron AS 'hivemall.classifier.multiclass.MulticlassPerceptronUDTF'")
+
+// sqlContext.sql("DROP TEMPORARY FUNCTION IF EXISTS train_multiclass_pa")
+sqlContext.sql("CREATE TEMPORARY FUNCTION train_multiclass_pa AS 'hivemall.classifier.multiclass.MulticlassPassiveAggressiveUDTF'")
+
+// sqlContext.sql("DROP TEMPORARY FUNCTION IF EXISTS train_multiclass_pa1")
+sqlContext.sql("CREATE TEMPORARY FUNCTION train_multiclass_pa1 AS 'hivemall.classifier.multiclass.MulticlassPassiveAggressiveUDTF$PA1'")
+
+// sqlContext.sql("DROP TEMPORARY FUNCTION IF EXISTS train_multiclass_pa2")
+sqlContext.sql("CREATE TEMPORARY FUNCTION train_multiclass_pa2 AS 'hivemall.classifier.multiclass.MulticlassPassiveAggressiveUDTF$PA2'")
+
+// sqlContext.sql("DROP TEMPORARY FUNCTION IF EXISTS train_multiclass_cw")
+sqlContext.sql("CREATE TEMPORARY FUNCTION train_multiclass_cw AS 'hivemall.classifier.multiclass.MulticlassConfidenceWeightedUDTF'")
+
+// sqlContext.sql("DROP TEMPORARY FUNCTION IF EXISTS train_multiclass_scw")
+sqlContext.sql("CREATE TEMPORARY FUNCTION train_multiclass_scw AS 'hivemall.classifier.multiclass.MulticlassSoftConfidenceWeightedUDTF$SCW1'")
+
+// sqlContext.sql("DROP TEMPORARY FUNCTION IF EXISTS train_multiclass_scw2")
+sqlContext.sql("CREATE TEMPORARY FUNCTION train_multiclass_scw2 AS 'hivemall.classifier.multiclass.MulticlassSoftConfidenceWeightedUDTF$SCW2'")
 
 /**
  * Regression functions

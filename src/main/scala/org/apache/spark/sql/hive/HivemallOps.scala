@@ -32,6 +32,8 @@ private[spark] case class Feature(feature: String)
  * @groupname misc
  * @groupname regression
  * @groupname classifier
+ * @groupname classifier
+ * @groupname classifier.multiclass
  * @groupname ensemble
  * @groupname ensemble.bagging
  * @groupname ftvec
@@ -303,7 +305,111 @@ class HivemallOps(df: DataFrame) {
    */
   def train_adagrad_rda(exprs: Column*): DataFrame = {
      Generate(new HiveGenericUdtf(
-        new HiveFunctionWrapper("hivemall.classifier.classifier.AdaGradRDAUDTF"),
+        new HiveFunctionWrapper("hivemall.classifier.AdaGradRDAUDTF"),
+        exprs.map(_.expr)),
+      join=false, outer=false, None,
+      Seq("feature", "weight").map(UnresolvedAttribute(_)),
+      df.logicalPlan)
+  }
+
+  /**
+   * @see hivemall.classifier.classifier.MulticlassPerceptronUDTF
+   * @group classifier.multiclass
+   */
+  def train_multiclass_perceptron(exprs: Column*): DataFrame = {
+     Generate(new HiveGenericUdtf(
+        new HiveFunctionWrapper("hivemall.classifier.multiclass.MulticlassPerceptronUDTF"),
+        exprs.map(_.expr)),
+      join=false, outer=false, None,
+      Seq("feature", "weight").map(UnresolvedAttribute(_)),
+      df.logicalPlan)
+  }
+
+  /**
+   * @see hivemall.classifier.classifier.PassiveAggressiveUDTF
+   * @group classifier.multiclass
+   */
+  def train_multiclass_pa(exprs: Column*): DataFrame = {
+     Generate(new HiveGenericUdtf(
+        new HiveFunctionWrapper("hivemall.classifier.multiclass.MulticlassPassiveAggressiveUDTF"),
+        exprs.map(_.expr)),
+      join=false, outer=false, None,
+      Seq("feature", "weight").map(UnresolvedAttribute(_)),
+      df.logicalPlan)
+  }
+
+  /**
+   * @see hivemall.classifier.classifier.PassiveAggressiveUDTF$PA1
+   * @group classifier.multiclass
+   */
+  def train_multiclass_pa1(exprs: Column*): DataFrame = {
+     Generate(new HiveGenericUdtf(
+        new HiveFunctionWrapper("hivemall.classifier.multiclass.MulticlassPassiveAggressiveUDTF$PA1"),
+        exprs.map(_.expr)),
+      join=false, outer=false, None,
+      Seq("feature", "weight").map(UnresolvedAttribute(_)),
+      df.logicalPlan)
+  }
+
+  /**
+   * @see hivemall.classifier.classifier.PassiveAggressiveUDTF$PA2
+   * @group classifier.multiclass
+   */
+  def train_multiclass_pa2(exprs: Column*): DataFrame = {
+     Generate(new HiveGenericUdtf(
+        new HiveFunctionWrapper("hivemall.classifier.multiclass.MulticlassPassiveAggressiveUDTF$PA2"),
+        exprs.map(_.expr)),
+      join=false, outer=false, None,
+      Seq("feature", "weight").map(UnresolvedAttribute(_)),
+      df.logicalPlan)
+  }
+
+  /**
+   * @see hivemall.classifier.classifier.MulticlassConfidenceWeightedUDTF
+   * @group classifier.multiclass
+   */
+  def train_multiclass_cw(exprs: Column*): DataFrame = {
+     Generate(new HiveGenericUdtf(
+        new HiveFunctionWrapper("hivemall.classifier.multiclass.MulticlassConfidenceWeightedUDTF"),
+        exprs.map(_.expr)),
+      join=false, outer=false, None,
+      Seq("feature", "weight", "conv").map(UnresolvedAttribute(_)),
+      df.logicalPlan)
+  }
+
+  /**
+   * @see hivemall.classifier.classifier.MulticlassAROWClassifierUDTF
+   * @group classifier.multiclass
+   */
+  def train_multiclass_arow(exprs: Column*): DataFrame = {
+     Generate(new HiveGenericUdtf(
+        new HiveFunctionWrapper("hivemall.classifier.multiclass.MulticlassAROWClassifierUDTF"),
+        exprs.map(_.expr)),
+      join=false, outer=false, None,
+      Seq("feature", "weight", "conv").map(UnresolvedAttribute(_)),
+      df.logicalPlan)
+  }
+
+  /**
+   * @see hivemall.classifier.classifier.MulticlassSoftConfidenceWeightedUDTF$SCW1
+   * @group classifier.multiclass
+   */
+  def train_multiclass_scw(exprs: Column*): DataFrame = {
+     Generate(new HiveGenericUdtf(
+        new HiveFunctionWrapper("hivemall.classifier.multiclass.MulticlassSoftConfidenceWeightedUDTF$SCW1"),
+        exprs.map(_.expr)),
+      join=false, outer=false, None,
+      Seq("feature", "weight", "conv").map(UnresolvedAttribute(_)),
+      df.logicalPlan)
+  }
+
+  /**
+   * @see hivemall.classifier.classifier.MulticlassSoftConfidenceWeightedUDTF$SCW2
+   * @group classifier.multiclass
+   */
+  def train_multiclass_scw2(exprs: Column*): DataFrame = {
+     Generate(new HiveGenericUdtf(
+        new HiveFunctionWrapper("hivemall.classifier.multiclass.MulticlassSoftConfidenceWeightedUDTF$SCW2"),
         exprs.map(_.expr)),
       join=false, outer=false, None,
       Seq("feature", "weight", "conv").map(UnresolvedAttribute(_)),

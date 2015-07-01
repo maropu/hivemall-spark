@@ -333,6 +333,64 @@ class HivemallOpsSuite extends FunSuite {
         .count() > 0)
   }
 
+  // TODO: Why is a label type [Int|Text] in multiclass classifiers?
+  ignore("train_multiclass_perceptron") {
+    assert(
+      TinyTrainData
+        .train_multiclass_perceptron(add_bias($"features"), $"label")
+        .groupby("feature")
+        .agg("weight" -> "avg")
+        .count() > 0)
+  }
+  ignore("train_multiclass_pa") {
+    assert(
+      TinyTrainData
+        .train_multiclass_pa(add_bias($"features"), $"label")
+        .groupby("feature")
+        .agg("weight" -> "avg")
+        .count() > 0)
+  }
+  ignore("train_multiclass_pa1") {
+    assert(
+      TinyTrainData
+        .train_multiclass_pa1(add_bias($"features"), $"label")
+        .groupby("feature")
+        .agg("weight" -> "avg")
+        .count() > 0)
+  }
+  ignore("train_multiclass_pa2") {
+    assert(
+      TinyTrainData
+        .train_multiclass_pa2(add_bias($"features"), $"label")
+        .groupby("feature")
+        .agg("weight" -> "avg")
+        .count() > 0)
+  }
+  ignore("train_multiclass_cw") {
+    assert(
+      TinyTrainData
+        .train_multiclass_cw(add_bias($"features"), $"label")
+        .groupby("feature")
+        .agg("weight" -> "avg")
+        .count() > 0)
+  }
+  ignore("train_multiclass_scw") {
+    assert(
+      TinyTrainData
+        .train_multiclass_scw(add_bias($"features"), $"label")
+        .groupby("feature")
+        .agg("weight" -> "avg")
+        .count() > 0)
+  }
+  ignore("train_multiclass_scw2") {
+    assert(
+      TinyTrainData
+        .train_multiclass_scw2(add_bias($"features"), $"label")
+        .groupby("feature")
+        .agg("weight" -> "avg")
+        .count() > 0)
+  }
+
   test("voted_avg") {
     assert(TinyScoreData.groupby().agg("score" -> "voted_avg").count() > 0)
   }
