@@ -133,9 +133,9 @@ class HivemallOpsSuite extends FunSuite {
   ignore("sort_by_feature") {
     val IntFloatMapData = {
       val rowRdd = TestSQLContext.sparkContext.parallelize(
-          Row(Map(1 -> 0.3f, 2 -> 0.1f, 3 -> 0.5f)) ::
-          Row(Map(2 -> 0.4f, 1 -> 0.2f)) ::
-          Row(Map(2 -> 0.4f, 3 -> 0.2f, 1 -> 0.1f, 4 -> 0.6f)) ::
+          Row(Map(1->0.3f, 2->0.1f, 3->0.5f)) ::
+          Row(Map(2->0.4f, 1->0.2f)) ::
+          Row(Map(2->0.4f, 3->0.2f, 1->0.1f, 4->0.6f)) ::
           Nil
         )
       TestSQLContext.createDataFrame(
@@ -148,9 +148,9 @@ class HivemallOpsSuite extends FunSuite {
 
     assert(IntFloatMapData.select(sort_by_feature($"data")).collect.toSet
       === Set(
-        Row(Map(1 -> 0.3f, 2 -> 0.1f, 3 -> 0.5f),
-        Row(Map(1 -> 0.2f, 2 -> 0.4f)),
-        Row(Map(1 -> 0.1f, 2 -> 0.4f, 3 -> 0.2f, 4 -> 0.6f)))))
+        Row(Map(1->0.3f, 2->0.1f, 3->0.5f),
+        Row(Map(1->0.2f, 2->0.4f)),
+        Row(Map(1->0.1f, 2->0.4f, 3->0.2f, 4->0.6f)))))
   }
 
   test("train_adadelta") {
@@ -158,7 +158,7 @@ class HivemallOpsSuite extends FunSuite {
       TinyTrainData
         .train_adadelta(add_bias($"features"), $"label")
         .groupby("feature")
-        .agg("weight" -> "avg")
+        .agg("weight"->"avg")
         .count() > 0)
   }
 
@@ -167,7 +167,7 @@ class HivemallOpsSuite extends FunSuite {
       TinyTrainData
         .train_adagrad(add_bias($"features"), $"label")
         .groupby("feature")
-        .agg("weight" -> "avg")
+        .agg("weight"->"avg")
         .count() > 0)
   }
 
@@ -176,7 +176,7 @@ class HivemallOpsSuite extends FunSuite {
       TinyTrainData
         .train_arow_regr(add_bias($"features"), $"label")
         .groupby("feature")
-        .agg("weight" -> "avg")
+        .agg("weight"->"avg")
         .count() > 0)
   }
 
@@ -185,7 +185,7 @@ class HivemallOpsSuite extends FunSuite {
       TinyTrainData
         .train_arowe_regr(add_bias($"features"), $"label")
         .groupby("feature")
-        .agg("weight" -> "avg")
+        .agg("weight"->"avg")
         .count() > 0)
   }
 
@@ -194,7 +194,7 @@ class HivemallOpsSuite extends FunSuite {
       TinyTrainData
         .train_arowe_regr(add_bias($"features"), $"label")
         .groupby("feature")
-        .agg("weight" -> "avg")
+        .agg("weight"->"avg")
         .count() > 0)
   }
 
@@ -203,7 +203,7 @@ class HivemallOpsSuite extends FunSuite {
       TinyTrainData
         .train_logregr(add_bias($"features"), $"label")
         .groupby("feature")
-        .agg("weight" -> "avg")
+        .agg("weight"->"avg")
         .count() > 0)
   }
 
@@ -212,7 +212,7 @@ class HivemallOpsSuite extends FunSuite {
       TinyTrainData
         .train_pa1_regr(add_bias($"features"), $"label")
         .groupby("feature")
-        .agg("weight" -> "avg")
+        .agg("weight"->"avg")
         .count() > 0)
   }
 
@@ -221,7 +221,7 @@ class HivemallOpsSuite extends FunSuite {
       TinyTrainData
         .train_pa1a_regr(add_bias($"features"), $"label")
         .groupby("feature")
-        .agg("weight" -> "avg")
+        .agg("weight"->"avg")
         .count() > 0)
   }
 
@@ -230,7 +230,7 @@ class HivemallOpsSuite extends FunSuite {
       TinyTrainData
         .train_pa2_regr(add_bias($"features"), $"label")
         .groupby("feature")
-        .agg("weight" -> "avg")
+        .agg("weight"->"avg")
         .count() > 0)
   }
 
@@ -239,7 +239,7 @@ class HivemallOpsSuite extends FunSuite {
       TinyTrainData
         .train_pa2a_regr(add_bias($"features"), $"label")
         .groupby("feature")
-        .agg("weight" -> "avg")
+        .agg("weight"->"avg")
         .count() > 0)
   }
 
@@ -248,7 +248,7 @@ class HivemallOpsSuite extends FunSuite {
       TinyTrainData
         .train_perceptron(add_bias($"features"), $"label")
         .groupby("feature")
-        .agg("weight" -> "avg")
+        .agg("weight"->"avg")
         .count() > 0)
   }
 
@@ -257,7 +257,7 @@ class HivemallOpsSuite extends FunSuite {
       TinyTrainData
         .train_pa(add_bias($"features"), $"label")
         .groupby("feature")
-        .agg("weight" -> "avg")
+        .agg("weight"->"avg")
         .count() > 0)
   }
 
@@ -266,7 +266,7 @@ class HivemallOpsSuite extends FunSuite {
       TinyTrainData
         .train_pa1(add_bias($"features"), $"label")
         .groupby("feature")
-        .agg("weight" -> "avg")
+        .agg("weight"->"avg")
         .count() > 0)
   }
 
@@ -275,7 +275,7 @@ class HivemallOpsSuite extends FunSuite {
       TinyTrainData
         .train_pa2(add_bias($"features"), $"label")
         .groupby("feature")
-        .agg("weight" -> "avg")
+        .agg("weight"->"avg")
         .count() > 0)
   }
 
@@ -284,7 +284,7 @@ class HivemallOpsSuite extends FunSuite {
       TinyTrainData
         .train_cw(add_bias($"features"), $"label")
         .groupby("feature")
-        .agg("weight" -> "avg")
+        .agg("weight"->"avg")
         .count() > 0)
   }
 
@@ -293,7 +293,7 @@ class HivemallOpsSuite extends FunSuite {
       TinyTrainData
         .train_arow(add_bias($"features"), $"label")
         .groupby("feature")
-        .agg("weight" -> "avg")
+        .agg("weight"->"avg")
         .count() > 0)
   }
 
@@ -302,7 +302,7 @@ class HivemallOpsSuite extends FunSuite {
       TinyTrainData
         .train_arowh(add_bias($"features"), $"label")
         .groupby("feature")
-        .agg("weight" -> "avg")
+        .agg("weight"->"avg")
         .count() > 0)
   }
 
@@ -311,7 +311,7 @@ class HivemallOpsSuite extends FunSuite {
       TinyTrainData
         .train_scw(add_bias($"features"), $"label")
         .groupby("feature")
-        .agg("weight" -> "avg")
+        .agg("weight"->"avg")
         .count() > 0)
   }
 
@@ -320,7 +320,7 @@ class HivemallOpsSuite extends FunSuite {
       TinyTrainData
         .train_scw2(add_bias($"features"), $"label")
         .groupby("feature")
-        .agg("weight" -> "avg")
+        .agg("weight"->"avg")
         .count() > 0)
   }
 
@@ -329,7 +329,7 @@ class HivemallOpsSuite extends FunSuite {
       TinyTrainData
         .train_adagrad_rda(add_bias($"features"), $"label")
         .groupby("feature")
-        .agg("weight" -> "avg")
+        .agg("weight"->"avg")
         .count() > 0)
   }
 
@@ -339,7 +339,7 @@ class HivemallOpsSuite extends FunSuite {
       TinyTrainData
         .train_multiclass_perceptron(add_bias($"features"), $"label")
         .groupby("feature")
-        .agg("weight" -> "avg")
+        .agg("weight"->"avg")
         .count() > 0)
   }
   ignore("train_multiclass_pa") {
@@ -347,7 +347,7 @@ class HivemallOpsSuite extends FunSuite {
       TinyTrainData
         .train_multiclass_pa(add_bias($"features"), $"label")
         .groupby("feature")
-        .agg("weight" -> "avg")
+        .agg("weight"->"avg")
         .count() > 0)
   }
   ignore("train_multiclass_pa1") {
@@ -355,7 +355,7 @@ class HivemallOpsSuite extends FunSuite {
       TinyTrainData
         .train_multiclass_pa1(add_bias($"features"), $"label")
         .groupby("feature")
-        .agg("weight" -> "avg")
+        .agg("weight"->"avg")
         .count() > 0)
   }
   ignore("train_multiclass_pa2") {
@@ -363,7 +363,7 @@ class HivemallOpsSuite extends FunSuite {
       TinyTrainData
         .train_multiclass_pa2(add_bias($"features"), $"label")
         .groupby("feature")
-        .agg("weight" -> "avg")
+        .agg("weight"->"avg")
         .count() > 0)
   }
   ignore("train_multiclass_cw") {
@@ -371,7 +371,7 @@ class HivemallOpsSuite extends FunSuite {
       TinyTrainData
         .train_multiclass_cw(add_bias($"features"), $"label")
         .groupby("feature")
-        .agg("weight" -> "avg")
+        .agg("weight"->"avg")
         .count() > 0)
   }
   ignore("train_multiclass_scw") {
@@ -379,7 +379,7 @@ class HivemallOpsSuite extends FunSuite {
       TinyTrainData
         .train_multiclass_scw(add_bias($"features"), $"label")
         .groupby("feature")
-        .agg("weight" -> "avg")
+        .agg("weight"->"avg")
         .count() > 0)
   }
   ignore("train_multiclass_scw2") {
@@ -387,16 +387,16 @@ class HivemallOpsSuite extends FunSuite {
       TinyTrainData
         .train_multiclass_scw2(add_bias($"features"), $"label")
         .groupby("feature")
-        .agg("weight" -> "avg")
+        .agg("weight"->"avg")
         .count() > 0)
   }
 
   test("voted_avg") {
-    assert(TinyScoreData.groupby().agg("score" -> "voted_avg").count() > 0)
+    assert(TinyScoreData.groupby().agg("score"->"voted_avg").count() > 0)
   }
 
   test("weight_voted_avg") {
-    assert(TinyScoreData.groupby().agg("score" -> "weight_voted_avg").count() > 0)
+    assert(TinyScoreData.groupby().agg("score"->"weight_voted_avg").count() > 0)
   }
 
   test("amplify") {
