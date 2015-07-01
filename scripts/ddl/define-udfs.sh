@@ -2,6 +2,9 @@
  * A bootstrap script to register UDF on spark-shell
  */
 
+// sqlContext.sql("DROP TEMPORARY FUNCTION IF EXISTS hivemall_version")
+sqlContext.sql("CREATE TEMPORARY FUNCTION hivemall_version AS 'hivemall.HivemallVersionUDF'")
+
 /**
  * Classifier functions
  */
