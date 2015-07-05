@@ -484,7 +484,7 @@ class HivemallOps(df: DataFrame) {
   }
 
   /**
-   * Shufle data inside partitions.
+   * Amplify and shuffle data inside partitions.
    * @group ftvec.amplify
    */
   def part_amplify(xtimes: Int): DataFrame = {
