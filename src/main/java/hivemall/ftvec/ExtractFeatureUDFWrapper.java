@@ -25,6 +25,7 @@ import org.apache.hadoop.hive.ql.udf.generic.GenericUDF;
 import org.apache.hadoop.hive.serde2.objectinspector.*;
 import org.apache.hadoop.hive.serde2.objectinspector.ObjectInspector.Category;
 import org.apache.hadoop.hive.serde2.objectinspector.PrimitiveObjectInspector.PrimitiveCategory;
+import org.apache.hadoop.hive.serde2.objectinspector.primitive.PrimitiveObjectInspectorFactory;
 import org.apache.hadoop.io.Text;
 
 import java.util.ArrayList;
@@ -62,8 +63,7 @@ public class ExtractFeatureUDFWrapper extends GenericUDF {
                     "extract_feature() must have String as an argument, but "
                         + arguments[0].getTypeName() + " was found.");
         }
-        ObjectInspector retOI = ObjectInspectorUtils.getStandardObjectInspector(argOI);
-        return ObjectInspectorFactory.getStandardListObjectInspector(retOI);
+        return PrimitiveObjectInspectorFactory.javaStringObjectInspector;
     }
 
     @Override

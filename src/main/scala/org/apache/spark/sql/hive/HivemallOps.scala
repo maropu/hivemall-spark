@@ -561,15 +561,8 @@ object HivemallOps {
    * Need to fix it later.
    */
   def extract_feature(exprs: Column*): Column = {
-    // new HiveGenericUdf(new HiveFunctionWrapper(
-    //  "hivemall.ftvec.ExtractFeatureUDFWrapper"), exprs.map(_.expr))
-    val f: String => String = (s: String) => {
-      s.split(':') match {
-        case d if d.size == 2 => d(0)
-        case _ => ""
-      }
-    }
-    Column(ScalaUdf(f, StringType, exprs.map(_.expr)))
+    new HiveGenericUdf(new HiveFunctionWrapper(
+      "hivemall.ftvec.ExtractFeatureUDFWrapper"), exprs.map(_.expr))
   }
 
   /**
