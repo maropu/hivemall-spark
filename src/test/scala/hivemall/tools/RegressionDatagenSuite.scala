@@ -22,15 +22,10 @@ import org.scalatest.FunSuite
 
 class RegressionDatagenSuite extends FunSuite {
 
-  /**
-   * TODO: This throws java.lang.ClassCastException because
-   * HiveInspectors.toInspector has a bug in spark.
-   * Need to fix it later.
-   */
-  ignore("datagen") {
+  test("datagen") {
    val df = RegressionDatagen.exec(
      TestSQLContext, min_examples=10000, n_features=100, n_dims=65536,
      dense=false, cl=true)
-    assert(df.count() === 10000)
+    assert(df.count() >= 10000)
   }
 }

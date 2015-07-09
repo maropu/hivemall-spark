@@ -411,8 +411,8 @@ class HivemallOpsSuite extends FunSuite {
     assert(TinyTrainData.part_amplify(3).count() == 9)
   }
 
-  ignore("lr_datagen") {
-    assert(TinyTrainData.lr_datagen("-n_examples 100 -n_features 10 -seed 100") == 100)
+  test("lr_datagen") {
+    assert(TinyTrainData.lr_datagen("-n_examples 100 -n_features 10 -seed 100").count >= 100)
   }
 }
 
