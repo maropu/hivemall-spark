@@ -17,6 +17,7 @@
 
 package org.apache.spark.sql.hive
 
+import hivemall.tools.RegressionDatagen
 import org.apache.spark.sql.Row
 import org.apache.spark.sql.hive.HivemallOps._
 import org.apache.spark.sql.hive.HivemallUtils._
@@ -94,8 +95,8 @@ class HivemallOpsSuite extends FunSuite {
   }
 
   test("rowid") {
-    assert(DummyInputData.select(rowid())
-      .collect.map { case Row(rowid: String) => rowid }.distinct.size == 4)
+    val df = LargeTrainData.select(rowid())
+    assert(df.distinct.count == df.count)
   }
 
   // TODO: Support testing equality between two floating points
@@ -480,4 +481,10 @@ object HivemallOpsSuite {
       )
     df
   }
+
+  val LargeTrainData = RegressionDatagen.exec(
+    TestSQLContext, n_partitions=2, min_examples=10000, seed=3)
+
+  val LargeTestData = RegressionDatagen.exec(
+    TestSQLContext, n_partitions=2, min_examples=1000, seed=15)
 }
