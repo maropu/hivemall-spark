@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/maropu/hivemall-spark.svg?branch=master)](https://travis-ci.org/maropu/hivemall-spark)
+[![License](http://img.shields.io/:license-Apache_v2-blue.svg)](https://github.com/maropu/hivemall-spark/blob/master/LICENSE)
 
 This is a simple wrapper implementation of [Hivemall](https://github.com/myui/hivemall/) for Spark.
 This can make highly scalable machine learning algorithms available in DataFrame and HiveContext.
