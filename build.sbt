@@ -8,9 +8,10 @@ scalaVersion := "2.10.4"
 // https://spark.apache.org/docs/latest/sql-programming-guide.html#interacting-with-different-versions-of-hive-metastore
 unmanagedSourceDirectories in Compile += baseDirectory.value / "extra-src/v0.13.1"
 
-net.virtualvoid.sbt.graph.Plugin.graphSettings
+// To avoid compiler errors in sut-doc
+sources in doc in Compile := List()
 
-// scalacOptions ++= Seq("-language:experimental.macros")
+net.virtualvoid.sbt.graph.Plugin.graphSettings
 
 // spark-package settings
 spName := "maropu/hivemall-spark"
