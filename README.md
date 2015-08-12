@@ -24,10 +24,11 @@ To apply Hivemall fuctions in DataFrame, you type codes below;
 
 scala> :load define-dfs.sh
 
-scala> val trainTable = sc.parallelize(
-  HmLabeledPoint(0.0, "1:0.8" :: "2:0.2" :: Nil) ::
-  HmLabeledPoint(1.0, "2:0.7" :: Nil) ::
-  HmLabeledPoint(0.0, "1:0.9" :: Nil) :: Nil)
+// Assume that an input format is as follows:
+//   1.0,[1:0.5,3:0.3,8:0.1]
+//   0.0,[2:0.1,3:0.8,7:0.4,9:0.1]
+//   ...
+scala> val trainTable = sc.textFile(...).map(HmLabeledPoint.parse)
 
 scala> sqlContext.createDataFrame(trainTable)
   .train_logregr($"label", add_bias($"feature"))
@@ -57,12 +58,20 @@ sqlContext.sql("
     GROUP BY model.feature")
 ```
 
+Support Status
+--------------------
+Hivemall v0.3.1 is currently incorporated in hivemall-spark
+Binary classification and regression have been already supported and other tasks
+such as recommendation will appear in upcomming releases.
+
+API Documentations
+--------------------
+TBW
+
 System Requirements
 --------------------
 
-* Spark 1.4
-
-* Hive 0.13
+* Spark 1.4.1
 
 Presentations
 ------------

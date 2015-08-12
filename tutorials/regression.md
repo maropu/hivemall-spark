@@ -9,7 +9,7 @@ Data preparation
 # wget http://www.csie.ntu.edu.tw/~cjlin/libsvmtools/datasets/regression/E2006.test.bz2
 
 // Fetch a script to normalize the data
-# wget https://github.com/maropu/hivemall-spark/blob/master/scripts/misc/conv.awk
+# wget https://raw.githubusercontent.com/maropu/hivemall-spark/master/scripts/misc/conv.awk
 
 # bunzip2 E2006.train.bz2 | awk -f conv.awk > E2006.train.lp
 # bunzip2 E2006.test.bz2 | awk -f conv.awk > E2006.test.lp
