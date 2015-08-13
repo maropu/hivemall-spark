@@ -20,7 +20,8 @@ of data with names, types, and qualifiers.
 To apply Hivemall fuctions in DataFrame, you type codes below;
 
 ```
-# wget https://github.com/maropu/hivemall-spark/blob/master/scripts/ddl/define-dfs.sh
+// Fetch an initialization script for hivemall-spark
+# wget https://raw.githubusercontent.com/maropu/hivemall-spark/master/scripts/ddl/define-dfs.sh
 
 scala> :load define-dfs.sh
 
@@ -45,7 +46,8 @@ run a script to register the user-defined functions of Hivemall in spark-shell a
 say a SQL statements as follows;
 
 ```
-# wget https://github.com/maropu/hivemall-spark/blob/master/scripts/ddl/define-udfs.sh
+// Fetch an initialization script for hivemall-spark
+# wget https://raw.githubusercontent.com/maropu/hivemall-spark/master/scripts/ddl/define-udfs.sh
 
 scala> :load define-udfs.sh
 

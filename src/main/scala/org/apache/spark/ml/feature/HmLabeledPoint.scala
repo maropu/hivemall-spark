@@ -40,15 +40,13 @@ object HmLabeledPoint {
   // Simple parser for HivemallLabeledPoint
   def parse(s: String) = {
     val (label, features) = s.indexOf(',') match {
-      case d if d >= 0 => (s.substring(0, d - 1), s.substring(d + 1))
+      case d if d > 0 => (s.substring(0, d), s.substring(d + 1))
       case _ => ("0.0", "[]") // Dummy
     }
-    HmLabeledPoint(
-      label.toDouble,
-      parseTuple(new StringTokenizer(features, "[],", true)))
+    HmLabeledPoint(label.toDouble, parseTuple(new StringTokenizer(features, "[],", true)))
   }
 
-  private def parseTuple(tokenizer: StringTokenizer): Seq[String] = {
+  private[this] def parseTuple(tokenizer: StringTokenizer): Seq[String] = {
     val items = ListBuffer.empty[String]
     var parsing = true
     var allowDelim = false

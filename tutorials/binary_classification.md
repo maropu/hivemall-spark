@@ -1,16 +1,16 @@
-This tutorial uses [E2006 tfidf regression](https://github.com/myui/hivemall/wiki#e2006-tfidf-regression) as a reference.
+This tutorial uses [9a binary classification](https://github.com/myui/hivemall/wiki#a9a-binary-classification) as a reference.
 
 Data preparation
 --------------------
 ```
-// Fetch training and test data
-# wget http://www.csie.ntu.edu.tw/~cjlin/libsvmtools/datasets/regression/E2006.train.bz2
-# wget http://www.csie.ntu.edu.tw/~cjlin/libsvmtools/datasets/regression/E2006.test.bz2
+// Fetch training data
+# wget http://www.csie.ntu.edu.tw/~cjlin/libsvmtools/datasets/binary/a9a
+# wget http://www.csie.ntu.edu.tw/~cjlin/libsvmtools/datasets/binary/a9a.t
 
 // Fetch a script to normalize the data
 # wget https://raw.githubusercontent.com/maropu/hivemall-spark/master/scripts/misc/conv.awk
-# bunzip2 E2006.train.bz2 | awk -f conv.awk > E2006.train.lp
-# bunzip2 E2006.test.bz2 | awk -f conv.awk > E2006.test.lp
+# awk -f conv.awk a9a | sed -e "s/+1/1/" | sed -e "s/-1/0/" > a9a.train
+# awk -f conv.awk a9a.t | sed -e "s/+1/1/" | sed -e "s/-1/0/" > a9a.test
 
 // Fetch an initialization script for hivemall-spark
 # wget https://raw.githubusercontent.com/maropu/hivemall-spark/master/scripts/ddl/define-dfs.sh
@@ -23,7 +23,7 @@ scala> :load define-dfs.sh
 scala> :paste
 
 // Load the training data as a RDD
-val trainRdd = sc.textFile("E2006.train.lp")
+val trainRdd = sc.textFile("a9a.train")
   .map(HmLabeledPoint.parse)
 
 // Transform into a DataFrame and amplify the data by 3 times
@@ -31,12 +31,12 @@ val trainDf = sqlContext.createDataFrame(trainRdd)
   .part_amplify(3)
 ```
 
-Training (PA1)
+Training (Logistic Regression)
 --------------------
 ```
 // Make a model from the training data
 val model = trainDf
- .train_pa1_regr(add_bias($"features"), $"label")
+ .train_logregr(add_bias($"features"), $"label", "-total_steps 32561")
  .groupBy("feature")
  .agg("weight" -> "avg")
  .toDF("feature", "weight")
@@ -48,7 +48,7 @@ Test
 --------------------
 ```
 // Load the test data as a RDD
-val testRdd = sc.textFile("E2006.test.lp")
+val testRdd = sc.textFile("a9a.test")
   .map(HmLabeledPoint.parse)
 
 // Transform into a DataFrame and transform features
@@ -58,13 +58,13 @@ val testDf = sqlContext.createDataFrame(testRdd)
 
 // Do prediction
 val predict = testDf
-  .select($"target", modelUdf($"features").as("predicted"))
+  .select($"target", sigmoid(modelUdf($"features")).as("prob"))
+  .select($"target", when($"prob" > 0.50, 1.0).otherwise(0.0).as("predict"), $"prob")
+  .cache
 ```
 
 Evaluation
 --------------------
 ```
-predict
-  .groupBy().agg(Map("target"->"avg", "predicted"->"avg"))
-  .show()
+(predict.where($"target" === $"predict").count + 0.0) / predict.count
 ```

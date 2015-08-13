@@ -436,20 +436,6 @@ class HivemallOps(df: DataFrame) {
   }
 
   /**
-  /**
-   * @see hivemall.ensemble.bagging.VotedAvgUDAF
-   * @group ensemble.bagging
-   */
-  def voted_avg(exprs: Column*): DataFrame = {
-     XXX(new HiveUdaf(
-        new HiveFunctionWrapper("hivemall.ensemble.bagging.VotedAvgUDAF"),
-        exprs.map(_.expr)),
-      join=false, outer=false, None,
-      Seq("feature", "weight").map(UnresolvedAttribute(_)),
-      df.logicalPlan)
-  }*/
-
-  /**
    * @see hivemall.ftvec.amplify.AmplifierUDTF
    * @group ftvec.amplify
    */
