@@ -177,7 +177,7 @@ class HivemallOpsSuite extends FunSuite {
       TinyTrainData
         .train_arow_regr(add_bias($"features"), $"label")
         .groupby("feature")
-        .agg("weight"->"avg")
+        .argmin_kld("weight", "conv")
         .count() > 0)
   }
 
@@ -186,7 +186,7 @@ class HivemallOpsSuite extends FunSuite {
       TinyTrainData
         .train_arowe_regr(add_bias($"features"), $"label")
         .groupby("feature")
-        .agg("weight"->"avg")
+        .argmin_kld("weight", "conv")
         .count() > 0)
   }
 
@@ -195,7 +195,7 @@ class HivemallOpsSuite extends FunSuite {
       TinyTrainData
         .train_arowe_regr(add_bias($"features"), $"label")
         .groupby("feature")
-        .agg("weight"->"avg")
+        .argmin_kld("weight", "conv")
         .count() > 0)
   }
 
@@ -285,7 +285,7 @@ class HivemallOpsSuite extends FunSuite {
       TinyTrainData
         .train_cw(add_bias($"features"), $"label")
         .groupby("feature")
-        .agg("weight"->"avg")
+        .argmin_kld("weight", "conv")
         .count() > 0)
   }
 
@@ -294,7 +294,7 @@ class HivemallOpsSuite extends FunSuite {
       TinyTrainData
         .train_arow(add_bias($"features"), $"label")
         .groupby("feature")
-        .agg("weight"->"avg")
+        .argmin_kld("weight", "conv")
         .count() > 0)
   }
 
@@ -303,7 +303,7 @@ class HivemallOpsSuite extends FunSuite {
       TinyTrainData
         .train_arowh(add_bias($"features"), $"label")
         .groupby("feature")
-        .agg("weight"->"avg")
+        .argmin_kld("weight", "conv")
         .count() > 0)
   }
 
@@ -312,7 +312,7 @@ class HivemallOpsSuite extends FunSuite {
       TinyTrainData
         .train_scw(add_bias($"features"), $"label")
         .groupby("feature")
-        .agg("weight"->"avg")
+        .argmin_kld("weight", "conv")
         .count() > 0)
   }
 
@@ -321,7 +321,7 @@ class HivemallOpsSuite extends FunSuite {
       TinyTrainData
         .train_scw2(add_bias($"features"), $"label")
         .groupby("feature")
-        .agg("weight"->"avg")
+        .argmin_kld("weight", "conv")
         .count() > 0)
   }
 
@@ -334,61 +334,67 @@ class HivemallOpsSuite extends FunSuite {
         .count() > 0)
   }
 
-  // TODO: Why is a label type [Int|Text] in multiclass classifiers?
-  ignore("train_multiclass_perceptron") {
+  test("train_multiclass_perceptron") {
     assert(
       TinyTrainData
-        .train_multiclass_perceptron(add_bias($"features"), $"label")
-        .groupby("feature")
+        // TODO: Why is a label type [Int|Text] only in multiclass classifiers?
+        .train_multiclass_perceptron(add_bias($"features"), $"label".cast(IntegerType))
+        .groupby("label", "feature")
         .agg("weight"->"avg")
         .count() > 0)
   }
-  ignore("train_multiclass_pa") {
+
+  test("train_multiclass_pa") {
     assert(
       TinyTrainData
-        .train_multiclass_pa(add_bias($"features"), $"label")
-        .groupby("feature")
+        .train_multiclass_pa(add_bias($"features"), $"label".cast(IntegerType))
+        .groupby("label", "feature")
         .agg("weight"->"avg")
         .count() > 0)
   }
-  ignore("train_multiclass_pa1") {
+
+  test("train_multiclass_pa1") {
     assert(
       TinyTrainData
-        .train_multiclass_pa1(add_bias($"features"), $"label")
-        .groupby("feature")
+        .train_multiclass_pa1(add_bias($"features"), $"label".cast(IntegerType))
+        .groupby("label", "feature")
         .agg("weight"->"avg")
         .count() > 0)
   }
-  ignore("train_multiclass_pa2") {
+
+  test("train_multiclass_pa2") {
     assert(
       TinyTrainData
-        .train_multiclass_pa2(add_bias($"features"), $"label")
-        .groupby("feature")
+        .train_multiclass_pa2(add_bias($"features"), $"label".cast(IntegerType))
+        .groupby("label", "feature")
         .agg("weight"->"avg")
         .count() > 0)
   }
-  ignore("train_multiclass_cw") {
+
+  test("train_multiclass_cw") {
     assert(
       TinyTrainData
-        .train_multiclass_cw(add_bias($"features"), $"label")
-        .groupby("feature")
-        .agg("weight"->"avg")
+        .train_multiclass_cw(add_bias($"features"), $"label".cast(IntegerType))
+        .groupby("label", "feature")
+        .argmin_kld("weight", "conv")
         .count() > 0)
   }
-  ignore("train_multiclass_scw") {
+
+  test("train_multiclass_scw") {
     assert(
       TinyTrainData
-        .train_multiclass_scw(add_bias($"features"), $"label")
-        .groupby("feature")
-        .agg("weight"->"avg")
+        .train_multiclass_scw(add_bias($"features"), $"label".cast(IntegerType))
+        .groupby("label", "feature")
+        .argmin_kld("weight", "conv")
         .count() > 0)
   }
-  ignore("train_multiclass_scw2") {
+
+  test("train_multiclass_scw2") {
     assert(
       TinyTrainData
-        .train_multiclass_scw2(add_bias($"features"), $"label")
-        .groupby("feature")
-        .agg("weight"->"avg")
+        .train_multiclass_scw2(add_bias($"features"), $"label".cast(IntegerType))
+        .groupby("label", "feature")
+        .argmin_kld("weight", "conv")
         .count() > 0)
   }
 

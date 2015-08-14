@@ -1,5 +1,5 @@
 /**
- * A bootstrap script to register UDF on spark-shell
+ * An initialization script for DataFrame use
  */
 
 import org.apache.spark.ml.feature.HmLabeledPoint

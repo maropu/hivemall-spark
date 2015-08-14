@@ -9,8 +9,8 @@ Data preparation
 
 // Fetch a script to normalize the data
 # wget https://raw.githubusercontent.com/maropu/hivemall-spark/master/scripts/misc/conv.awk
-# bunzip2 E2006.train.bz2 | awk -f conv.awk > E2006.train.lp
-# bunzip2 E2006.test.bz2 | awk -f conv.awk > E2006.test.lp
+# bunzip2 -c E2006.train.bz2 | awk -f conv.awk > E2006.train.lp
+# bunzip2 -c E2006.test.bz2 | awk -f conv.awk > E2006.test.lp
 
 // Fetch an initialization script for hivemall-spark
 # wget https://raw.githubusercontent.com/maropu/hivemall-spark/master/scripts/ddl/define-dfs.sh

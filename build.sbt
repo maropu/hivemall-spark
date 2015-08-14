@@ -15,9 +15,13 @@ net.virtualvoid.sbt.graph.Plugin.graphSettings
 
 // spark-package settings
 spName := "maropu/hivemall-spark"
+
 sparkVersion := "1.4.1"
+
 sparkComponents ++= Seq("sql", "mllib", "hive")
+
 licenses += "Apache-2.0" -> url("http://opensource.org/licenses/Apache-2.0")
+
 credentials += Credentials(Path.userHome / ".ivy2" / ".sbtcredentials")
 
 // resolvers += Resolver.sonatypeRepo("releases")

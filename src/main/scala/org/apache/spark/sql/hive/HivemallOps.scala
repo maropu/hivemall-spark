@@ -49,13 +49,15 @@ class HivemallOps(df: DataFrame) {
   /**
    * An implicit conversion to avoid doing annoying transformation.
    */
-  @inline private implicit def toDataFrame(logicalPlan: LogicalPlan) =
+  @inline
+  private implicit def toDataFrame(logicalPlan: LogicalPlan) =
     DataFrame(df.sqlContext, logicalPlan)
 
   /**
    * @see hivemall.regression.AdaDeltaUDTF
    * @group regression
    */
+  @scala.annotation.varargs
   def train_adadelta(exprs: Column*): DataFrame = {
     Generate(new HiveGenericUdtf(
         new HiveFunctionWrapper("hivemall.regression.AdaDeltaUDTF"),
@@ -69,6 +71,7 @@ class HivemallOps(df: DataFrame) {
    * @see hivemall.regression.AdaGradUDTF
    * @group regression
    */
+  @scala.annotation.varargs
   def train_adagrad(exprs: Column*): DataFrame = {
     Generate(new HiveGenericUdtf(
         new HiveFunctionWrapper("hivemall.regression.AdaGradUDTF"),
@@ -82,6 +85,7 @@ class HivemallOps(df: DataFrame) {
    * @see hivemall.regression.AROWRegressionUDTF
    * @group regression
    */
+  @scala.annotation.varargs
   def train_arow_regr(exprs: Column*): DataFrame = {
     Generate(new HiveGenericUdtf(
         new HiveFunctionWrapper("hivemall.regression.AROWRegressionUDTF"),
@@ -95,6 +99,7 @@ class HivemallOps(df: DataFrame) {
    * @see hivemall.regression.AROWRegressionUDTF$AROWe
    * @group regression
    */
+  @scala.annotation.varargs
   def train_arowe_regr(exprs: Column*): DataFrame = {
     Generate(new HiveGenericUdtf(
         new HiveFunctionWrapper("hivemall.regression.AROWRegressionUDTF$AROWe"),
@@ -108,6 +113,7 @@ class HivemallOps(df: DataFrame) {
    * @see hivemall.regression.AROWRegressionUDTF$AROWe2
    * @group regression
    */
+  @scala.annotation.varargs
   def train_arowe2_regr(exprs: Column*): DataFrame = {
     Generate(new HiveGenericUdtf(
         new HiveFunctionWrapper("hivemall.regression.AROWRegressionUDTF$AROWe2"),
@@ -121,6 +127,7 @@ class HivemallOps(df: DataFrame) {
    * @see hivemall.regression.LogressUDTF
    * @group regression
    */
+  @scala.annotation.varargs
   def train_logregr(exprs: Column*): DataFrame = {
     Generate(new HiveGenericUdtf(
         new HiveFunctionWrapper("hivemall.regression.LogressUDTF"),
@@ -134,6 +141,7 @@ class HivemallOps(df: DataFrame) {
    * @see hivemall.regression.PassiveAggressiveRegressionUDTF
    * @group regression
    */
+  @scala.annotation.varargs
   def train_pa1_regr(exprs: Column*): DataFrame = {
      Generate(new HiveGenericUdtf(
         new HiveFunctionWrapper("hivemall.regression.PassiveAggressiveRegressionUDTF"),
@@ -147,6 +155,7 @@ class HivemallOps(df: DataFrame) {
    * @see hivemall.regression.PassiveAggressiveRegressionUDTF.PA1a
    * @group regression
    */
+  @scala.annotation.varargs
   def train_pa1a_regr(exprs: Column*): DataFrame = {
      Generate(new HiveGenericUdtf(
         new HiveFunctionWrapper("hivemall.regression.PassiveAggressiveRegressionUDTF$PA1a"),
@@ -160,6 +169,7 @@ class HivemallOps(df: DataFrame) {
    * @see hivemall.regression.PassiveAggressiveRegressionUDTF.PA2
    * @group regression
    */
+  @scala.annotation.varargs
   def train_pa2_regr(exprs: Column*): DataFrame = {
      Generate(new HiveGenericUdtf(
         new HiveFunctionWrapper("hivemall.regression.PassiveAggressiveRegressionUDTF$PA2"),
@@ -173,6 +183,7 @@ class HivemallOps(df: DataFrame) {
    * @see hivemall.regression.PassiveAggressiveRegressionUDTF.PA2a
    * @group regression
    */
+  @scala.annotation.varargs
   def train_pa2a_regr(exprs: Column*): DataFrame = {
      Generate(new HiveGenericUdtf(
         new HiveFunctionWrapper("hivemall.regression.PassiveAggressiveRegressionUDTF$PA2a"),
@@ -186,6 +197,7 @@ class HivemallOps(df: DataFrame) {
    * @see hivemall.classifier.PerceptronUDTF
    * @group classifier
    */
+  @scala.annotation.varargs
   def train_perceptron(exprs: Column*): DataFrame = {
      Generate(new HiveGenericUdtf(
         new HiveFunctionWrapper("hivemall.classifier.PerceptronUDTF"),
@@ -199,6 +211,7 @@ class HivemallOps(df: DataFrame) {
    * @see hivemall.classifier.PassiveAggressiveUDTF
    * @group classifier
    */
+  @scala.annotation.varargs
   def train_pa(exprs: Column*): DataFrame = {
      Generate(new HiveGenericUdtf(
         new HiveFunctionWrapper("hivemall.classifier.PassiveAggressiveUDTF"),
@@ -212,6 +225,7 @@ class HivemallOps(df: DataFrame) {
    * @see hivemall.classifier.PassiveAggressiveUDTF$PA1
    * @group classifier
    */
+  @scala.annotation.varargs
   def train_pa1(exprs: Column*): DataFrame = {
      Generate(new HiveGenericUdtf(
         new HiveFunctionWrapper("hivemall.classifier.PassiveAggressiveUDTF$PA1"),
@@ -225,6 +239,7 @@ class HivemallOps(df: DataFrame) {
    * @see hivemall.classifier.PassiveAggressiveUDTF$PA2
    * @group classifier
    */
+  @scala.annotation.varargs
   def train_pa2(exprs: Column*): DataFrame = {
      Generate(new HiveGenericUdtf(
         new HiveFunctionWrapper("hivemall.classifier.PassiveAggressiveUDTF$PA2"),
@@ -238,6 +253,7 @@ class HivemallOps(df: DataFrame) {
    * @see hivemall.classifier.ConfidenceWeightedUDTF
    * @group classifier
    */
+  @scala.annotation.varargs
   def train_cw(exprs: Column*): DataFrame = {
      Generate(new HiveGenericUdtf(
         new HiveFunctionWrapper("hivemall.classifier.ConfidenceWeightedUDTF"),
@@ -251,6 +267,7 @@ class HivemallOps(df: DataFrame) {
    * @see hivemall.classifier.AROWClassifierUDTF
    * @group classifier
    */
+  @scala.annotation.varargs
   def train_arow(exprs: Column*): DataFrame = {
      Generate(new HiveGenericUdtf(
         new HiveFunctionWrapper("hivemall.classifier.AROWClassifierUDTF"),
@@ -264,6 +281,7 @@ class HivemallOps(df: DataFrame) {
    * @see hivemall.classifier.AROWClassifierUDTF$AROWh
    * @group classifier
    */
+  @scala.annotation.varargs
   def train_arowh(exprs: Column*): DataFrame = {
      Generate(new HiveGenericUdtf(
         new HiveFunctionWrapper("hivemall.classifier.AROWClassifierUDTF$AROWh"),
@@ -277,6 +295,7 @@ class HivemallOps(df: DataFrame) {
    * @see hivemall.classifier.SoftConfideceWeightedUDTF$SCW1
    * @group classifier
    */
+  @scala.annotation.varargs
   def train_scw(exprs: Column*): DataFrame = {
      Generate(new HiveGenericUdtf(
         new HiveFunctionWrapper("hivemall.classifier.SoftConfideceWeightedUDTF$SCW1"),
@@ -290,6 +309,7 @@ class HivemallOps(df: DataFrame) {
    * @see hivemall.classifier.SoftConfideceWeightedUDTF$SCW1
    * @group classifier
    */
+  @scala.annotation.varargs
   def train_scw2(exprs: Column*): DataFrame = {
      Generate(new HiveGenericUdtf(
         new HiveFunctionWrapper("hivemall.classifier.SoftConfideceWeightedUDTF$SCW2"),
@@ -303,6 +323,7 @@ class HivemallOps(df: DataFrame) {
    * @see hivemall.classifier.classifier.AdaGradRDAUDTF
    * @group classifier
    */
+  @scala.annotation.varargs
   def train_adagrad_rda(exprs: Column*): DataFrame = {
      Generate(new HiveGenericUdtf(
         new HiveFunctionWrapper("hivemall.classifier.AdaGradRDAUDTF"),
@@ -316,12 +337,13 @@ class HivemallOps(df: DataFrame) {
    * @see hivemall.classifier.classifier.MulticlassPerceptronUDTF
    * @group classifier.multiclass
    */
+  @scala.annotation.varargs
   def train_multiclass_perceptron(exprs: Column*): DataFrame = {
      Generate(new HiveGenericUdtf(
         new HiveFunctionWrapper("hivemall.classifier.multiclass.MulticlassPerceptronUDTF"),
         exprs.map(_.expr)),
       join=false, outer=false, None,
-      Seq("feature", "weight").map(UnresolvedAttribute(_)),
+      Seq("label", "feature", "weight").map(UnresolvedAttribute(_)),
       df.logicalPlan)
   }
 
@@ -329,12 +351,13 @@ class HivemallOps(df: DataFrame) {
    * @see hivemall.classifier.classifier.PassiveAggressiveUDTF
    * @group classifier.multiclass
    */
+  @scala.annotation.varargs
   def train_multiclass_pa(exprs: Column*): DataFrame = {
      Generate(new HiveGenericUdtf(
         new HiveFunctionWrapper("hivemall.classifier.multiclass.MulticlassPassiveAggressiveUDTF"),
         exprs.map(_.expr)),
       join=false, outer=false, None,
-      Seq("feature", "weight").map(UnresolvedAttribute(_)),
+      Seq("label", "feature", "weight").map(UnresolvedAttribute(_)),
       df.logicalPlan)
   }
 
@@ -342,12 +365,13 @@ class HivemallOps(df: DataFrame) {
    * @see hivemall.classifier.classifier.PassiveAggressiveUDTF$PA1
    * @group classifier.multiclass
    */
+  @scala.annotation.varargs
   def train_multiclass_pa1(exprs: Column*): DataFrame = {
      Generate(new HiveGenericUdtf(
         new HiveFunctionWrapper("hivemall.classifier.multiclass.MulticlassPassiveAggressiveUDTF$PA1"),
         exprs.map(_.expr)),
       join=false, outer=false, None,
-      Seq("feature", "weight").map(UnresolvedAttribute(_)),
+      Seq("label", "feature", "weight").map(UnresolvedAttribute(_)),
       df.logicalPlan)
   }
 
@@ -355,12 +379,13 @@ class HivemallOps(df: DataFrame) {
    * @see hivemall.classifier.classifier.PassiveAggressiveUDTF$PA2
    * @group classifier.multiclass
    */
+  @scala.annotation.varargs
   def train_multiclass_pa2(exprs: Column*): DataFrame = {
      Generate(new HiveGenericUdtf(
         new HiveFunctionWrapper("hivemall.classifier.multiclass.MulticlassPassiveAggressiveUDTF$PA2"),
         exprs.map(_.expr)),
       join=false, outer=false, None,
-      Seq("feature", "weight").map(UnresolvedAttribute(_)),
+      Seq("label", "feature", "weight").map(UnresolvedAttribute(_)),
       df.logicalPlan)
   }
 
@@ -368,12 +393,13 @@ class HivemallOps(df: DataFrame) {
    * @see hivemall.classifier.classifier.MulticlassConfidenceWeightedUDTF
    * @group classifier.multiclass
    */
+  @scala.annotation.varargs
   def train_multiclass_cw(exprs: Column*): DataFrame = {
      Generate(new HiveGenericUdtf(
         new HiveFunctionWrapper("hivemall.classifier.multiclass.MulticlassConfidenceWeightedUDTF"),
         exprs.map(_.expr)),
       join=false, outer=false, None,
-      Seq("feature", "weight", "conv").map(UnresolvedAttribute(_)),
+      Seq("label", "feature", "weight", "conv").map(UnresolvedAttribute(_)),
       df.logicalPlan)
   }
 
@@ -381,12 +407,13 @@ class HivemallOps(df: DataFrame) {
    * @see hivemall.classifier.classifier.MulticlassAROWClassifierUDTF
    * @group classifier.multiclass
    */
+  @scala.annotation.varargs
   def train_multiclass_arow(exprs: Column*): DataFrame = {
      Generate(new HiveGenericUdtf(
         new HiveFunctionWrapper("hivemall.classifier.multiclass.MulticlassAROWClassifierUDTF"),
         exprs.map(_.expr)),
       join=false, outer=false, None,
-      Seq("feature", "weight", "conv").map(UnresolvedAttribute(_)),
+      Seq("label", "feature", "weight", "conv").map(UnresolvedAttribute(_)),
       df.logicalPlan)
   }
 
@@ -394,12 +421,13 @@ class HivemallOps(df: DataFrame) {
    * @see hivemall.classifier.classifier.MulticlassSoftConfidenceWeightedUDTF$SCW1
    * @group classifier.multiclass
    */
+  @scala.annotation.varargs
   def train_multiclass_scw(exprs: Column*): DataFrame = {
      Generate(new HiveGenericUdtf(
         new HiveFunctionWrapper("hivemall.classifier.multiclass.MulticlassSoftConfidenceWeightedUDTF$SCW1"),
         exprs.map(_.expr)),
       join=false, outer=false, None,
-      Seq("feature", "weight", "conv").map(UnresolvedAttribute(_)),
+      Seq("label", "feature", "weight", "conv").map(UnresolvedAttribute(_)),
       df.logicalPlan)
   }
 
@@ -407,12 +435,13 @@ class HivemallOps(df: DataFrame) {
    * @see hivemall.classifier.classifier.MulticlassSoftConfidenceWeightedUDTF$SCW2
    * @group classifier.multiclass
    */
+  @scala.annotation.varargs
   def train_multiclass_scw2(exprs: Column*): DataFrame = {
      Generate(new HiveGenericUdtf(
         new HiveFunctionWrapper("hivemall.classifier.multiclass.MulticlassSoftConfidenceWeightedUDTF$SCW2"),
         exprs.map(_.expr)),
       join=false, outer=false, None,
-      Seq("feature", "weight", "conv").map(UnresolvedAttribute(_)),
+      Seq("label", "feature", "weight", "conv").map(UnresolvedAttribute(_)),
       df.logicalPlan)
   }
 
@@ -427,18 +456,26 @@ class HivemallOps(df: DataFrame) {
    * A list of added UDAF:
    *  - voted_avg
    *  - weight_voted_avg
+   *  - argmin_kld
    *  - max_label
    *  - maxrow
-   *  - argmin_kld
    */
+  @scala.annotation.varargs
   def groupby(cols: Column*): GroupedDataEx = {
     new GroupedDataEx(df, cols.map(_.expr), GroupedData.GroupByType)
+  }
+
+  @scala.annotation.varargs
+  def groupby(col1: String, cols: String*): GroupedDataEx = {
+    val colNames: Seq[String] = col1 +: cols
+    new GroupedDataEx(df, colNames.map(colName => df(colName).expr), GroupedData.GroupByType)
   }
 
   /**
    * @see hivemall.ftvec.amplify.AmplifierUDTF
    * @group ftvec.amplify
    */
+  @scala.annotation.varargs
   def amplify(exprs: Column*): DataFrame = {
     val outputAttr = exprs.drop(1).map {
       case Column(expr: NamedExpression) => UnresolvedAttribute(expr.name)
@@ -456,6 +493,7 @@ class HivemallOps(df: DataFrame) {
    * @see hivemall.ftvec.amplify.RandomAmplifierUDTF
    * @group ftvec.amplify
    */
+  @scala.annotation.varargs
   def rand_amplify(exprs: Column*): DataFrame = {
     val outputAttr = exprs.drop(2).map {
       case Column(expr: NamedExpression) => UnresolvedAttribute(expr.name)
@@ -487,6 +525,7 @@ class HivemallOps(df: DataFrame) {
    * @see hivemall.dataset.LogisticRegressionDataGeneratorUDTF
    * @group dataset
    */
+  @scala.annotation.varargs
   def lr_datagen(exprs: Column*): DataFrame = {
     Generate(new HiveGenericUdtf(
         new HiveFunctionWrapper("hivemall.dataset.LogisticRegressionDataGeneratorUDTFWrapper"),
@@ -501,7 +540,7 @@ class HivemallOps(df: DataFrame) {
    * @group ftvec
    */
   def explode_array(input: String): DataFrame = {
-    df.explode(df.col(input)) { case Row(v: Seq[_]) =>
+    df.explode(df(input)) { case Row(v: Seq[_]) =>
       v.map(s => Feature(s.asInstanceOf[String]))
     }
   }
@@ -533,6 +572,7 @@ object HivemallOps {
    * @see hivemall.ftvec.AddBiasUDF
    * @group ftvec
    */
+  @scala.annotation.varargs
   def add_bias(exprs: Column*): Column = {
     new HiveGenericUdf(new HiveFunctionWrapper(
       "hivemall.ftvec.AddBiasUDFWrapper"), exprs.map(_.expr))
@@ -546,6 +586,7 @@ object HivemallOps {
    * HiveInspectors.toInspector has a bug in spark.
    * Need to fix it later.
    */
+  @scala.annotation.varargs
   def extract_feature(exprs: Column*): Column = {
     new HiveGenericUdf(new HiveFunctionWrapper(
       "hivemall.ftvec.ExtractFeatureUDFWrapper"), exprs.map(_.expr))
@@ -559,6 +600,7 @@ object HivemallOps {
    * HiveInspectors.toInspector has a bug in spark.
    * Need to fix it later.
    */
+  @scala.annotation.varargs
   def extract_weight(exprs: Column*): Column = {
     // new HiveGenericUdf(new HiveFunctionWrapper(
     //   "hivemall.ftvec.ExtractWeightUDFWrapper"), exprs.map(_.expr))
@@ -575,6 +617,7 @@ object HivemallOps {
    * @see hivemall.ftvec.AddFeatureIndexUDFWrapper
    * @group ftvec
    */
+  @scala.annotation.varargs
   def add_feature_index(exprs: Column*): Column = {
     new HiveGenericUdf(new HiveFunctionWrapper(
       "hivemall.ftvec.AddFeatureIndexUDFWrapper"), exprs.map(_.expr))
@@ -584,6 +627,7 @@ object HivemallOps {
    * @see hivemall.ftvec.SortByFeatureUDF
    * @group ftvec
    */
+  @scala.annotation.varargs
   def sort_by_feature(exprs: Column*): Column = {
     new HiveSimpleUdf(new HiveFunctionWrapper(
       "hivemall.ftvec.SortByFeatureUDF"), exprs.map(_.expr))
@@ -593,6 +637,7 @@ object HivemallOps {
    * @see hivemall.ftvec.hashing.MurmurHash3UDF
    * @group ftvec.hashing
    */
+  @scala.annotation.varargs
   def mhash(exprs: Column*): Column = {
     new HiveSimpleUdf(new HiveFunctionWrapper(
       "hivemall.ftvec.hashing.MurmurHash3UDF"), exprs.map(_.expr))
@@ -602,6 +647,7 @@ object HivemallOps {
    * @see hivemall.ftvec.hashing.Sha1UDF
    * @group ftvec.hashing
    */
+  @scala.annotation.varargs
   def sha1(exprs: Column*): Column = {
     new HiveSimpleUdf(new HiveFunctionWrapper(
       "hivemall.ftvec.hashing.Sha1UDF"), exprs.map(_.expr))
@@ -611,6 +657,7 @@ object HivemallOps {
    * @see hivemall.ftvec.scaling.RescaleUDF
    * @group ftvec.scaling
    */
+  @scala.annotation.varargs
   def rescale(exprs: Column*): Column = {
     new HiveSimpleUdf(new HiveFunctionWrapper(
       "hivemall.ftvec.scaling.RescaleUDF"), exprs.map(_.expr))
@@ -620,6 +667,7 @@ object HivemallOps {
    * @see hivemall.ftvec.scaling.ZScoreUDF
    * @group ftvec.scaling
    */
+  @scala.annotation.varargs
   def zscore(exprs: Column*): Column = {
     new HiveSimpleUdf(new HiveFunctionWrapper(
       "hivemall.ftvec.scaling.ZScoreUDF"), exprs.map(_.expr))
@@ -629,6 +677,7 @@ object HivemallOps {
    * @see hivemall.ftvec.scaling.L2NormalizationUDF
    * @group ftvec.scaling
    */
+  @scala.annotation.varargs
   def normalize(exprs: Column*): Column = {
     new HiveGenericUdf(new HiveFunctionWrapper(
       "hivemall.ftvec.scaling.L2NormalizationUDFWrapper"), exprs.map(_.expr))
@@ -649,6 +698,7 @@ object HivemallOps {
    * @see hivemall.tools.math.SigmoidUDF
    * @group tools.math
    */
+  @scala.annotation.varargs
   def sigmoid(exprs: Column*): Column = {
     new HiveSimpleUdf(new HiveFunctionWrapper(
       "hivemall.tools.math.SigmodUDF"), exprs.map(_.expr))
