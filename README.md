@@ -63,7 +63,7 @@ sqlContext.sql("
 Support Status
 --------------------
 Hivemall v0.3.1 is currently incorporated in hivemall-spark
-Binary classification and regression have been already supported and other tasks
+Binary/multiclass classification and regression have been already supported and other tasks
 such as recommendation will appear in upcomming releases.
 
 API Documentations
