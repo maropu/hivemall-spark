@@ -19,6 +19,9 @@ package org.apache.spark.ml.feature
 
 import java.util.StringTokenizer
 
+// Used for DataFrame#explode
+case class HmFeature(feature: String)
+
 import hivemall.HivemallException
 
 import scala.collection.mutable.ListBuffer

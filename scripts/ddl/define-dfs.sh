@@ -3,6 +3,7 @@
  */
 
 import org.apache.spark.ml.feature.HmLabeledPoint
+import org.apache.spark.ml.feature.HmFeature
 import org.apache.spark.sql._
 import org.apache.spark.sql.functions._
 import org.apache.spark.sql.types._

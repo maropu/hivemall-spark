@@ -87,23 +87,20 @@ class GroupedDataEx protected[sql](
     }.toSeq)
   }
 
-  // This function assumes that input types is correct
-  private[this] def aggHivemallColumn2(col1: String, col2: String)(hiveFunc: HiveFunctionWrapper)
-    : DataFrame = {
-    val udaf = new HiveUdaf(hiveFunc, Seq(col1, col2).map(df.resolve))
-    toDF((Alias(udaf, udaf.prettyString)() :: Nil).toSeq)
-  }
-
   // TODO: Need to merge type check codes
   private[this] def checkNumericType(colName: String) = {
-    if (!df.resolve(colName).dataType.isInstanceOf[NumericType]) {
-      throw new AnalysisException(s""""$colName" must be a numeric column.""")
+    val dataType = df.resolve(colName).dataType
+    if (!dataType.isInstanceOf[NumericType]) {
+      throw new AnalysisException(
+        s""""$colName" must be a numeric column, however it is $dataType""")
     }
   }
 
   private[this] def checkStringType(colName: String) = {
-    if (!df.resolve(colName).dataType.isInstanceOf[String]) {
-      throw new AnalysisException(s""""$colName" must be a string column.""")
+    val dataType = df.resolve(colName).dataType
+    if (!dataType.isInstanceOf[StringType]) {
+      throw new AnalysisException(
+        s""""$colName" must be a string column, however it is $dataType""")
     }
   }
 
@@ -113,8 +110,10 @@ class GroupedDataEx protected[sql](
   def argmin_kld(weight: String, conv: String): DataFrame = {
     checkNumericType(weight)
     checkNumericType(conv)
-    aggHivemallColumn2(weight, conv)(
-      new HiveFunctionWrapper("hivemall.ensemble.ArgminKLDistanceUDAF"))
+    val udaf = new HiveUdaf(
+      new HiveFunctionWrapper("hivemall.ensemble.ArgminKLDistanceUDAF"),
+      Seq(weight, conv).map(df.resolve))
+    toDF((Alias(udaf, udaf.prettyString)() :: Nil).toSeq)
   }
 
   /**
@@ -123,17 +122,21 @@ class GroupedDataEx protected[sql](
   def max_label(score: String, label: String): DataFrame = {
     checkNumericType(score)
     checkStringType(label)
-    aggHivemallColumn2(score, label)(
-      new HiveFunctionWrapper("hivemall.ensemble.MaxValueLabelUDAF"))
+    val udaf = new HiveGenericUdaf(
+      new HiveFunctionWrapper("hivemall.ensemble.MaxValueLabelUDAF"),
+      Seq(score, label).map(df.resolve))
+    toDF((Alias(udaf, udaf.prettyString)() :: Nil).toSeq)
   }
 
   /**
-   * @see hivemall.ensemble.ArgminKLDistanceUDAF
+   * @see hivemall.ensemble.MaxRowUDAF
    */
   def maxrow(score: String, label: String): DataFrame = {
     checkNumericType(score)
     checkStringType(label)
-    aggHivemallColumn2(label, label)(
-      new HiveFunctionWrapper("hivemall.ensemble.MaxRowUDAF"))
+    val udaf = new HiveGenericUdaf(
+      new HiveFunctionWrapper("hivemall.ensemble.MaxRowUDAF"),
+      Seq(score, label).map(df.resolve))
+    toDF((Alias(udaf, udaf.prettyString)() :: Nil).toSeq)
   }
 }

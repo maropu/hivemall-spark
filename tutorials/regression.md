@@ -37,7 +37,7 @@ Training (PA1)
 // Make a model from the training data
 val model = trainDf
  .train_pa1_regr(add_bias($"features"), $"label")
- .groupBy("feature")
+ .groupby("feature")
  .agg("weight" -> "avg")
  .toDF("feature", "weight")
 

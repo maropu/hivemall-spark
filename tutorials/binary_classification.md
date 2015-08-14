@@ -37,7 +37,7 @@ Training (Logistic Regression)
 // Make a model from the training data
 val model = trainDf
  .train_logregr(add_bias($"features"), $"label", "-total_steps 32561")
- .groupBy("feature")
+ .groupby("feature")
  .agg("weight" -> "avg")
  .toDF("feature", "weight")
 

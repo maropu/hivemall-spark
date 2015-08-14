@@ -17,11 +17,11 @@
 
 package org.apache.spark.sql.hive
 
+import org.apache.spark.sql._
 import org.apache.spark.sql.catalyst.analysis.UnresolvedAttribute
-import org.apache.spark.sql.catalyst.expressions.{ScalaUdf, Expression, NamedExpression}
+import org.apache.spark.sql.catalyst.expressions.{Expression, NamedExpression, ScalaUdf}
 import org.apache.spark.sql.catalyst.plans.logical.{Generate, LogicalPlan}
 import org.apache.spark.sql.types.StringType
-import org.apache.spark.sql._
 
 // Used in explode_array()
 private[spark] case class Feature(feature: String)
@@ -588,8 +588,9 @@ object HivemallOps {
    */
   @scala.annotation.varargs
   def extract_feature(exprs: Column*): Column = {
-    new HiveGenericUdf(new HiveFunctionWrapper(
-      "hivemall.ftvec.ExtractFeatureUDFWrapper"), exprs.map(_.expr))
+    val hiveUdf = new HiveGenericUdf(
+      new HiveFunctionWrapper("hivemall.ftvec.ExtractFeatureUDFWrapper"), exprs.map(_.expr))
+    Column(hiveUdf).as("feature")
   }
 
   /**
@@ -610,7 +611,7 @@ object HivemallOps {
         case _ => ""
       }
     }
-    Column(ScalaUdf(f, StringType, exprs.map(_.expr)))
+    Column(ScalaUdf(f, StringType, exprs.map(_.expr))).as("value")
   }
 
   /**
@@ -691,7 +692,7 @@ object HivemallOps {
     // HadoopUtils#getTaskId() does not work correctly in Spark, so
     // monotonicallyIncreasingId() is used for rowid() instead of
     // hivemall.tools.mapred.RowIdUDFWrapper.
-    functions.monotonicallyIncreasingId()
+    functions.monotonicallyIncreasingId().as("rowid")
   }
 
   /**
