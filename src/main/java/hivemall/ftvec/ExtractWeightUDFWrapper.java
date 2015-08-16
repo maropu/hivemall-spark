@@ -73,10 +73,8 @@ public class ExtractWeightUDFWrapper extends GenericUDF {
 
         argumentOI = (ListObjectInspector) arguments[0];
 
-        ObjectInspector listElemOI = PrimitiveObjectInspectorFactory.writableFloatObjectInspector;
-        ObjectInspector returnElemOI = ObjectInspectorUtils.getStandardObjectInspector(listElemOI);
-
-        return ObjectInspectorFactory.getStandardListObjectInspector(returnElemOI);
+        return ObjectInspectorFactory.getStandardListObjectInspector(
+                PrimitiveObjectInspectorFactory.writableFloatObjectInspector);
     }
 
     @Override

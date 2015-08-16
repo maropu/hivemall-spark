@@ -69,10 +69,8 @@ public class AddFeatureIndexUDFWrapper extends GenericUDF {
 
         argumentOI = (ListObjectInspector) arguments[0];
 
-        ObjectInspector listElemOI = PrimitiveObjectInspectorFactory.javaStringObjectInspector;
-        ObjectInspector returnElemOI = ObjectInspectorUtils.getStandardObjectInspector(listElemOI);
-
-        return ObjectInspectorFactory.getStandardListObjectInspector(returnElemOI);
+        return ObjectInspectorFactory.getStandardListObjectInspector(
+                PrimitiveObjectInspectorFactory.javaStringObjectInspector);
     }
 
     @Override

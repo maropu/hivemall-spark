@@ -68,10 +68,8 @@ public class AddBiasUDFWrapper extends GenericUDF {
 
         argumentOI = (ListObjectInspector) arguments[0];
 
-        ObjectInspector listElemOI = argumentOI.getListElementObjectInspector();
-        ObjectInspector returnElemOI = ObjectInspectorUtils.getStandardObjectInspector(listElemOI);
-
-        return ObjectInspectorFactory.getStandardListObjectInspector(returnElemOI);
+        return ObjectInspectorFactory.getStandardListObjectInspector(
+                argumentOI.getListElementObjectInspector());
     }
 
     @Override
