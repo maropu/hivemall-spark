@@ -36,10 +36,9 @@ Training (CW)
 ```
 // Make a model from the training data
 val model = trainDf
- .train_multiclass_cw(add_bias($"features"), $"label".cast(IntegerType))
- .groupby("label", "feature")
- .argmin_kld("weight", "conv")
- .toDF("label", "feature", "weight")
+  .train_multiclass_cw(add_bias($"features"), $"label".cast(IntegerType))
+  .groupby("label", "feature").argmin_kld("weight", "conv")
+  .as("label", "feature", "weight")
 ```
 
 Test
@@ -61,11 +60,9 @@ val testDf_exploded = testDf.explode_array($"features")
 val predict = testDf_exploded
   .join(model, testDf_exploded("feature") === model("feature"), "LEFT_OUTER")
   .select($"rowid", $"label".cast(StringType).as("label"), ($"weight" * $"value").as("value"))
-  .groupby("rowid", "label")
-  .sum("value")
-  .groupby("rowid")
-  .maxrow("SUM(value)", "label")
-  .toDF("rowid", "r")
+  .groupby("rowid", "label").sum("value")
+  .groupby("rowid").maxrow("SUM(value)", "label")
+  .as("rowid", "r")
   .select($"rowid", $"r.col0".as("score"), $"r.col1".as("predict"))
   .cache
 ```

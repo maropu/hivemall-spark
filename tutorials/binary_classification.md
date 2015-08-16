@@ -36,12 +36,12 @@ Training (Logistic Regression)
 ```
 // Make a model from the training data
 val model = trainDf
- .train_logregr(add_bias($"features"), $"label", "-total_steps 32561")
- .groupby("feature")
- .agg("weight" -> "avg")
- .toDF("feature", "weight")
+  .train_logregr(add_bias($"features"), $"label", "-total_steps 32561")
+  .groupby("feature").agg("weight" -> "avg")
+  .as("feature", "weight")
 
-val modelUdf = HivemallUtils.funcModel(model)
+val modelUdf = HivemallUtils
+  .funcModel(model)
 ```
 
 Test

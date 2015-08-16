@@ -546,6 +546,13 @@ class HivemallOps(df: DataFrame) {
 
   def explode_array(input: String): DataFrame =
     this.explode_array(df(input))
+
+  /**
+   * Returns a new [[DataFrame]] with columns renamed.
+   * This is a wrapper for DataFrame#toDF.
+   */
+  @scala.annotation.varargs
+  def as(colNames: String*): DataFrame = df.toDF(colNames: _*)
 }
 
 object HivemallOps {

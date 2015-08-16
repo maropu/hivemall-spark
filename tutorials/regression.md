@@ -36,12 +36,12 @@ Training (PA1)
 ```
 // Make a model from the training data
 val model = trainDf
- .train_pa1_regr(add_bias($"features"), $"label")
- .groupby("feature")
- .agg("weight" -> "avg")
- .toDF("feature", "weight")
+  .train_pa1_regr(add_bias($"features"), $"label")
+  .groupby("feature").agg("weight" -> "avg")
+  .as("feature", "weight")
 
-val modelUdf = HivemallUtils.funcModel(model)
+val modelUdf = HivemallUtils
+  .funcModel(model)
 ```
 
 Test
