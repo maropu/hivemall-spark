@@ -17,14 +17,12 @@
 
 package org.apache.spark.sql.hive
 
+import org.apache.spark.ml.feature.HmFeature
 import org.apache.spark.sql._
 import org.apache.spark.sql.catalyst.analysis.UnresolvedAttribute
 import org.apache.spark.sql.catalyst.expressions.{Expression, NamedExpression, ScalaUdf}
 import org.apache.spark.sql.catalyst.plans.logical.{Generate, LogicalPlan}
 import org.apache.spark.sql.types.StringType
-
-// Used in explode_array()
-private[spark] case class Feature(feature: String)
 
 /**
  * A wrapper of hivemall for DataFrame.
@@ -539,11 +537,15 @@ class HivemallOps(df: DataFrame) {
    * Split Seq[String] into pieces.
    * @group ftvec
    */
-  def explode_array(input: String): DataFrame = {
-    df.explode(df(input)) { case Row(v: Seq[_]) =>
-      v.map(s => Feature(s.asInstanceOf[String]))
+  def explode_array(input: Column): DataFrame = {
+    df.explode(input) { case Row(v: Seq[_]) =>
+      // Type erasure removes the component type in Seq
+      v.map(s => HmFeature(s.asInstanceOf[String]))
     }
   }
+
+  def explode_array(input: String): DataFrame =
+    this.explode_array(df(input))
 }
 
 object HivemallOps {
