@@ -29,7 +29,9 @@ import org.apache.hadoop.hive.serde2.objectinspector.primitive.PrimitiveObjectIn
 import java.util.UUID;
 
 /** A wrapper of [[hivemall.tools.mapred.RowIdUDF]]. */
-@Description(name = "rowid", value = "_FUNC_() - Returns a generated row id of a form {TASK_ID}-{UUID}-{SEQUENCE_NUMBER}")
+@Description(
+    name = "rowid",
+    value = "_FUNC_() - Returns a generated row id of a form {TASK_ID}-{UUID}-{SEQUENCE_NUMBER}")
 @UDFType(deterministic = false, stateful = true)
 public class RowIdUDFWrapper extends GenericUDF {
     /**

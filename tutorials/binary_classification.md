@@ -26,9 +26,10 @@ scala> :paste
 val trainRdd = sc.textFile("a9a.train")
   .map(HmLabeledPoint.parse)
 
-// Transform into a DataFrame and amplify the data by 3 times
+// Create the DataFrame that has exactly 2 partitions and
+// amplify the data by 3 times.
 val trainDf = sqlContext.createDataFrame(trainRdd)
-  .part_amplify(3)
+  .coalesce(2).part_amplify(3)
 ```
 
 Training (Logistic Regression)
