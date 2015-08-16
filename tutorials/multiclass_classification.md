@@ -54,10 +54,7 @@ val testRdd = sc.textFile("news20.test")
 val testDf = sqlContext.createDataFrame(testRdd)
   .select(rowid(), $"label".cast(IntegerType).as("target"), $"features")
 
-val testDf_exploded = testDf
-  .explode($"features") { case Row(ft: Seq[String]) =>
-    ft.map(e => HmFeature(e))
-  }
+val testDf_exploded = testDf.explode_array($"features")
   .select($"rowid", $"target", extract_feature($"feature"), extract_weight($"feature"))
 
 // Do prediction
