@@ -514,6 +514,7 @@ class HivemallOps(df: DataFrame) {
       val elems = iter.flatMap{ row =>
         Seq.fill[Row](xtimes)(row)
       }
+      // Need to check how this shuffling affects results
       scala.util.Random.shuffle(elems)
     }, true)
     df.sqlContext.createDataFrame(rdd, df.schema)
