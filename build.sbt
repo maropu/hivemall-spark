@@ -11,6 +11,9 @@ unmanagedSourceDirectories in Compile += baseDirectory.value / "extra-src/v0.13.
 // To avoid compiler errors in sut-doc
 sources in doc in Compile := List()
 
+// To skip unit tests in assembly
+test in assembly := {}
+
 net.virtualvoid.sbt.graph.Plugin.graphSettings
 
 // spark-package settings
@@ -28,9 +31,9 @@ credentials += Credentials(Path.userHome / ".ivy2" / ".sbtcredentials")
 // addCompilerPlugin("org.scalamacros" % "paradise" % "2.1.0-M5" cross CrossVersion.full)
 
 libraryDependencies ++= Seq(
-  "org.scalatest" % "scalatest_2.10" % "2.2.4",
   "io.github.myui" % "hivemall" % "0.3.1",
-  "org.xerial" % "xerial-core" % "3.2.3"
+  "org.scalatest" % "scalatest_2.10" % "2.2.4" % "provided",
+  "org.xerial" % "xerial-core" % "3.2.3" % "provided"
 )
 
 mergeStrategy in assembly := {
