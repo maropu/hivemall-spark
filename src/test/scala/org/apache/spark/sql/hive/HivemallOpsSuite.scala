@@ -18,23 +18,24 @@
 package org.apache.spark.sql.hive
 
 import hivemall.tools.RegressionDatagen
-import org.apache.spark.sql.Row
 import org.apache.spark.sql.hive.HivemallOps._
 import org.apache.spark.sql.hive.HivemallUtils._
 import org.apache.spark.sql.hive.test.TestHive
 import org.apache.spark.sql.types._
-import org.scalatest.FunSuite
+import org.apache.spark.sql.{QueryTest, Row}
 
 import scala.collection.mutable.ArrayBuffer
 
-class HivemallOpsSuite extends FunSuite {
+class HivemallOpsSuite extends QueryTest {
   import org.apache.spark.sql.hive.HivemallOpsSuite._
   import org.apache.spark.sql.hive.test.TestHive.implicits._
   import org.apache.spark.test.TestDoubleWrapper._
 
   test("hivemall_version") {
-    assert(DummyInputData.select(hivemall_version()).head
-      === Row("0.3.1"))
+    checkAnswer(
+      DummyInputData.select(hivemall_version()).distinct,
+      Row("0.3.1")
+    )
   }
 
   test("add_bias") {

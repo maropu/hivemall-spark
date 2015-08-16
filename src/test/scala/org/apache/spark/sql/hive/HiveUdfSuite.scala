@@ -24,6 +24,17 @@ class HiveUdfSuite extends QueryTest {
   import org.apache.spark.sql.hive.test.TestHive.implicits._
   import org.apache.spark.sql.hive.test.TestHive.sql
 
+  test("hivemall_version") {
+    sql(s"CREATE TEMPORARY FUNCTION hivemall_version " +
+      s"AS '${classOf[hivemall.HivemallVersionUDF].getName}'")
+    checkAnswer(
+      sql(s"SELECT DISTINCT hivemall_version()"),
+      Row("0.3.1")
+    )
+    // sql("DROP TEMPORARY FUNCTION IF EXISTS hivemall_version")
+    // TestHive.reset()
+  }
+
   test("train_logregr") {
     TinyTrainData.registerTempTable("TinyTrainData")
     sql(s"CREATE TEMPORARY FUNCTION train_logregr " +
