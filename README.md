@@ -52,19 +52,20 @@ say a SQL statements as follows;
 scala> :load define-udfs.sh
 
 sqlContext.sql("
-  SELECT model.feature, AVG(model.weight) AS weight
+  SELECT feature, AVG(weight) AS weight
     FROM (
       SELECT train_logregr(add_bias(features), label AS(feature, weight)
         FROM trainTable
     ) model
-    GROUP BY model.feature")
+    GROUP BY feature")
 ```
 
 Support Status
 --------------------
-Hivemall v0.3.1 is currently incorporated in hivemall-spark
-Binary/multiclass classification and regression have been already supported and other tasks
-such as recommendation will appear in upcomming releases.
+Hivemall v0.3.1 is currently incorporated in hivemall-spark.
+The most functions can be available in HiveContext.
+On the other hand, binary/multiclass classification and regression is supported in DataFrame
+and other tasks such as recommendation will appear in upcomming releases.
 
 API Documentations
 --------------------
