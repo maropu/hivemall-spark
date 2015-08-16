@@ -17,10 +17,12 @@
 
 package hivemall.ftvec;
 
+import org.apache.hadoop.hive.ql.exec.Description;
 import org.apache.hadoop.hive.ql.exec.UDFArgumentException;
 import org.apache.hadoop.hive.ql.exec.UDFArgumentLengthException;
 import org.apache.hadoop.hive.ql.exec.UDFArgumentTypeException;
 import org.apache.hadoop.hive.ql.metadata.HiveException;
+import org.apache.hadoop.hive.ql.udf.UDFType;
 import org.apache.hadoop.hive.ql.udf.generic.GenericUDF;
 import org.apache.hadoop.hive.serde2.objectinspector.*;
 import org.apache.hadoop.hive.serde2.objectinspector.ObjectInspector.Category;
@@ -39,6 +41,8 @@ import java.util.Map;
  * That is, spark cannot handle Map<> as a return type in Hive UDF.
  * Therefore, the type must be passed via ObjectInspector.
  */
+@Description(name = "sort_by_feature", value = "_FUNC_(map in map<int,float>) - Returns a sorted map")
+@UDFType(deterministic = true, stateful = false)
 public class SortByFeatureUDFWrapper extends GenericUDF {
     private SortByFeatureUDF udf = new SortByFeatureUDF();
 

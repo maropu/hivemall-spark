@@ -17,6 +17,7 @@
 
 package hivemall.tools.mapred;
 
+import org.apache.hadoop.hive.ql.exec.Description;
 import org.apache.hadoop.hive.ql.exec.UDFArgumentException;
 import org.apache.hadoop.hive.ql.exec.UDFArgumentLengthException;
 import org.apache.hadoop.hive.ql.metadata.HiveException;
@@ -27,21 +28,8 @@ import org.apache.hadoop.hive.serde2.objectinspector.primitive.PrimitiveObjectIn
 
 import java.util.UUID;
 
-/**
- * A wrapper of [[hivemall.tools.mapred.RowIdUDF]].
- *
- * TODO: This is needed because Spark throws an exception below
- * when it calls UDF with no argument, and why?
- *
- * org.apache.spark.SparkException: Job aborted due to stage failure: Task 0 in stage 8.0 failed 1 times,
- *     most recent failure: Lost task 0.0 in stage 8.0 (TID 18, localhost):
- *     org.apache.hadoop.hive.ql.metadata.HiveException: Unable to execute method
- *     public org.apache.hadoop.io.Text hivemall.tools.mapred.RowIdUDF.evaluate() on
- *     object hivemall.tools.mapred.RowIdUDF@77549ef6 of class hivemall.tools.mapred.RowIdUDF
- *     with arguments {} of size 0
- *   at org.apache.hadoop.hive.ql.exec.FunctionRegistry.invoke(FunctionRegistry.java:1243)
- *   at org.apache.spark.sql.hive.HiveSimpleUdf.eval(hiveUdfs.scala:118)
- */
+/** A wrapper of [[hivemall.tools.mapred.RowIdUDF]]. */
+@Description(name = "rowid", value = "_FUNC_() - Returns a generated row id of a form {TASK_ID}-{UUID}-{SEQUENCE_NUMBER}")
 @UDFType(deterministic = false, stateful = true)
 public class RowIdUDFWrapper extends GenericUDF {
     /**

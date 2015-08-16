@@ -17,10 +17,12 @@
 
 package hivemall.ftvec;
 
+import org.apache.hadoop.hive.ql.exec.Description;
 import org.apache.hadoop.hive.ql.exec.UDFArgumentException;
 import org.apache.hadoop.hive.ql.exec.UDFArgumentLengthException;
 import org.apache.hadoop.hive.ql.exec.UDFArgumentTypeException;
 import org.apache.hadoop.hive.ql.metadata.HiveException;
+import org.apache.hadoop.hive.ql.udf.UDFType;
 import org.apache.hadoop.hive.ql.udf.generic.GenericUDF;
 import org.apache.hadoop.hive.serde2.objectinspector.*;
 import org.apache.hadoop.hive.serde2.objectinspector.ObjectInspector.Category;
@@ -38,6 +40,8 @@ import java.util.List;
  * That is, spark cannot handle List<> as a return type in Hive UDF.
  * Therefore, the type must be passed via ObjectInspector.
  */
+@Description(name = "add_bias", value = "_FUNC_(feature_vector in array<string>) - Returns features with a bias in array<string>")
+@UDFType(deterministic = true, stateful = false)
 public class AddBiasUDFWrapper extends GenericUDF {
     private AddBiasUDF udf = new AddBiasUDF();
 

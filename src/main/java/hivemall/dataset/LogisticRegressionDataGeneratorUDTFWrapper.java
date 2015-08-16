@@ -20,6 +20,7 @@ package hivemall.dataset;
 import hivemall.UDTFWithOptions;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Options;
+import org.apache.hadoop.hive.ql.exec.Description;
 import org.apache.hadoop.hive.ql.exec.UDFArgumentException;
 import org.apache.hadoop.hive.ql.metadata.HiveException;
 import org.apache.hadoop.hive.ql.udf.generic.Collector;
@@ -36,6 +37,7 @@ import java.util.Random;
  * This wrapper is needed because Spark cannot handle
  * HadoopUtils#getTaskId() correctly.
  */
+@Description(name = "lr_datagen", value = "_FUNC_(options string) - Generates a logistic regression dataset")
 public final class LogisticRegressionDataGeneratorUDTFWrapper extends UDTFWithOptions {
     private transient LogisticRegressionDataGeneratorUDTF udtf = new LogisticRegressionDataGeneratorUDTF();
 
