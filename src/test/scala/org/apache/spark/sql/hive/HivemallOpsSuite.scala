@@ -21,7 +21,7 @@ import hivemall.tools.RegressionDatagen
 import org.apache.spark.sql.Row
 import org.apache.spark.sql.hive.HivemallOps._
 import org.apache.spark.sql.hive.HivemallUtils._
-import org.apache.spark.sql.test._
+import org.apache.spark.sql.hive.test.TestHive
 import org.apache.spark.sql.types._
 import org.scalatest.FunSuite
 
@@ -29,7 +29,7 @@ import scala.collection.mutable.ArrayBuffer
 
 class HivemallOpsSuite extends FunSuite {
   import org.apache.spark.sql.hive.HivemallOpsSuite._
-  import org.apache.spark.sql.test.TestSQLContext.implicits._
+  import org.apache.spark.sql.hive.test.TestHive.implicits._
   import org.apache.spark.test.TestDoubleWrapper._
 
   test("hivemall_version") {
@@ -63,13 +63,13 @@ class HivemallOpsSuite extends FunSuite {
 
   test("add_feature_index") {
     val DoubleListData = {
-      val rowRdd = TestSQLContext.sparkContext.parallelize(
+      val rowRdd = TestHive.sparkContext.parallelize(
           Row(0.8 :: 0.5 :: Nil) ::
           Row(0.3 :: 0.1 :: Nil) ::
           Row(0.2 :: Nil) ::
           Nil
         )
-      TestSQLContext.createDataFrame(
+      TestHive.createDataFrame(
         rowRdd,
         StructType(
           StructField("data", ArrayType(DoubleType), true) ::
@@ -133,13 +133,13 @@ class HivemallOpsSuite extends FunSuite {
    */
   ignore("sort_by_feature") {
     val IntFloatMapData = {
-      val rowRdd = TestSQLContext.sparkContext.parallelize(
+      val rowRdd = TestHive.sparkContext.parallelize(
           Row(Map(1->0.3f, 2->0.1f, 3->0.5f)) ::
           Row(Map(2->0.4f, 1->0.2f)) ::
           Row(Map(2->0.4f, 3->0.2f, 1->0.1f, 4->0.6f)) ::
           Nil
         )
-      TestSQLContext.createDataFrame(
+      TestHive.createDataFrame(
         rowRdd,
         StructType(
           StructField("data", MapType(IntegerType, FloatType), true) ::
@@ -426,10 +426,10 @@ class HivemallOpsSuite extends FunSuite {
 object HivemallOpsSuite {
 
   val DummyInputData = {
-    val rowRdd = TestSQLContext.sparkContext.parallelize(
+    val rowRdd = TestHive.sparkContext.parallelize(
         (0 until 4).map(Row(_))
       )
-    val df = TestSQLContext.createDataFrame(
+    val df = TestHive.createDataFrame(
       rowRdd,
       StructType(
         StructField("data", IntegerType, true) ::
@@ -439,13 +439,13 @@ object HivemallOpsSuite {
   }
 
   val TinyTrainData = {
-    val rowRdd = TestSQLContext.sparkContext.parallelize(
+    val rowRdd = TestHive.sparkContext.parallelize(
         Row(0.0, "1:0.8" :: "2:0.2" :: Nil) ::
         Row(1.0, "2:0.7" :: Nil) ::
         Row(0.0, "1:0.9" :: Nil) ::
         Nil
       )
-    val df = TestSQLContext.createDataFrame(
+    val df = TestHive.createDataFrame(
       rowRdd,
       StructType(
         StructField("label", DoubleType, true) ::
@@ -456,7 +456,7 @@ object HivemallOpsSuite {
   }
 
   val TinyTestData = {
-    val rowRdd = TestSQLContext.sparkContext.parallelize(
+    val rowRdd = TestHive.sparkContext.parallelize(
         Row(0.0, "1:0.6" :: "2:0.1" :: Nil) ::
         Row(1.0, "2:0.9" :: Nil) ::
         Row(0.0, "1:0.2" :: Nil) ::
@@ -464,7 +464,7 @@ object HivemallOpsSuite {
         Row(0.0, "0:0.6" :: "2:0.4" :: Nil) ::
         Nil
       )
-    val df = TestSQLContext.createDataFrame(
+    val df = TestHive.createDataFrame(
       rowRdd,
       StructType(
         StructField("label", DoubleType, true) ::
@@ -475,11 +475,11 @@ object HivemallOpsSuite {
   }
 
   val TinyScoreData = {
-    val rowRdd = TestSQLContext.sparkContext.parallelize(
+    val rowRdd = TestHive.sparkContext.parallelize(
         Row(0.8f) :: Row(-0.3f) :: Row(0.2f) ::
         Nil
       )
-    val df = TestSQLContext.createDataFrame(
+    val df = TestHive.createDataFrame(
       rowRdd,
       StructType(
         StructField("score", FloatType, true) ::
@@ -489,8 +489,8 @@ object HivemallOpsSuite {
   }
 
   val LargeTrainData = RegressionDatagen.exec(
-    TestSQLContext, n_partitions=2, min_examples=10000, seed=3)
+    TestHive, n_partitions=2, min_examples=10000, seed=3)
 
   val LargeTestData = RegressionDatagen.exec(
-    TestSQLContext, n_partitions=2, min_examples=1000, seed=15)
+    TestHive, n_partitions=2, min_examples=1000, seed=15)
 }

@@ -17,21 +17,31 @@
 
 package org.apache.spark.sql.hive
 
-import org.apache.spark.sql.hive.test.TestHive
 import org.apache.spark.sql.{QueryTest, Row}
 
 class HiveUdfSuite extends QueryTest {
-  import org.apache.spark.sql.hive.test.TestHive.sql
   import org.apache.spark.sql.hive.HivemallOpsSuite._
+  import org.apache.spark.sql.hive.test.TestHive.implicits._
+  import org.apache.spark.sql.hive.test.TestHive.sql
 
-  ignore("train_logregr") {
+  test("train_logregr") {
     TinyTrainData.registerTempTable("TinyTrainData")
-    sql(s"CREATE TEMPORARY FUNCTION train_logregr AS '${classOf[hivemall.regression.LogressUDTF].getName}'")
-    checkAnswer(
-      sql("SELECT train_logregr(label, features) FROM TinyTrainData"),
-      Seq(Row("1", 0.5), Row("2", 0.1)))
-    sql("DROP TEMPORARY FUNCTION IF EXISTS train_logregr")
-    TestHive.reset()
+    sql(s"CREATE TEMPORARY FUNCTION train_logregr " +
+      s"AS '${classOf[hivemall.regression.LogressUDTF].getName}'")
+    sql(s"CREATE TEMPORARY FUNCTION add_bias " +
+      s"AS '${classOf[hivemall.ftvec.AddBiasUDFWrapper].getName}'")
+    val model = sql(
+      "SELECT feature, AVG(weight) AS weight " +
+        "FROM (SELECT train_logregr(add_bias(features), label) AS (feature, weight)" +
+        "  FROM TinyTrainData) t " +
+        "GROUP BY feature")
+    checkAnswer(model.select($"feature"), Seq(Row("0"), Row("1"), Row("2")))
+    // Why 'train_logregr' is not registered in HiveMetaStore
+    // ERROR RetryingHMSHandler: MetaException(message:NoSuchObjectException
+    //   (message:Function default.train_logregr does not exist))
+    //
+    // sql("DROP TEMPORARY FUNCTION IF EXISTS train_logregr")
+    // TestHive.reset()
   }
 }
 
