@@ -22,13 +22,10 @@ import org.apache.hadoop.hive.ql.exec.UDFArgumentLengthException;
 import org.apache.hadoop.hive.ql.exec.UDFArgumentTypeException;
 import org.apache.hadoop.hive.ql.metadata.HiveException;
 import org.apache.hadoop.hive.ql.udf.generic.GenericUDF;
-import org.apache.hadoop.hive.serde.serdeConstants;
 import org.apache.hadoop.hive.serde2.objectinspector.*;
 import org.apache.hadoop.hive.serde2.objectinspector.ObjectInspector.Category;
 import org.apache.hadoop.hive.serde2.objectinspector.PrimitiveObjectInspector.PrimitiveCategory;
-import org.apache.hadoop.hive.serde2.objectinspector.primitive.JavaStringObjectInspector;
 import org.apache.hadoop.hive.serde2.objectinspector.primitive.PrimitiveObjectInspectorFactory;
-import org.apache.hadoop.hive.serde2.typeinfo.TypeInfoFactory;
 import org.apache.hadoop.io.Text;
 
 import java.util.ArrayList;
@@ -39,16 +36,14 @@ import java.util.List;
  * A wrapper of [[hivemall.ftvec.AddFeatureIndexUDF]].
  *
  * NOTE: This is needed to avoid the issue of Spark reflection.
- * That is, spark-1.3 cannot handle List<> as a return type in Hive UDF.
- * The type must be passed via ObjectInspector.
- * This issues has been reported in SPARK-6747, so a future
- * release of Spark makes the wrapper obsolete.
+ * That is, spark cannot handle List<> as a return type in Hive UDF.
+ * Therefore, the type must be passed via ObjectInspector.
  */
 public class AddFeatureIndexUDFWrapper extends GenericUDF {
     private AddFeatureIndexUDF udf = new AddFeatureIndexUDF();
 
     private List<Text> retValue = new ArrayList<Text>();
-    private ListObjectInspector argumentOIs = null;
+    private ListObjectInspector argumentOI = null;
 
     @Override
     public ObjectInspector initialize(ObjectInspector[] arguments) throws UDFArgumentException {
@@ -68,11 +63,11 @@ public class AddFeatureIndexUDFWrapper extends GenericUDF {
                 }
             default:
                 throw new UDFArgumentTypeException(0,
-                    "add_feature_index() must have List[Double] as an argument, but "
+                    "add_feature_index() must have List[double] as an argument, but "
                         + arguments[0].getTypeName() + " was found.");
         }
 
-        argumentOIs = (ListObjectInspector) arguments[0];
+        argumentOI = (ListObjectInspector) arguments[0];
 
         ObjectInspector listElemOI = PrimitiveObjectInspectorFactory.javaStringObjectInspector;
         ObjectInspector returnElemOI = ObjectInspectorUtils.getStandardObjectInspector(listElemOI);
@@ -84,7 +79,7 @@ public class AddFeatureIndexUDFWrapper extends GenericUDF {
     public Object evaluate(DeferredObject[] arguments) throws HiveException {
         assert(arguments.length == 1);
         final Object arrayObject = arguments[0].get();
-        final ListObjectInspector arrayOI = (ListObjectInspector) argumentOIs;
+        final ListObjectInspector arrayOI = argumentOI;
         @SuppressWarnings("unchecked")
         final List<Double> input = (List<Double>) arrayOI.getList(arrayObject);
         retValue = udf.evaluate(input);

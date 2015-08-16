@@ -35,16 +35,14 @@ import java.util.List;
  * A wrapper of [[hivemall.ftvec.AddBiasUDF]].
  *
  * NOTE: This is needed to avoid the issue of Spark reflection.
- * That is, spark-1.3 cannot handle List<> as a return type in Hive UDF.
- * The type must be passed via ObjectInspector.
- * This issues has been reported in SPARK-6747, so a future
- * release of Spark makes the wrapper obsolete.
+ * That is, spark cannot handle List<> as a return type in Hive UDF.
+ * Therefore, the type must be passed via ObjectInspector.
  */
 public class AddBiasUDFWrapper extends GenericUDF {
     private AddBiasUDF udf = new AddBiasUDF();
 
     private List<Text> retValue = new ArrayList<Text>();
-    private ListObjectInspector argumentOIs = null;
+    private ListObjectInspector argumentOI = null;
 
     @Override
     public ObjectInspector initialize(ObjectInspector[] arguments) throws UDFArgumentException {
@@ -68,9 +66,9 @@ public class AddBiasUDFWrapper extends GenericUDF {
                         + arguments[0].getTypeName() + " was found.");
         }
 
-        argumentOIs = (ListObjectInspector) arguments[0];
+        argumentOI = (ListObjectInspector) arguments[0];
 
-        ObjectInspector listElemOI = argumentOIs.getListElementObjectInspector();
+        ObjectInspector listElemOI = argumentOI.getListElementObjectInspector();
         ObjectInspector returnElemOI = ObjectInspectorUtils.getStandardObjectInspector(listElemOI);
 
         return ObjectInspectorFactory.getStandardListObjectInspector(returnElemOI);
@@ -80,7 +78,7 @@ public class AddBiasUDFWrapper extends GenericUDF {
     public Object evaluate(DeferredObject[] arguments) throws HiveException {
         assert(arguments.length == 1);
         final Object arrayObject = arguments[0].get();
-        final ListObjectInspector arrayOI = (ListObjectInspector) argumentOIs;
+        final ListObjectInspector arrayOI = argumentOI;
         @SuppressWarnings("unchecked")
         final List<String> input = (List<String>) arrayOI.getList(arrayObject);
         retValue = udf.evaluate(input);

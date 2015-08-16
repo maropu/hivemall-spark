@@ -640,8 +640,8 @@ object HivemallOps {
    */
   @scala.annotation.varargs
   def sort_by_feature(exprs: Column*): Column = {
-    new HiveSimpleUdf(new HiveFunctionWrapper(
-      "hivemall.ftvec.SortByFeatureUDF"), exprs.map(_.expr))
+    new HiveGenericUdf(new HiveFunctionWrapper(
+      "hivemall.ftvec.SortByFeatureUDFWrapper"), exprs.map(_.expr))
   }
 
   /**

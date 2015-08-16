@@ -148,11 +148,12 @@ class HivemallOpsSuite extends QueryTest {
         )
     }
 
-    assert(IntFloatMapData.select(sort_by_feature($"data")).collect.toSet
-      === Set(
+    checkAnswer(IntFloatMapData.select(sort_by_feature($"data")),
+      Seq(
         Row(Map(1->0.3f, 2->0.1f, 3->0.5f),
         Row(Map(1->0.2f, 2->0.4f)),
-        Row(Map(1->0.1f, 2->0.4f, 3->0.2f, 4->0.6f)))))
+        Row(Map(1->0.1f, 2->0.4f, 3->0.2f, 4->0.6f))))
+    )
   }
 
   test("train_adadelta") {

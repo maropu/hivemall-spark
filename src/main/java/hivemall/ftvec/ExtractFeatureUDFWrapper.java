@@ -36,14 +36,12 @@ import java.util.List;
  * A wrapper of [[hivemall.ftvec.ExtractFeatureUDF]].
  *
  * NOTE: This is needed to avoid the issue of Spark reflection.
- * That is, spark-1.3 cannot handle List<> as a return type in Hive UDF.
- * The type must be passed via ObjectInspector.
- * This issues has been reported in SPARK-6747, so a future
- * release of Spark makes the wrapper obsolete.
+ * That is, spark cannot handle List<> as a return type in Hive UDF.
+ * Therefore, the type must be passed via ObjectInspector.
  */
 public class ExtractFeatureUDFWrapper extends GenericUDF {
     private ExtractFeatureUDF udf = new ExtractFeatureUDF();
-    private PrimitiveObjectInspector argOI = null;
+    private PrimitiveObjectInspector argumentOI = null;
 
     @Override
     public ObjectInspector initialize(ObjectInspector[] arguments) throws UDFArgumentException {
@@ -53,8 +51,8 @@ public class ExtractFeatureUDFWrapper extends GenericUDF {
         }
         switch(arguments[0].getCategory()) {
             case PRIMITIVE:
-                argOI = (PrimitiveObjectInspector) arguments[0];
-                if (argOI.getPrimitiveCategory()
+                argumentOI = (PrimitiveObjectInspector) arguments[0];
+                if (argumentOI.getPrimitiveCategory()
                         == PrimitiveCategory.STRING) {
                     break;
                 }
@@ -69,7 +67,7 @@ public class ExtractFeatureUDFWrapper extends GenericUDF {
     @Override
     public Object evaluate(DeferredObject[] arguments) throws HiveException {
         assert(arguments.length == 1);
-        final String input = (String) argOI.getPrimitiveJavaObject(arguments[0].get());
+        final String input = (String) argumentOI.getPrimitiveJavaObject(arguments[0].get());
         return udf.evaluate(input);
     }
 
