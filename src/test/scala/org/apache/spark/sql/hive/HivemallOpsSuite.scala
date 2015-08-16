@@ -24,7 +24,7 @@ import org.apache.spark.sql.hive.test.TestHive
 import org.apache.spark.sql.types._
 import org.apache.spark.sql.{QueryTest, Row}
 
-import scala.collection.mutable.ArrayBuffer
+import scala.collection.mutable.Seq
 
 class HivemallOpsSuite extends QueryTest {
   import org.apache.spark.sql.hive.HivemallOpsSuite._
@@ -41,9 +41,9 @@ class HivemallOpsSuite extends QueryTest {
   test("add_bias") {
     assert(TinyTrainData.select(add_bias($"features")).collect.toSet
       === Set(
-        Row(ArrayBuffer("1:0.8", "2:0.2", "0:1.0")),
-        Row(ArrayBuffer("2:0.7", "0:1.0")),
-        Row(ArrayBuffer("1:0.9", "0:1.0"))))
+        Row(Seq("1:0.8", "2:0.2", "0:1.0")),
+        Row(Seq("2:0.7", "0:1.0")),
+        Row(Seq("1:0.9", "0:1.0"))))
   }
 
   test("extract_feature") {
@@ -80,9 +80,9 @@ class HivemallOpsSuite extends QueryTest {
 
     assert(DoubleListData.select(add_feature_index($"data")).collect.toSet
       === Set(
-        Row(ArrayBuffer("1:0.8", "2:0.5")),
-        Row(ArrayBuffer("1:0.3", "2:0.1")),
-        Row(ArrayBuffer("1:0.2"))))
+        Row(Seq("1:0.8", "2:0.5")),
+        Row(Seq("1:0.3", "2:0.1")),
+        Row(Seq("1:0.2"))))
   }
 
   test("mhash") {
@@ -114,9 +114,9 @@ class HivemallOpsSuite extends QueryTest {
   test("normalize") {
     assert(TinyTrainData.select(normalize($"features")).collect.toSet
       === Set(
-        Row(ArrayBuffer("1:0.9701425", "2:0.24253562")),
-        Row(ArrayBuffer("2:1.0")),
-        Row(ArrayBuffer("1:1.0"))))
+        Row(Seq("1:0.9701425", "2:0.24253562")),
+        Row(Seq("2:1.0")),
+        Row(Seq("1:1.0"))))
   }
 
   test("sigmoid") {
@@ -490,8 +490,8 @@ object HivemallOpsSuite {
   }
 
   val LargeTrainData = RegressionDatagen.exec(
-    TestHive, n_partitions=2, min_examples=10000, seed=3)
+    TestHive, n_partitions = 2, min_examples = 10000, seed = 3)
 
   val LargeTestData = RegressionDatagen.exec(
-    TestHive, n_partitions=2, min_examples=1000, seed=15)
+    TestHive, n_partitions = 2, min_examples = 1000, seed = 15)
 }
