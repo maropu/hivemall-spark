@@ -32,7 +32,7 @@ scala> :load define-dfs.sh
 scala> val trainTable = sc.textFile(...).map(HmLabeledPoint.parse)
 
 scala> sqlContext.createDataFrame(trainTable)
-  .train_logregr($"label", add_bias($"feature"))
+  .train_logregr(add_bias($"feature"), $"label")
   .groupby("feature")
   .agg("weight"->"avg")
 ```

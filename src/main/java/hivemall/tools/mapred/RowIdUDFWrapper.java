@@ -28,17 +28,14 @@ import org.apache.hadoop.hive.serde2.objectinspector.primitive.PrimitiveObjectIn
 
 import java.util.UUID;
 
-/** A wrapper of [[hivemall.tools.mapred.RowIdUDF]]. */
+/** An alternative implementation of [[hivemall.tools.mapred.RowIdUDF]]. */
 @Description(
     name = "rowid",
     value = "_FUNC_() - Returns a generated row id of a form {TASK_ID}-{UUID}-{SEQUENCE_NUMBER}")
 @UDFType(deterministic = false, stateful = true)
 public class RowIdUDFWrapper extends GenericUDF {
-    /**
-     * TODO: This class does not work because spark cannot
-     * handle HadoopUtils#getTaskId().
-     */
-    // private RowIdUDF udf = new RowIdUDF();
+    // RowIdUDF is directly used because spark cannot
+    // handle HadoopUtils#getTaskId().
 
     private long sequence;
     private long taskId;

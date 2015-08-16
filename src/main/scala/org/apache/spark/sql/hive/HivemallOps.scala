@@ -699,10 +699,8 @@ object HivemallOps {
    * @group tools.mapred
    */
   def rowid(): Column = {
-    // HadoopUtils#getTaskId() does not work correctly in Spark, so
-    // monotonicallyIncreasingId() is used for rowid() instead of
-    // hivemall.tools.mapred.RowIdUDFWrapper.
-    functions.monotonicallyIncreasingId().as("rowid")
+    new HiveGenericUdf(new HiveFunctionWrapper(
+      "hivemall.tools.mapred.RowIdUDFWrapper"), Nil)
   }
 
   /**
