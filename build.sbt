@@ -8,8 +8,8 @@ scalaVersion := "2.10.4"
 // https://spark.apache.org/docs/latest/sql-programming-guide.html#interacting-with-different-versions-of-hive-metastore
 unmanagedSourceDirectories in Compile += baseDirectory.value / "extra-src/v0.13.1"
 
-// To avoid compiler errors in sut-doc
-sources in doc in Compile := List()
+// To avoid compiler errors in sbt-doc
+// sources in doc in Compile := List()
 
 // To skip unit tests in assembly
 test in assembly := {}
