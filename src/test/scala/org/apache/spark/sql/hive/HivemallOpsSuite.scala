@@ -408,6 +408,22 @@ class HivemallOpsSuite extends QueryTest {
     assert(TinyScoreData.groupby().agg("score"->"weight_voted_avg").count() > 0)
   }
 
+  test("f1score") {
+    assert(IntList2Data.groupby().f1score("target", "predict").count > 0)
+  }
+
+  test("mae") {
+    assert(Double2Data.groupby().mae("predict", "target").count > 0)
+  }
+
+  test("mse") {
+    assert(Double2Data.groupby().mse("predict", "target").count > 0)
+  }
+
+  test("rmse") {
+    assert(Double2Data.groupby().rmse("predict", "target").count > 0)
+  }
+
   test("amplify") {
     assert(TinyTrainData.amplify(3, $"label", $"features").count() == 9)
   }
@@ -438,6 +454,38 @@ object HivemallOpsSuite {
         Nil)
       )
     df
+  }
+
+  val IntList2Data = {
+    val rowRdd = TestHive.sparkContext.parallelize(
+        Row(8 :: 5 :: Nil, 6 :: 4 :: Nil) ::
+        Row(3 :: 1 :: Nil, 3 :: 2 :: Nil) ::
+        Row(2 :: Nil, 3 :: Nil) ::
+        Nil
+      )
+    TestHive.createDataFrame(
+      rowRdd,
+      StructType(
+        StructField("target", ArrayType(IntegerType), true) ::
+        StructField("predict", ArrayType(IntegerType), true) ::
+        Nil)
+      )
+  }
+
+  val Double2Data = {
+    val rowRdd = TestHive.sparkContext.parallelize(
+        Row(0.8, 0.3) ::
+        Row(0.3, 0.9) ::
+        Row(0.2, 0.4) ::
+        Nil
+      )
+    TestHive.createDataFrame(
+      rowRdd,
+      StructType(
+        StructField("predict", DoubleType, true) ::
+        StructField("target", DoubleType, true) ::
+        Nil)
+      )
   }
 
   val TinyTrainData = {

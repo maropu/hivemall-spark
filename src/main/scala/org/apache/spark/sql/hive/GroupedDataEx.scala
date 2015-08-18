@@ -67,11 +67,6 @@ class GroupedDataEx protected[sql](
     }
   }
 
-  /**
-   * A list of added UDAF in [[GroupedDataEx]]:
-   *  - voted_avg
-   *  - weight_voted_avg
-   */
   override def agg(exprs: Map[String, String]): DataFrame = {
     toDF(exprs.map { case (colName, expr) =>
       val a = expr match {
@@ -87,20 +82,11 @@ class GroupedDataEx protected[sql](
     }.toSeq)
   }
 
-  // TODO: Need to merge type check codes
-  private[this] def checkNumericType(colName: String) = {
+  private[this] def checkType(colName: String, expected: DataType) = {
     val dataType = df.resolve(colName).dataType
-    if (!dataType.isInstanceOf[NumericType]) {
+    if (dataType != expected) {
       throw new AnalysisException(
-        s""""$colName" must be a numeric column, however it is $dataType""")
-    }
-  }
-
-  private[this] def checkStringType(colName: String) = {
-    val dataType = df.resolve(colName).dataType
-    if (!dataType.isInstanceOf[StringType]) {
-      throw new AnalysisException(
-        s""""$colName" must be a string column, however it is $dataType""")
+        s""""$colName" must be $expected, however it is $dataType""")
     }
   }
 
@@ -108,8 +94,8 @@ class GroupedDataEx protected[sql](
    * @see hivemall.ensemble.ArgminKLDistanceUDAF
    */
   def argmin_kld(weight: String, conv: String): DataFrame = {
-    checkNumericType(weight)
-    checkNumericType(conv)
+    // CheckType(weight, NumericType)
+    // CheckType(conv, NumericType)
     val udaf = new HiveUdaf(
       new HiveFunctionWrapper("hivemall.ensemble.ArgminKLDistanceUDAF"),
       Seq(weight, conv).map(df.resolve))
@@ -120,8 +106,8 @@ class GroupedDataEx protected[sql](
    * @see hivemall.ensemble.MaxValueLabelUDAF"
    */
   def max_label(score: String, label: String): DataFrame = {
-    checkNumericType(score)
-    checkStringType(label)
+    // checkType(score, NumericType)
+    checkType(label, StringType)
     val udaf = new HiveGenericUdaf(
       new HiveFunctionWrapper("hivemall.ensemble.MaxValueLabelUDAF"),
       Seq(score, label).map(df.resolve))
@@ -132,11 +118,59 @@ class GroupedDataEx protected[sql](
    * @see hivemall.ensemble.MaxRowUDAF
    */
   def maxrow(score: String, label: String): DataFrame = {
-    checkNumericType(score)
-    checkStringType(label)
+    // checkType(score, NumericType)
+    checkType(label, StringType)
     val udaf = new HiveGenericUdaf(
       new HiveFunctionWrapper("hivemall.ensemble.MaxRowUDAF"),
       Seq(score, label).map(df.resolve))
+    toDF((Alias(udaf, udaf.prettyString)() :: Nil).toSeq)
+  }
+
+  /**
+   * @see hivemall.evaluation.FMeasureUDAF
+   */
+  def f1score(target: String, predict: String): DataFrame = {
+    checkType(target, ArrayType(IntegerType))
+    checkType(predict, ArrayType(IntegerType))
+    val udaf = new HiveUdaf(
+      new HiveFunctionWrapper("hivemall.evaluation.FMeasureUDAF"),
+      Seq(target, predict).map(df.resolve))
+    toDF((Alias(udaf, udaf.prettyString)() :: Nil).toSeq)
+  }
+
+  /**
+   * @see hivemall.evaluation.MeanAbsoluteErrorUDAF
+   */
+  def mae(predict: String, target: String): DataFrame = {
+    checkType(predict, DoubleType)
+    checkType(target, DoubleType)
+    val udaf = new HiveUdaf(
+      new HiveFunctionWrapper("hivemall.evaluation.MeanAbsoluteErrorUDAF"),
+      Seq(predict, target).map(df.resolve))
+    toDF((Alias(udaf, udaf.prettyString)() :: Nil).toSeq)
+  }
+
+  /**
+   * @see hivemall.evaluation.MeanSquareErrorUDAF
+   */
+  def mse(predict: String, target: String): DataFrame = {
+    checkType(predict, DoubleType)
+    checkType(target, DoubleType)
+    val udaf = new HiveUdaf(
+      new HiveFunctionWrapper("hivemall.evaluation.MeanSquaredErrorUDAF"),
+      Seq(predict, target).map(df.resolve))
+    toDF((Alias(udaf, udaf.prettyString)() :: Nil).toSeq)
+  }
+
+  /**
+   * @see hivemall.evaluation.RootMeanSquareErrorUDAF
+   */
+  def rmse(predict: String, target: String): DataFrame = {
+    checkType(predict, DoubleType)
+    checkType(target, DoubleType)
+    val udaf = new HiveUdaf(
+      new HiveFunctionWrapper("hivemall.evaluation.RootMeanSquaredErrorUDAF"),
+      Seq(predict, target).map(df.resolve))
     toDF((Alias(udaf, udaf.prettyString)() :: Nil).toSeq)
   }
 }

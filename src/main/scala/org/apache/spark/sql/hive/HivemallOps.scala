@@ -33,7 +33,6 @@ import org.apache.spark.sql.types.StringType
  * @groupname classifier
  * @groupname classifier.multiclass
  * @groupname ensemble
- * @groupname ensemble.bagging
  * @groupname ftvec
  * @groupname ftvec.amplify
  * @groupname ftvec.hashing
@@ -451,12 +450,18 @@ final class HivemallOps(df: DataFrame) {
    * so as to support user-defined aggregations.
    * Need a more smart injection into existing DataFrame APIs.
    *
-   * A list of added UDAF:
+   * A list of added Hivemall UDAF:
    *  - voted_avg
    *  - weight_voted_avg
    *  - argmin_kld
    *  - max_label
    *  - maxrow
+   *  - f1score
+   *  - mae
+   *  - mse
+   *  - rmse
+   *
+   * @groupname ensemble
    */
   @scala.annotation.varargs
   def groupby(cols: Column*): GroupedDataEx = {
