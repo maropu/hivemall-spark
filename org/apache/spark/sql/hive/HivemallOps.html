@@ -31,7 +31,7 @@
 
       <h4 id="signature" class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
+        <span class="modifier">final </span>
         <span class="kind">class</span>
       </span>
       <span class="symbol">
@@ -179,7 +179,28 @@
         <span class="name">amplify</span><span class="params">(<span name="exprs">exprs: <span class="extype" name="org.apache.spark.sql.Column">Column</span>*</span>)</span><span class="result">: <span class="extype" name="org.apache.spark.sql.DataFrame">DataFrame</span></span>
       </span>
       </h4>
-      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="attributes block"> <dt>See also</dt><dd><span class="cmt"><p>hivemall.ftvec.amplify.AmplifierUDTF</p></span></dd></dl></div>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="attributes block"> <dt>Annotations</dt><dd>
+                <span class="name">@varargs</span><span class="args">()</span>
+              
+        </dd><dt>See also</dt><dd><span class="cmt"><p>hivemall.ftvec.amplify.AmplifierUDTF</p></span></dd></dl></div>
+    </li><li name="org.apache.spark.sql.hive.HivemallOps#as" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="as(colNames:String*):org.apache.spark.sql.DataFrame"></a>
+      <a id="as(String*):DataFrame"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">as</span><span class="params">(<span name="colNames">colNames: <span class="extype" name="scala.Predef.String">String</span>*</span>)</span><span class="result">: <span class="extype" name="org.apache.spark.sql.DataFrame">DataFrame</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Returns a new <span class="extype" name="DataFrame">DataFrame</span> with columns renamed.</p><div class="fullcomment"><div class="comment cmt"><p>Returns a new <span class="extype" name="DataFrame">DataFrame</span> with columns renamed.
+This is a wrapper for DataFrame#toDF.
+</p></div><dl class="attributes block"> <dt>Annotations</dt><dd>
+                <span class="name">@varargs</span><span class="args">()</span>
+              
+        </dd></dl></div>
     </li><li name="scala.Any#asInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="asInstanceOf[T0]:T0"></a>
       <a id="asInstanceOf[T0]:T0"></a>
@@ -238,7 +259,7 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
-    </li><li name="org.apache.spark.sql.hive.HivemallOps#explode_array" visbl="pub" data-isabs="false" fullComment="no" group="ftvec">
+    </li><li name="org.apache.spark.sql.hive.HivemallOps#explode_array" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="explode_array(input:String):org.apache.spark.sql.DataFrame"></a>
       <a id="explode_array(String):DataFrame"></a>
       <h4 class="signature">
@@ -248,6 +269,19 @@
       </span>
       <span class="symbol">
         <span class="name">explode_array</span><span class="params">(<span name="input">input: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="org.apache.spark.sql.DataFrame">DataFrame</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="org.apache.spark.sql.hive.HivemallOps#explode_array" visbl="pub" data-isabs="false" fullComment="no" group="ftvec">
+      <a id="explode_array(input:org.apache.spark.sql.Column):org.apache.spark.sql.DataFrame"></a>
+      <a id="explode_array(Column):DataFrame"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">explode_array</span><span class="params">(<span name="input">input: <span class="extype" name="org.apache.spark.sql.Column">Column</span></span>)</span><span class="result">: <span class="extype" name="org.apache.spark.sql.DataFrame">DataFrame</span></span>
       </span>
       </h4>
       <p class="shortcomment cmt">Split Seq[String] into pieces.</p>
@@ -284,6 +318,22 @@
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="org.apache.spark.sql.hive.HivemallOps#groupby" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="groupby(col1:String,cols:String*):org.apache.spark.sql.hive.GroupedDataEx"></a>
+      <a id="groupby(String,String*):GroupedDataEx"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">groupby</span><span class="params">(<span name="col1">col1: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="cols">cols: <span class="extype" name="scala.Predef.String">String</span>*</span>)</span><span class="result">: <a href="GroupedDataEx.html" class="extype" name="org.apache.spark.sql.hive.GroupedDataEx">GroupedDataEx</a></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Annotations</dt><dd>
+                <span class="name">@varargs</span><span class="args">()</span>
+              
+        </dd></dl></div>
+    </li><li name="org.apache.spark.sql.hive.HivemallOps#groupby" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="groupby(cols:org.apache.spark.sql.Column*):org.apache.spark.sql.hive.GroupedDataEx"></a>
       <a id="groupby(Column*):GroupedDataEx"></a>
       <h4 class="signature">
@@ -298,8 +348,11 @@
       <p class="shortcomment cmt">Groups the <span class="extype" name="DataFrame">DataFrame</span> using the specified columns, so we can run aggregation on them.</p><div class="fullcomment"><div class="comment cmt"><p>Groups the <span class="extype" name="DataFrame">DataFrame</span> using the specified columns, so we can run aggregation on them.
 See <a href="GroupedDataEx.html" class="extype" name="org.apache.spark.sql.hive.GroupedDataEx">GroupedDataEx</a> for all the available aggregate functions.</p><p>TODO: This class bypasses the original GroupData
 so as to support user-defined aggregations.
-Need a more smart injection into existing DataFrame APIs.</p><p>A list of added UDAF:</p><ul><li>voted_avg</li><li>weight_voted_avg</li><li>max_label</li><li>maxrow</li><li>argmin_kld
-</li></ul></div></div>
+Need a more smart injection into existing DataFrame APIs.</p><p>A list of added UDAF:</p><ul><li>voted_avg</li><li>weight_voted_avg</li><li>argmin_kld</li><li>max_label</li><li>maxrow
+</li></ul></div><dl class="attributes block"> <dt>Annotations</dt><dd>
+                <span class="name">@varargs</span><span class="args">()</span>
+              
+        </dd></dl></div>
     </li><li name="scala.AnyRef#hashCode" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="hashCode():Int"></a>
       <a id="hashCode():Int"></a>
@@ -338,7 +391,10 @@ Need a more smart injection into existing DataFrame APIs.</p><p>A list of added 
         <span class="name">lr_datagen</span><span class="params">(<span name="exprs">exprs: <span class="extype" name="org.apache.spark.sql.Column">Column</span>*</span>)</span><span class="result">: <span class="extype" name="org.apache.spark.sql.DataFrame">DataFrame</span></span>
       </span>
       </h4>
-      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="attributes block"> <dt>See also</dt><dd><span class="cmt"><p>hivemall.dataset.LogisticRegressionDataGeneratorUDTF</p></span></dd></dl></div>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="attributes block"> <dt>Annotations</dt><dd>
+                <span class="name">@varargs</span><span class="args">()</span>
+              
+        </dd><dt>See also</dt><dd><span class="cmt"><p>hivemall.dataset.LogisticRegressionDataGeneratorUDTF</p></span></dd></dl></div>
     </li><li name="scala.AnyRef#ne" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ne(x$1:AnyRef):Boolean"></a>
       <a id="ne(AnyRef):Boolean"></a>
@@ -403,7 +459,10 @@ Need a more smart injection into existing DataFrame APIs.</p><p>A list of added 
         <span class="name">rand_amplify</span><span class="params">(<span name="exprs">exprs: <span class="extype" name="org.apache.spark.sql.Column">Column</span>*</span>)</span><span class="result">: <span class="extype" name="org.apache.spark.sql.DataFrame">DataFrame</span></span>
       </span>
       </h4>
-      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="attributes block"> <dt>See also</dt><dd><span class="cmt"><p>hivemall.ftvec.amplify.RandomAmplifierUDTF</p></span></dd></dl></div>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="attributes block"> <dt>Annotations</dt><dd>
+                <span class="name">@varargs</span><span class="args">()</span>
+              
+        </dd><dt>See also</dt><dd><span class="cmt"><p>hivemall.ftvec.amplify.RandomAmplifierUDTF</p></span></dd></dl></div>
     </li><li name="scala.AnyRef#synchronized" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a>
       <a id="synchronized[T0](⇒T0):T0"></a>
@@ -442,7 +501,10 @@ Need a more smart injection into existing DataFrame APIs.</p><p>A list of added 
         <span class="name">train_adadelta</span><span class="params">(<span name="exprs">exprs: <span class="extype" name="org.apache.spark.sql.Column">Column</span>*</span>)</span><span class="result">: <span class="extype" name="org.apache.spark.sql.DataFrame">DataFrame</span></span>
       </span>
       </h4>
-      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="attributes block"> <dt>See also</dt><dd><span class="cmt"><p>hivemall.regression.AdaDeltaUDTF</p></span></dd></dl></div>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="attributes block"> <dt>Annotations</dt><dd>
+                <span class="name">@varargs</span><span class="args">()</span>
+              
+        </dd><dt>See also</dt><dd><span class="cmt"><p>hivemall.regression.AdaDeltaUDTF</p></span></dd></dl></div>
     </li><li name="org.apache.spark.sql.hive.HivemallOps#train_adagrad" visbl="pub" data-isabs="false" fullComment="yes" group="regression">
       <a id="train_adagrad(exprs:org.apache.spark.sql.Column*):org.apache.spark.sql.DataFrame"></a>
       <a id="train_adagrad(Column*):DataFrame"></a>
@@ -455,7 +517,10 @@ Need a more smart injection into existing DataFrame APIs.</p><p>A list of added 
         <span class="name">train_adagrad</span><span class="params">(<span name="exprs">exprs: <span class="extype" name="org.apache.spark.sql.Column">Column</span>*</span>)</span><span class="result">: <span class="extype" name="org.apache.spark.sql.DataFrame">DataFrame</span></span>
       </span>
       </h4>
-      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="attributes block"> <dt>See also</dt><dd><span class="cmt"><p>hivemall.regression.AdaGradUDTF</p></span></dd></dl></div>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="attributes block"> <dt>Annotations</dt><dd>
+                <span class="name">@varargs</span><span class="args">()</span>
+              
+        </dd><dt>See also</dt><dd><span class="cmt"><p>hivemall.regression.AdaGradUDTF</p></span></dd></dl></div>
     </li><li name="org.apache.spark.sql.hive.HivemallOps#train_adagrad_rda" visbl="pub" data-isabs="false" fullComment="yes" group="classifier">
       <a id="train_adagrad_rda(exprs:org.apache.spark.sql.Column*):org.apache.spark.sql.DataFrame"></a>
       <a id="train_adagrad_rda(Column*):DataFrame"></a>
@@ -468,7 +533,10 @@ Need a more smart injection into existing DataFrame APIs.</p><p>A list of added 
         <span class="name">train_adagrad_rda</span><span class="params">(<span name="exprs">exprs: <span class="extype" name="org.apache.spark.sql.Column">Column</span>*</span>)</span><span class="result">: <span class="extype" name="org.apache.spark.sql.DataFrame">DataFrame</span></span>
       </span>
       </h4>
-      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="attributes block"> <dt>See also</dt><dd><span class="cmt"><p>hivemall.classifier.classifier.AdaGradRDAUDTF</p></span></dd></dl></div>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="attributes block"> <dt>Annotations</dt><dd>
+                <span class="name">@varargs</span><span class="args">()</span>
+              
+        </dd><dt>See also</dt><dd><span class="cmt"><p>hivemall.classifier.classifier.AdaGradRDAUDTF</p></span></dd></dl></div>
     </li><li name="org.apache.spark.sql.hive.HivemallOps#train_arow" visbl="pub" data-isabs="false" fullComment="yes" group="classifier">
       <a id="train_arow(exprs:org.apache.spark.sql.Column*):org.apache.spark.sql.DataFrame"></a>
       <a id="train_arow(Column*):DataFrame"></a>
@@ -481,7 +549,10 @@ Need a more smart injection into existing DataFrame APIs.</p><p>A list of added 
         <span class="name">train_arow</span><span class="params">(<span name="exprs">exprs: <span class="extype" name="org.apache.spark.sql.Column">Column</span>*</span>)</span><span class="result">: <span class="extype" name="org.apache.spark.sql.DataFrame">DataFrame</span></span>
       </span>
       </h4>
-      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="attributes block"> <dt>See also</dt><dd><span class="cmt"><p>hivemall.classifier.AROWClassifierUDTF</p></span></dd></dl></div>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="attributes block"> <dt>Annotations</dt><dd>
+                <span class="name">@varargs</span><span class="args">()</span>
+              
+        </dd><dt>See also</dt><dd><span class="cmt"><p>hivemall.classifier.AROWClassifierUDTF</p></span></dd></dl></div>
     </li><li name="org.apache.spark.sql.hive.HivemallOps#train_arow_regr" visbl="pub" data-isabs="false" fullComment="yes" group="regression">
       <a id="train_arow_regr(exprs:org.apache.spark.sql.Column*):org.apache.spark.sql.DataFrame"></a>
       <a id="train_arow_regr(Column*):DataFrame"></a>
@@ -494,7 +565,10 @@ Need a more smart injection into existing DataFrame APIs.</p><p>A list of added 
         <span class="name">train_arow_regr</span><span class="params">(<span name="exprs">exprs: <span class="extype" name="org.apache.spark.sql.Column">Column</span>*</span>)</span><span class="result">: <span class="extype" name="org.apache.spark.sql.DataFrame">DataFrame</span></span>
       </span>
       </h4>
-      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="attributes block"> <dt>See also</dt><dd><span class="cmt"><p>hivemall.regression.AROWRegressionUDTF</p></span></dd></dl></div>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="attributes block"> <dt>Annotations</dt><dd>
+                <span class="name">@varargs</span><span class="args">()</span>
+              
+        </dd><dt>See also</dt><dd><span class="cmt"><p>hivemall.regression.AROWRegressionUDTF</p></span></dd></dl></div>
     </li><li name="org.apache.spark.sql.hive.HivemallOps#train_arowe2_regr" visbl="pub" data-isabs="false" fullComment="yes" group="regression">
       <a id="train_arowe2_regr(exprs:org.apache.spark.sql.Column*):org.apache.spark.sql.DataFrame"></a>
       <a id="train_arowe2_regr(Column*):DataFrame"></a>
@@ -507,7 +581,10 @@ Need a more smart injection into existing DataFrame APIs.</p><p>A list of added 
         <span class="name">train_arowe2_regr</span><span class="params">(<span name="exprs">exprs: <span class="extype" name="org.apache.spark.sql.Column">Column</span>*</span>)</span><span class="result">: <span class="extype" name="org.apache.spark.sql.DataFrame">DataFrame</span></span>
       </span>
       </h4>
-      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="attributes block"> <dt>See also</dt><dd><span class="cmt"><p>hivemall.regression.AROWRegressionUDTF$AROWe2</p></span></dd></dl></div>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="attributes block"> <dt>Annotations</dt><dd>
+                <span class="name">@varargs</span><span class="args">()</span>
+              
+        </dd><dt>See also</dt><dd><span class="cmt"><p>hivemall.regression.AROWRegressionUDTF$AROWe2</p></span></dd></dl></div>
     </li><li name="org.apache.spark.sql.hive.HivemallOps#train_arowe_regr" visbl="pub" data-isabs="false" fullComment="yes" group="regression">
       <a id="train_arowe_regr(exprs:org.apache.spark.sql.Column*):org.apache.spark.sql.DataFrame"></a>
       <a id="train_arowe_regr(Column*):DataFrame"></a>
@@ -520,7 +597,10 @@ Need a more smart injection into existing DataFrame APIs.</p><p>A list of added 
         <span class="name">train_arowe_regr</span><span class="params">(<span name="exprs">exprs: <span class="extype" name="org.apache.spark.sql.Column">Column</span>*</span>)</span><span class="result">: <span class="extype" name="org.apache.spark.sql.DataFrame">DataFrame</span></span>
       </span>
       </h4>
-      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="attributes block"> <dt>See also</dt><dd><span class="cmt"><p>hivemall.regression.AROWRegressionUDTF$AROWe</p></span></dd></dl></div>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="attributes block"> <dt>Annotations</dt><dd>
+                <span class="name">@varargs</span><span class="args">()</span>
+              
+        </dd><dt>See also</dt><dd><span class="cmt"><p>hivemall.regression.AROWRegressionUDTF$AROWe</p></span></dd></dl></div>
     </li><li name="org.apache.spark.sql.hive.HivemallOps#train_arowh" visbl="pub" data-isabs="false" fullComment="yes" group="classifier">
       <a id="train_arowh(exprs:org.apache.spark.sql.Column*):org.apache.spark.sql.DataFrame"></a>
       <a id="train_arowh(Column*):DataFrame"></a>
@@ -533,7 +613,10 @@ Need a more smart injection into existing DataFrame APIs.</p><p>A list of added 
         <span class="name">train_arowh</span><span class="params">(<span name="exprs">exprs: <span class="extype" name="org.apache.spark.sql.Column">Column</span>*</span>)</span><span class="result">: <span class="extype" name="org.apache.spark.sql.DataFrame">DataFrame</span></span>
       </span>
       </h4>
-      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="attributes block"> <dt>See also</dt><dd><span class="cmt"><p>hivemall.classifier.AROWClassifierUDTF$AROWh</p></span></dd></dl></div>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="attributes block"> <dt>Annotations</dt><dd>
+                <span class="name">@varargs</span><span class="args">()</span>
+              
+        </dd><dt>See also</dt><dd><span class="cmt"><p>hivemall.classifier.AROWClassifierUDTF$AROWh</p></span></dd></dl></div>
     </li><li name="org.apache.spark.sql.hive.HivemallOps#train_cw" visbl="pub" data-isabs="false" fullComment="yes" group="classifier">
       <a id="train_cw(exprs:org.apache.spark.sql.Column*):org.apache.spark.sql.DataFrame"></a>
       <a id="train_cw(Column*):DataFrame"></a>
@@ -546,7 +629,10 @@ Need a more smart injection into existing DataFrame APIs.</p><p>A list of added 
         <span class="name">train_cw</span><span class="params">(<span name="exprs">exprs: <span class="extype" name="org.apache.spark.sql.Column">Column</span>*</span>)</span><span class="result">: <span class="extype" name="org.apache.spark.sql.DataFrame">DataFrame</span></span>
       </span>
       </h4>
-      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="attributes block"> <dt>See also</dt><dd><span class="cmt"><p>hivemall.classifier.ConfidenceWeightedUDTF</p></span></dd></dl></div>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="attributes block"> <dt>Annotations</dt><dd>
+                <span class="name">@varargs</span><span class="args">()</span>
+              
+        </dd><dt>See also</dt><dd><span class="cmt"><p>hivemall.classifier.ConfidenceWeightedUDTF</p></span></dd></dl></div>
     </li><li name="org.apache.spark.sql.hive.HivemallOps#train_logregr" visbl="pub" data-isabs="false" fullComment="yes" group="regression">
       <a id="train_logregr(exprs:org.apache.spark.sql.Column*):org.apache.spark.sql.DataFrame"></a>
       <a id="train_logregr(Column*):DataFrame"></a>
@@ -559,7 +645,10 @@ Need a more smart injection into existing DataFrame APIs.</p><p>A list of added 
         <span class="name">train_logregr</span><span class="params">(<span name="exprs">exprs: <span class="extype" name="org.apache.spark.sql.Column">Column</span>*</span>)</span><span class="result">: <span class="extype" name="org.apache.spark.sql.DataFrame">DataFrame</span></span>
       </span>
       </h4>
-      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="attributes block"> <dt>See also</dt><dd><span class="cmt"><p>hivemall.regression.LogressUDTF</p></span></dd></dl></div>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="attributes block"> <dt>Annotations</dt><dd>
+                <span class="name">@varargs</span><span class="args">()</span>
+              
+        </dd><dt>See also</dt><dd><span class="cmt"><p>hivemall.regression.LogressUDTF</p></span></dd></dl></div>
     </li><li name="org.apache.spark.sql.hive.HivemallOps#train_multiclass_arow" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="train_multiclass_arow(exprs:org.apache.spark.sql.Column*):org.apache.spark.sql.DataFrame"></a>
       <a id="train_multiclass_arow(Column*):DataFrame"></a>
@@ -572,7 +661,10 @@ Need a more smart injection into existing DataFrame APIs.</p><p>A list of added 
         <span class="name">train_multiclass_arow</span><span class="params">(<span name="exprs">exprs: <span class="extype" name="org.apache.spark.sql.Column">Column</span>*</span>)</span><span class="result">: <span class="extype" name="org.apache.spark.sql.DataFrame">DataFrame</span></span>
       </span>
       </h4>
-      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="attributes block"> <dt>See also</dt><dd><span class="cmt"><p>hivemall.classifier.classifier.MulticlassAROWClassifierUDTF</p></span></dd></dl></div>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="attributes block"> <dt>Annotations</dt><dd>
+                <span class="name">@varargs</span><span class="args">()</span>
+              
+        </dd><dt>See also</dt><dd><span class="cmt"><p>hivemall.classifier.classifier.MulticlassAROWClassifierUDTF</p></span></dd></dl></div>
     </li><li name="org.apache.spark.sql.hive.HivemallOps#train_multiclass_cw" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="train_multiclass_cw(exprs:org.apache.spark.sql.Column*):org.apache.spark.sql.DataFrame"></a>
       <a id="train_multiclass_cw(Column*):DataFrame"></a>
@@ -585,7 +677,10 @@ Need a more smart injection into existing DataFrame APIs.</p><p>A list of added 
         <span class="name">train_multiclass_cw</span><span class="params">(<span name="exprs">exprs: <span class="extype" name="org.apache.spark.sql.Column">Column</span>*</span>)</span><span class="result">: <span class="extype" name="org.apache.spark.sql.DataFrame">DataFrame</span></span>
       </span>
       </h4>
-      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="attributes block"> <dt>See also</dt><dd><span class="cmt"><p>hivemall.classifier.classifier.MulticlassConfidenceWeightedUDTF</p></span></dd></dl></div>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="attributes block"> <dt>Annotations</dt><dd>
+                <span class="name">@varargs</span><span class="args">()</span>
+              
+        </dd><dt>See also</dt><dd><span class="cmt"><p>hivemall.classifier.classifier.MulticlassConfidenceWeightedUDTF</p></span></dd></dl></div>
     </li><li name="org.apache.spark.sql.hive.HivemallOps#train_multiclass_pa" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="train_multiclass_pa(exprs:org.apache.spark.sql.Column*):org.apache.spark.sql.DataFrame"></a>
       <a id="train_multiclass_pa(Column*):DataFrame"></a>
@@ -598,7 +693,10 @@ Need a more smart injection into existing DataFrame APIs.</p><p>A list of added 
         <span class="name">train_multiclass_pa</span><span class="params">(<span name="exprs">exprs: <span class="extype" name="org.apache.spark.sql.Column">Column</span>*</span>)</span><span class="result">: <span class="extype" name="org.apache.spark.sql.DataFrame">DataFrame</span></span>
       </span>
       </h4>
-      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="attributes block"> <dt>See also</dt><dd><span class="cmt"><p>hivemall.classifier.classifier.PassiveAggressiveUDTF</p></span></dd></dl></div>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="attributes block"> <dt>Annotations</dt><dd>
+                <span class="name">@varargs</span><span class="args">()</span>
+              
+        </dd><dt>See also</dt><dd><span class="cmt"><p>hivemall.classifier.classifier.PassiveAggressiveUDTF</p></span></dd></dl></div>
     </li><li name="org.apache.spark.sql.hive.HivemallOps#train_multiclass_pa1" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="train_multiclass_pa1(exprs:org.apache.spark.sql.Column*):org.apache.spark.sql.DataFrame"></a>
       <a id="train_multiclass_pa1(Column*):DataFrame"></a>
@@ -611,7 +709,10 @@ Need a more smart injection into existing DataFrame APIs.</p><p>A list of added 
         <span class="name">train_multiclass_pa1</span><span class="params">(<span name="exprs">exprs: <span class="extype" name="org.apache.spark.sql.Column">Column</span>*</span>)</span><span class="result">: <span class="extype" name="org.apache.spark.sql.DataFrame">DataFrame</span></span>
       </span>
       </h4>
-      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="attributes block"> <dt>See also</dt><dd><span class="cmt"><p>hivemall.classifier.classifier.PassiveAggressiveUDTF$PA1</p></span></dd></dl></div>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="attributes block"> <dt>Annotations</dt><dd>
+                <span class="name">@varargs</span><span class="args">()</span>
+              
+        </dd><dt>See also</dt><dd><span class="cmt"><p>hivemall.classifier.classifier.PassiveAggressiveUDTF$PA1</p></span></dd></dl></div>
     </li><li name="org.apache.spark.sql.hive.HivemallOps#train_multiclass_pa2" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="train_multiclass_pa2(exprs:org.apache.spark.sql.Column*):org.apache.spark.sql.DataFrame"></a>
       <a id="train_multiclass_pa2(Column*):DataFrame"></a>
@@ -624,7 +725,10 @@ Need a more smart injection into existing DataFrame APIs.</p><p>A list of added 
         <span class="name">train_multiclass_pa2</span><span class="params">(<span name="exprs">exprs: <span class="extype" name="org.apache.spark.sql.Column">Column</span>*</span>)</span><span class="result">: <span class="extype" name="org.apache.spark.sql.DataFrame">DataFrame</span></span>
       </span>
       </h4>
-      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="attributes block"> <dt>See also</dt><dd><span class="cmt"><p>hivemall.classifier.classifier.PassiveAggressiveUDTF$PA2</p></span></dd></dl></div>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="attributes block"> <dt>Annotations</dt><dd>
+                <span class="name">@varargs</span><span class="args">()</span>
+              
+        </dd><dt>See also</dt><dd><span class="cmt"><p>hivemall.classifier.classifier.PassiveAggressiveUDTF$PA2</p></span></dd></dl></div>
     </li><li name="org.apache.spark.sql.hive.HivemallOps#train_multiclass_perceptron" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="train_multiclass_perceptron(exprs:org.apache.spark.sql.Column*):org.apache.spark.sql.DataFrame"></a>
       <a id="train_multiclass_perceptron(Column*):DataFrame"></a>
@@ -637,7 +741,10 @@ Need a more smart injection into existing DataFrame APIs.</p><p>A list of added 
         <span class="name">train_multiclass_perceptron</span><span class="params">(<span name="exprs">exprs: <span class="extype" name="org.apache.spark.sql.Column">Column</span>*</span>)</span><span class="result">: <span class="extype" name="org.apache.spark.sql.DataFrame">DataFrame</span></span>
       </span>
       </h4>
-      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="attributes block"> <dt>See also</dt><dd><span class="cmt"><p>hivemall.classifier.classifier.MulticlassPerceptronUDTF</p></span></dd></dl></div>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="attributes block"> <dt>Annotations</dt><dd>
+                <span class="name">@varargs</span><span class="args">()</span>
+              
+        </dd><dt>See also</dt><dd><span class="cmt"><p>hivemall.classifier.classifier.MulticlassPerceptronUDTF</p></span></dd></dl></div>
     </li><li name="org.apache.spark.sql.hive.HivemallOps#train_multiclass_scw" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="train_multiclass_scw(exprs:org.apache.spark.sql.Column*):org.apache.spark.sql.DataFrame"></a>
       <a id="train_multiclass_scw(Column*):DataFrame"></a>
@@ -650,7 +757,10 @@ Need a more smart injection into existing DataFrame APIs.</p><p>A list of added 
         <span class="name">train_multiclass_scw</span><span class="params">(<span name="exprs">exprs: <span class="extype" name="org.apache.spark.sql.Column">Column</span>*</span>)</span><span class="result">: <span class="extype" name="org.apache.spark.sql.DataFrame">DataFrame</span></span>
       </span>
       </h4>
-      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="attributes block"> <dt>See also</dt><dd><span class="cmt"><p>hivemall.classifier.classifier.MulticlassSoftConfidenceWeightedUDTF$SCW1</p></span></dd></dl></div>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="attributes block"> <dt>Annotations</dt><dd>
+                <span class="name">@varargs</span><span class="args">()</span>
+              
+        </dd><dt>See also</dt><dd><span class="cmt"><p>hivemall.classifier.classifier.MulticlassSoftConfidenceWeightedUDTF$SCW1</p></span></dd></dl></div>
     </li><li name="org.apache.spark.sql.hive.HivemallOps#train_multiclass_scw2" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="train_multiclass_scw2(exprs:org.apache.spark.sql.Column*):org.apache.spark.sql.DataFrame"></a>
       <a id="train_multiclass_scw2(Column*):DataFrame"></a>
@@ -663,7 +773,10 @@ Need a more smart injection into existing DataFrame APIs.</p><p>A list of added 
         <span class="name">train_multiclass_scw2</span><span class="params">(<span name="exprs">exprs: <span class="extype" name="org.apache.spark.sql.Column">Column</span>*</span>)</span><span class="result">: <span class="extype" name="org.apache.spark.sql.DataFrame">DataFrame</span></span>
       </span>
       </h4>
-      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="attributes block"> <dt>See also</dt><dd><span class="cmt"><p>hivemall.classifier.classifier.MulticlassSoftConfidenceWeightedUDTF$SCW2</p></span></dd></dl></div>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="attributes block"> <dt>Annotations</dt><dd>
+                <span class="name">@varargs</span><span class="args">()</span>
+              
+        </dd><dt>See also</dt><dd><span class="cmt"><p>hivemall.classifier.classifier.MulticlassSoftConfidenceWeightedUDTF$SCW2</p></span></dd></dl></div>
     </li><li name="org.apache.spark.sql.hive.HivemallOps#train_pa" visbl="pub" data-isabs="false" fullComment="yes" group="classifier">
       <a id="train_pa(exprs:org.apache.spark.sql.Column*):org.apache.spark.sql.DataFrame"></a>
       <a id="train_pa(Column*):DataFrame"></a>
@@ -676,7 +789,10 @@ Need a more smart injection into existing DataFrame APIs.</p><p>A list of added 
         <span class="name">train_pa</span><span class="params">(<span name="exprs">exprs: <span class="extype" name="org.apache.spark.sql.Column">Column</span>*</span>)</span><span class="result">: <span class="extype" name="org.apache.spark.sql.DataFrame">DataFrame</span></span>
       </span>
       </h4>
-      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="attributes block"> <dt>See also</dt><dd><span class="cmt"><p>hivemall.classifier.PassiveAggressiveUDTF</p></span></dd></dl></div>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="attributes block"> <dt>Annotations</dt><dd>
+                <span class="name">@varargs</span><span class="args">()</span>
+              
+        </dd><dt>See also</dt><dd><span class="cmt"><p>hivemall.classifier.PassiveAggressiveUDTF</p></span></dd></dl></div>
     </li><li name="org.apache.spark.sql.hive.HivemallOps#train_pa1" visbl="pub" data-isabs="false" fullComment="yes" group="classifier">
       <a id="train_pa1(exprs:org.apache.spark.sql.Column*):org.apache.spark.sql.DataFrame"></a>
       <a id="train_pa1(Column*):DataFrame"></a>
@@ -689,7 +805,10 @@ Need a more smart injection into existing DataFrame APIs.</p><p>A list of added 
         <span class="name">train_pa1</span><span class="params">(<span name="exprs">exprs: <span class="extype" name="org.apache.spark.sql.Column">Column</span>*</span>)</span><span class="result">: <span class="extype" name="org.apache.spark.sql.DataFrame">DataFrame</span></span>
       </span>
       </h4>
-      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="attributes block"> <dt>See also</dt><dd><span class="cmt"><p>hivemall.classifier.PassiveAggressiveUDTF$PA1</p></span></dd></dl></div>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="attributes block"> <dt>Annotations</dt><dd>
+                <span class="name">@varargs</span><span class="args">()</span>
+              
+        </dd><dt>See also</dt><dd><span class="cmt"><p>hivemall.classifier.PassiveAggressiveUDTF$PA1</p></span></dd></dl></div>
     </li><li name="org.apache.spark.sql.hive.HivemallOps#train_pa1_regr" visbl="pub" data-isabs="false" fullComment="yes" group="regression">
       <a id="train_pa1_regr(exprs:org.apache.spark.sql.Column*):org.apache.spark.sql.DataFrame"></a>
       <a id="train_pa1_regr(Column*):DataFrame"></a>
@@ -702,7 +821,10 @@ Need a more smart injection into existing DataFrame APIs.</p><p>A list of added 
         <span class="name">train_pa1_regr</span><span class="params">(<span name="exprs">exprs: <span class="extype" name="org.apache.spark.sql.Column">Column</span>*</span>)</span><span class="result">: <span class="extype" name="org.apache.spark.sql.DataFrame">DataFrame</span></span>
       </span>
       </h4>
-      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="attributes block"> <dt>See also</dt><dd><span class="cmt"><p>hivemall.regression.PassiveAggressiveRegressionUDTF</p></span></dd></dl></div>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="attributes block"> <dt>Annotations</dt><dd>
+                <span class="name">@varargs</span><span class="args">()</span>
+              
+        </dd><dt>See also</dt><dd><span class="cmt"><p>hivemall.regression.PassiveAggressiveRegressionUDTF</p></span></dd></dl></div>
     </li><li name="org.apache.spark.sql.hive.HivemallOps#train_pa1a_regr" visbl="pub" data-isabs="false" fullComment="yes" group="regression">
       <a id="train_pa1a_regr(exprs:org.apache.spark.sql.Column*):org.apache.spark.sql.DataFrame"></a>
       <a id="train_pa1a_regr(Column*):DataFrame"></a>
@@ -715,7 +837,10 @@ Need a more smart injection into existing DataFrame APIs.</p><p>A list of added 
         <span class="name">train_pa1a_regr</span><span class="params">(<span name="exprs">exprs: <span class="extype" name="org.apache.spark.sql.Column">Column</span>*</span>)</span><span class="result">: <span class="extype" name="org.apache.spark.sql.DataFrame">DataFrame</span></span>
       </span>
       </h4>
-      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="attributes block"> <dt>See also</dt><dd><span class="cmt"><p>hivemall.regression.PassiveAggressiveRegressionUDTF.PA1a</p></span></dd></dl></div>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="attributes block"> <dt>Annotations</dt><dd>
+                <span class="name">@varargs</span><span class="args">()</span>
+              
+        </dd><dt>See also</dt><dd><span class="cmt"><p>hivemall.regression.PassiveAggressiveRegressionUDTF.PA1a</p></span></dd></dl></div>
     </li><li name="org.apache.spark.sql.hive.HivemallOps#train_pa2" visbl="pub" data-isabs="false" fullComment="yes" group="classifier">
       <a id="train_pa2(exprs:org.apache.spark.sql.Column*):org.apache.spark.sql.DataFrame"></a>
       <a id="train_pa2(Column*):DataFrame"></a>
@@ -728,7 +853,10 @@ Need a more smart injection into existing DataFrame APIs.</p><p>A list of added 
         <span class="name">train_pa2</span><span class="params">(<span name="exprs">exprs: <span class="extype" name="org.apache.spark.sql.Column">Column</span>*</span>)</span><span class="result">: <span class="extype" name="org.apache.spark.sql.DataFrame">DataFrame</span></span>
       </span>
       </h4>
-      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="attributes block"> <dt>See also</dt><dd><span class="cmt"><p>hivemall.classifier.PassiveAggressiveUDTF$PA2</p></span></dd></dl></div>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="attributes block"> <dt>Annotations</dt><dd>
+                <span class="name">@varargs</span><span class="args">()</span>
+              
+        </dd><dt>See also</dt><dd><span class="cmt"><p>hivemall.classifier.PassiveAggressiveUDTF$PA2</p></span></dd></dl></div>
     </li><li name="org.apache.spark.sql.hive.HivemallOps#train_pa2_regr" visbl="pub" data-isabs="false" fullComment="yes" group="regression">
       <a id="train_pa2_regr(exprs:org.apache.spark.sql.Column*):org.apache.spark.sql.DataFrame"></a>
       <a id="train_pa2_regr(Column*):DataFrame"></a>
@@ -741,7 +869,10 @@ Need a more smart injection into existing DataFrame APIs.</p><p>A list of added 
         <span class="name">train_pa2_regr</span><span class="params">(<span name="exprs">exprs: <span class="extype" name="org.apache.spark.sql.Column">Column</span>*</span>)</span><span class="result">: <span class="extype" name="org.apache.spark.sql.DataFrame">DataFrame</span></span>
       </span>
       </h4>
-      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="attributes block"> <dt>See also</dt><dd><span class="cmt"><p>hivemall.regression.PassiveAggressiveRegressionUDTF.PA2</p></span></dd></dl></div>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="attributes block"> <dt>Annotations</dt><dd>
+                <span class="name">@varargs</span><span class="args">()</span>
+              
+        </dd><dt>See also</dt><dd><span class="cmt"><p>hivemall.regression.PassiveAggressiveRegressionUDTF.PA2</p></span></dd></dl></div>
     </li><li name="org.apache.spark.sql.hive.HivemallOps#train_pa2a_regr" visbl="pub" data-isabs="false" fullComment="yes" group="regression">
       <a id="train_pa2a_regr(exprs:org.apache.spark.sql.Column*):org.apache.spark.sql.DataFrame"></a>
       <a id="train_pa2a_regr(Column*):DataFrame"></a>
@@ -754,7 +885,10 @@ Need a more smart injection into existing DataFrame APIs.</p><p>A list of added 
         <span class="name">train_pa2a_regr</span><span class="params">(<span name="exprs">exprs: <span class="extype" name="org.apache.spark.sql.Column">Column</span>*</span>)</span><span class="result">: <span class="extype" name="org.apache.spark.sql.DataFrame">DataFrame</span></span>
       </span>
       </h4>
-      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="attributes block"> <dt>See also</dt><dd><span class="cmt"><p>hivemall.regression.PassiveAggressiveRegressionUDTF.PA2a</p></span></dd></dl></div>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="attributes block"> <dt>Annotations</dt><dd>
+                <span class="name">@varargs</span><span class="args">()</span>
+              
+        </dd><dt>See also</dt><dd><span class="cmt"><p>hivemall.regression.PassiveAggressiveRegressionUDTF.PA2a</p></span></dd></dl></div>
     </li><li name="org.apache.spark.sql.hive.HivemallOps#train_perceptron" visbl="pub" data-isabs="false" fullComment="yes" group="classifier">
       <a id="train_perceptron(exprs:org.apache.spark.sql.Column*):org.apache.spark.sql.DataFrame"></a>
       <a id="train_perceptron(Column*):DataFrame"></a>
@@ -767,7 +901,10 @@ Need a more smart injection into existing DataFrame APIs.</p><p>A list of added 
         <span class="name">train_perceptron</span><span class="params">(<span name="exprs">exprs: <span class="extype" name="org.apache.spark.sql.Column">Column</span>*</span>)</span><span class="result">: <span class="extype" name="org.apache.spark.sql.DataFrame">DataFrame</span></span>
       </span>
       </h4>
-      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="attributes block"> <dt>See also</dt><dd><span class="cmt"><p>hivemall.classifier.PerceptronUDTF</p></span></dd></dl></div>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="attributes block"> <dt>Annotations</dt><dd>
+                <span class="name">@varargs</span><span class="args">()</span>
+              
+        </dd><dt>See also</dt><dd><span class="cmt"><p>hivemall.classifier.PerceptronUDTF</p></span></dd></dl></div>
     </li><li name="org.apache.spark.sql.hive.HivemallOps#train_scw" visbl="pub" data-isabs="false" fullComment="yes" group="classifier">
       <a id="train_scw(exprs:org.apache.spark.sql.Column*):org.apache.spark.sql.DataFrame"></a>
       <a id="train_scw(Column*):DataFrame"></a>
@@ -780,7 +917,10 @@ Need a more smart injection into existing DataFrame APIs.</p><p>A list of added 
         <span class="name">train_scw</span><span class="params">(<span name="exprs">exprs: <span class="extype" name="org.apache.spark.sql.Column">Column</span>*</span>)</span><span class="result">: <span class="extype" name="org.apache.spark.sql.DataFrame">DataFrame</span></span>
       </span>
       </h4>
-      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="attributes block"> <dt>See also</dt><dd><span class="cmt"><p>hivemall.classifier.SoftConfideceWeightedUDTF$SCW1</p></span></dd></dl></div>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="attributes block"> <dt>Annotations</dt><dd>
+                <span class="name">@varargs</span><span class="args">()</span>
+              
+        </dd><dt>See also</dt><dd><span class="cmt"><p>hivemall.classifier.SoftConfideceWeightedUDTF$SCW1</p></span></dd></dl></div>
     </li><li name="org.apache.spark.sql.hive.HivemallOps#train_scw2" visbl="pub" data-isabs="false" fullComment="yes" group="classifier">
       <a id="train_scw2(exprs:org.apache.spark.sql.Column*):org.apache.spark.sql.DataFrame"></a>
       <a id="train_scw2(Column*):DataFrame"></a>
@@ -793,7 +933,10 @@ Need a more smart injection into existing DataFrame APIs.</p><p>A list of added 
         <span class="name">train_scw2</span><span class="params">(<span name="exprs">exprs: <span class="extype" name="org.apache.spark.sql.Column">Column</span>*</span>)</span><span class="result">: <span class="extype" name="org.apache.spark.sql.DataFrame">DataFrame</span></span>
       </span>
       </h4>
-      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="attributes block"> <dt>See also</dt><dd><span class="cmt"><p>hivemall.classifier.SoftConfideceWeightedUDTF$SCW1</p></span></dd></dl></div>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="attributes block"> <dt>Annotations</dt><dd>
+                <span class="name">@varargs</span><span class="args">()</span>
+              
+        </dd><dt>See also</dt><dd><span class="cmt"><p>hivemall.classifier.SoftConfideceWeightedUDTF$SCW1</p></span></dd></dl></div>
     </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait():Unit"></a>
       <a id="wait():Unit"></a>

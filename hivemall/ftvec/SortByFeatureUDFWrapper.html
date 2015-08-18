@@ -2,17 +2,17 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html>
         <head>
-          <title>HmLabeledPoint - org.apache.spark.ml.feature.HmLabeledPoint</title>
-          <meta name="description" content="HmLabeledPoint - org.apache.spark.ml.feature.HmLabeledPoint" />
-          <meta name="keywords" content="HmLabeledPoint org.apache.spark.ml.feature.HmLabeledPoint" />
+          <title>SortByFeatureUDFWrapper - hivemall.ftvec.SortByFeatureUDFWrapper</title>
+          <meta name="description" content="SortByFeatureUDFWrapper - hivemall.ftvec.SortByFeatureUDFWrapper" />
+          <meta name="keywords" content="SortByFeatureUDFWrapper hivemall.ftvec.SortByFeatureUDFWrapper" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
-      <link href="../../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
-      <link href="../../../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
+      <link href="../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
+      <link href="../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
       <script type="text/javascript">
          if(top === self) {
-            var url = '../../../../../index.html';
-            var hash = 'org.apache.spark.ml.feature.HmLabeledPoint';
+            var url = '../../index.html';
+            var hash = 'hivemall.ftvec.SortByFeatureUDFWrapper';
             var anchor = window.location.hash;
             var anchor_opt = '';
             if (anchor.length >= 1)
@@ -24,26 +24,24 @@
         </head>
         <body class="type">
       <div id="definition">
-        <a href="HmLabeledPoint$.html" title="Go to companion"><img src="../../../../../lib/class_to_object_big.png" /></a>
-        <p id="owner"><a href="../../../../package.html" class="extype" name="org">org</a>.<a href="../../../package.html" class="extype" name="org.apache">apache</a>.<a href="../../package.html" class="extype" name="org.apache.spark">spark</a>.<a href="../package.html" class="extype" name="org.apache.spark.ml">ml</a>.<a href="package.html" class="extype" name="org.apache.spark.ml.feature">feature</a></p>
-        <h1><a href="HmLabeledPoint$.html" title="Go to companion">HmLabeledPoint</a></h1>
+        <img src="../../lib/class_big.png" />
+        <p id="owner"><a href="../package.html" class="extype" name="hivemall">hivemall</a>.<a href="package.html" class="extype" name="hivemall.ftvec">ftvec</a></p>
+        <h1>SortByFeatureUDFWrapper</h1>
       </div>
 
       <h4 id="signature" class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">case class</span>
+        <span class="kind">class</span>
       </span>
       <span class="symbol">
-        <span class="name">HmLabeledPoint</span><span class="params">(<span name="label">label: <span class="extype" name="scala.Double">Double</span> = <span class="symbol">0.0</span></span>, <span name="features">features: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <span class="name">SortByFeatureUDFWrapper</span><span class="result"> extends <span class="extype" name="org.apache.hadoop.hive.ql.udf.generic.GenericUDF">GenericUDF</span></span>
       </span>
       </h4>
       
-          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Class that represents the features and labels of a data point for Hivemall.
-</p></div><dl class="paramcmts block"><dt class="param">label</dt><dd class="cmt"><p>Label for this data point.</p></dd><dt class="param">features</dt><dd class="cmt"><p>List of features for this data point.
-</p></dd></dl><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><span class="extype" name="scala.Serializable">Serializable</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, <span class="extype" name="scala.Product">Product</span>, <span class="extype" name="scala.Equals">Equals</span>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
+          <div class="superTypes hiddenContent"><span class="extype" name="org.apache.hadoop.hive.ql.udf.generic.GenericUDF">GenericUDF</span>, <span class="extype" name="java.io.Closeable">Closeable</span>, <span class="extype" name="java.lang.AutoCloseable">AutoCloseable</span>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
         
 
@@ -61,7 +59,7 @@
                 <span class="filtertype">Inherited<br />
                 </span>
                 <ol id="linearization">
-                  <li class="in" name="org.apache.spark.ml.feature.HmLabeledPoint"><span>HmLabeledPoint</span></li><li class="in" name="scala.Serializable"><span>Serializable</span></li><li class="in" name="java.io.Serializable"><span>Serializable</span></li><li class="in" name="scala.Product"><span>Product</span></li><li class="in" name="scala.Equals"><span>Equals</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                  <li class="in" name="hivemall.ftvec.SortByFeatureUDFWrapper"><span>SortByFeatureUDFWrapper</span></li><li class="in" name="org.apache.hadoop.hive.ql.udf.generic.GenericUDF"><span>GenericUDF</span></li><li class="in" name="java.io.Closeable"><span>Closeable</span></li><li class="in" name="java.lang.AutoCloseable"><span>AutoCloseable</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                 </ol>
               </div><div id="ancestors">
             <span class="filtertype"></span>
@@ -81,20 +79,19 @@
         <div id="allMembers">
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
-              <ol><li name="org.apache.spark.ml.feature.HmLabeledPoint#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="&lt;init&gt;(label:Double,features:Seq[String]):org.apache.spark.ml.feature.HmLabeledPoint"></a>
-      <a id="&lt;init&gt;:HmLabeledPoint"></a>
+              <ol><li name="hivemall.ftvec.SortByFeatureUDFWrapper#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="&lt;init&gt;():hivemall.ftvec.SortByFeatureUDFWrapper"></a>
+      <a id="&lt;init&gt;:SortByFeatureUDFWrapper"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">HmLabeledPoint</span><span class="params">(<span name="label">label: <span class="extype" name="scala.Double">Double</span> = <span class="symbol">0.0</span></span>, <span name="features">features: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>)</span>
+        <span class="name">SortByFeatureUDFWrapper</span><span class="params">()</span>
       </span>
       </h4>
-      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt class="param">label</dt><dd class="cmt"><p>Label for this data point.</p></dd><dt class="param">features</dt><dd class="cmt"><p>List of features for this data point.
-</p></dd></dl></div>
+      
     </li></ol>
             </div>
 
@@ -194,10 +191,61 @@
         <span class="name">clone</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.AnyRef">AnyRef</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
                 <span class="name">@throws</span><span class="args">(<span>
       
       <span class="defval" name="classOf[java.lang.CloneNotSupportedException]">...</span>
+    </span>)</span>
+              
+        </dd></dl></div>
+    </li><li name="org.apache.hadoop.hive.ql.udf.generic.GenericUDF#close" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="close():Unit"></a>
+      <a id="close():Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">close</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>GenericUDF → Closeable → AutoCloseable</dd><dt>Annotations</dt><dd>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="symbol">classOf[java.io.IOException]</span>
+    </span>)</span>
+              
+        </dd></dl></div>
+    </li><li name="org.apache.hadoop.hive.ql.udf.generic.GenericUDF#configure" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="configure(x$1:org.apache.hadoop.hive.ql.exec.MapredContext):Unit"></a>
+      <a id="configure(MapredContext):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">configure</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="org.apache.hadoop.hive.ql.exec.MapredContext">MapredContext</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>GenericUDF</dd></dl></div>
+    </li><li name="org.apache.hadoop.hive.ql.udf.generic.GenericUDF#copyToNewInstance" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="copyToNewInstance(x$1:Any):Unit"></a>
+      <a id="copyToNewInstance(Any):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">copyToNewInstance</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>GenericUDF</dd><dt>Annotations</dt><dd>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[org.apache.hadoop.hive.ql.exec.UDFArgumentException]">...</span>
     </span>)</span>
               
         </dd></dl></div>
@@ -214,19 +262,32 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="org.apache.spark.ml.feature.HmLabeledPoint#features" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="features:Seq[String]"></a>
-      <a id="features:Seq[String]"></a>
+    </li><li name="scala.AnyRef#equals" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="equals(x$1:Any):Boolean"></a>
+      <a id="equals(Any):Boolean"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">val</span>
+        <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">features</span><span class="result">: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>
+        <span class="name">equals</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       </h4>
-      <p class="shortcomment cmt">List of features for this data point.</p>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="hivemall.ftvec.SortByFeatureUDFWrapper#evaluate" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="evaluate(arguments:Array[&lt;error&gt;]):Object"></a>
+      <a id="evaluate(Array[&lt;error&gt;]):AnyRef"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">evaluate</span><span class="params">(<span name="arguments">arguments: <span class="extype" name="scala.Array">Array</span>[&lt;error&gt;]</span>)</span><span class="result">: <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="hivemall.ftvec.SortByFeatureUDFWrapper">SortByFeatureUDFWrapper</a> → GenericUDF</dd></dl></div>
     </li><li name="scala.AnyRef#finalize" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="finalize():Unit"></a>
       <a id="finalize():Unit"></a>
@@ -239,13 +300,26 @@
         <span class="name">finalize</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
                 <span class="name">@throws</span><span class="args">(<span>
       
       <span class="symbol">classOf[java.lang.Throwable]</span>
     </span>)</span>
               
         </dd></dl></div>
+    </li><li name="org.apache.hadoop.hive.ql.udf.generic.GenericUDF#flip" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="flip():org.apache.hadoop.hive.ql.udf.generic.GenericUDF"></a>
+      <a id="flip():GenericUDF"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">flip</span><span class="params">()</span><span class="result">: <span class="extype" name="org.apache.hadoop.hive.ql.udf.generic.GenericUDF">GenericUDF</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>GenericUDF</dd></dl></div>
     </li><li name="scala.AnyRef#getClass" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="getClass():Class[_]"></a>
       <a id="getClass():Class[_]"></a>
@@ -259,6 +333,103 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="hivemall.ftvec.SortByFeatureUDFWrapper#getDisplayString" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="getDisplayString(children:Array[String]):String"></a>
+      <a id="getDisplayString(Array[String]):String"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">getDisplayString</span><span class="params">(<span name="children">children: <span class="extype" name="scala.Array">Array</span>[<span class="extype" name="java.lang.String">String</span>]</span>)</span><span class="result">: <span class="extype" name="java.lang.String">String</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="hivemall.ftvec.SortByFeatureUDFWrapper">SortByFeatureUDFWrapper</a> → GenericUDF</dd></dl></div>
+    </li><li name="org.apache.hadoop.hive.ql.udf.generic.GenericUDF#getRequiredFiles" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="getRequiredFiles():Array[String]"></a>
+      <a id="getRequiredFiles():Array[String]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">getRequiredFiles</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Array">Array</span>[<span class="extype" name="java.lang.String">String</span>]</span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>GenericUDF</dd></dl></div>
+    </li><li name="org.apache.hadoop.hive.ql.udf.generic.GenericUDF#getRequiredJars" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="getRequiredJars():Array[String]"></a>
+      <a id="getRequiredJars():Array[String]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">getRequiredJars</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Array">Array</span>[<span class="extype" name="java.lang.String">String</span>]</span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>GenericUDF</dd></dl></div>
+    </li><li name="org.apache.hadoop.hive.ql.udf.generic.GenericUDF#getUdfName" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="getUdfName():String"></a>
+      <a id="getUdfName():String"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">getUdfName</span><span class="params">()</span><span class="result">: <span class="extype" name="java.lang.String">String</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>GenericUDF</dd></dl></div>
+    </li><li name="scala.AnyRef#hashCode" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="hashCode():Int"></a>
+      <a id="hashCode():Int"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">hashCode</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="hivemall.ftvec.SortByFeatureUDFWrapper#initialize" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="initialize(arguments:Array[org.apache.hadoop.hive.serde2.objectinspector.ObjectInspector]):org.apache.hadoop.hive.serde2.objectinspector.ObjectInspector"></a>
+      <a id="initialize(Array[ObjectInspector]):ObjectInspector"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">initialize</span><span class="params">(<span name="arguments">arguments: <span class="extype" name="scala.Array">Array</span>[<span class="extype" name="org.apache.hadoop.hive.serde2.objectinspector.ObjectInspector">ObjectInspector</span>]</span>)</span><span class="result">: <span class="extype" name="org.apache.hadoop.hive.serde2.objectinspector.ObjectInspector">ObjectInspector</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="hivemall.ftvec.SortByFeatureUDFWrapper">SortByFeatureUDFWrapper</a> → GenericUDF</dd></dl></div>
+    </li><li name="org.apache.hadoop.hive.ql.udf.generic.GenericUDF#initializeAndFoldConstants" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="initializeAndFoldConstants(x$1:Array[org.apache.hadoop.hive.serde2.objectinspector.ObjectInspector]):org.apache.hadoop.hive.serde2.objectinspector.ObjectInspector"></a>
+      <a id="initializeAndFoldConstants(Array[ObjectInspector]):ObjectInspector"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">initializeAndFoldConstants</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Array">Array</span>[<span class="extype" name="org.apache.hadoop.hive.serde2.objectinspector.ObjectInspector">ObjectInspector</span>]</span>)</span><span class="result">: <span class="extype" name="org.apache.hadoop.hive.serde2.objectinspector.ObjectInspector">ObjectInspector</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>GenericUDF</dd><dt>Annotations</dt><dd>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[org.apache.hadoop.hive.ql.exec.UDFArgumentException]">...</span>
+    </span>)</span>
+              
+        </dd></dl></div>
     </li><li name="scala.Any#isInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="isInstanceOf[T0]:Boolean"></a>
       <a id="isInstanceOf[T0]:Boolean"></a>
@@ -272,19 +443,6 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li name="org.apache.spark.ml.feature.HmLabeledPoint#label" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="label:Double"></a>
-      <a id="label:Double"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">label</span><span class="result">: <span class="extype" name="scala.Double">Double</span></span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">Label for this data point.</p>
     </li><li name="scala.AnyRef#ne" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ne(x$1:AnyRef):Boolean"></a>
       <a id="ne(AnyRef):Boolean"></a>
@@ -337,7 +495,7 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="org.apache.spark.ml.feature.HmLabeledPoint#toString" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="scala.AnyRef#toString" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="toString():String"></a>
       <a id="toString():String"></a>
       <h4 class="signature">
@@ -346,10 +504,10 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">toString</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
+        <span class="name">toString</span><span class="params">()</span><span class="result">: <span class="extype" name="java.lang.String">String</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="org.apache.spark.ml.feature.HmLabeledPoint">HmLabeledPoint</a> → AnyRef → Any</dd></dl></div>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait():Unit"></a>
       <a id="wait():Unit"></a>
@@ -416,14 +574,12 @@
         </div>
 
         <div id="inheritedMembers">
-        <div class="parent" name="scala.Serializable">
-              <h3>Inherited from <span class="extype" name="scala.Serializable">Serializable</span></h3>
-            </div><div class="parent" name="java.io.Serializable">
-              <h3>Inherited from <span class="extype" name="java.io.Serializable">Serializable</span></h3>
-            </div><div class="parent" name="scala.Product">
-              <h3>Inherited from <span class="extype" name="scala.Product">Product</span></h3>
-            </div><div class="parent" name="scala.Equals">
-              <h3>Inherited from <span class="extype" name="scala.Equals">Equals</span></h3>
+        <div class="parent" name="org.apache.hadoop.hive.ql.udf.generic.GenericUDF">
+              <h3>Inherited from <span class="extype" name="org.apache.hadoop.hive.ql.udf.generic.GenericUDF">GenericUDF</span></h3>
+            </div><div class="parent" name="java.io.Closeable">
+              <h3>Inherited from <span class="extype" name="java.io.Closeable">Closeable</span></h3>
+            </div><div class="parent" name="java.lang.AutoCloseable">
+              <h3>Inherited from <span class="extype" name="java.lang.AutoCloseable">AutoCloseable</span></h3>
             </div><div class="parent" name="scala.AnyRef">
               <h3>Inherited from <span class="extype" name="scala.AnyRef">AnyRef</span></h3>
             </div><div class="parent" name="scala.Any">
@@ -444,6 +600,6 @@
       <div id="tooltip"></div>
 
       <div id="footer">  </div>
-      <script defer="defer" type="text/javascript" id="jquery-js" src="../../../../../lib/jquery.js"></script><script defer="defer" type="text/javascript" id="jquery-ui-js" src="../../../../../lib/jquery-ui.js"></script><script defer="defer" type="text/javascript" id="tools-tooltip-js" src="../../../../../lib/tools.tooltip.js"></script><script defer="defer" type="text/javascript" id="template-js" src="../../../../../lib/template.js"></script>
+      <script defer="defer" type="text/javascript" id="jquery-js" src="../../lib/jquery.js"></script><script defer="defer" type="text/javascript" id="jquery-ui-js" src="../../lib/jquery-ui.js"></script><script defer="defer" type="text/javascript" id="tools-tooltip-js" src="../../lib/tools.tooltip.js"></script><script defer="defer" type="text/javascript" id="template-js" src="../../lib/template.js"></script>
     </body>
       </html>

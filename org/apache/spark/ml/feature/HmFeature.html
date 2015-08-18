@@ -2,9 +2,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html>
         <head>
-          <title>HmLabeledPoint - org.apache.spark.ml.feature.HmLabeledPoint</title>
-          <meta name="description" content="HmLabeledPoint - org.apache.spark.ml.feature.HmLabeledPoint" />
-          <meta name="keywords" content="HmLabeledPoint org.apache.spark.ml.feature.HmLabeledPoint" />
+          <title>HmFeature - org.apache.spark.ml.feature.HmFeature</title>
+          <meta name="description" content="HmFeature - org.apache.spark.ml.feature.HmFeature" />
+          <meta name="keywords" content="HmFeature org.apache.spark.ml.feature.HmFeature" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
       <link href="../../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
@@ -12,7 +12,7 @@
       <script type="text/javascript">
          if(top === self) {
             var url = '../../../../../index.html';
-            var hash = 'org.apache.spark.ml.feature.HmLabeledPoint';
+            var hash = 'org.apache.spark.ml.feature.HmFeature';
             var anchor = window.location.hash;
             var anchor_opt = '';
             if (anchor.length >= 1)
@@ -24,9 +24,9 @@
         </head>
         <body class="type">
       <div id="definition">
-        <a href="HmLabeledPoint$.html" title="Go to companion"><img src="../../../../../lib/class_to_object_big.png" /></a>
+        <img src="../../../../../lib/class_big.png" />
         <p id="owner"><a href="../../../../package.html" class="extype" name="org">org</a>.<a href="../../../package.html" class="extype" name="org.apache">apache</a>.<a href="../../package.html" class="extype" name="org.apache.spark">spark</a>.<a href="../package.html" class="extype" name="org.apache.spark.ml">ml</a>.<a href="package.html" class="extype" name="org.apache.spark.ml.feature">feature</a></p>
-        <h1><a href="HmLabeledPoint$.html" title="Go to companion">HmLabeledPoint</a></h1>
+        <h1>HmFeature</h1>
       </div>
 
       <h4 id="signature" class="signature">
@@ -35,13 +35,11 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <span class="name">HmLabeledPoint</span><span class="params">(<span name="label">label: <span class="extype" name="scala.Double">Double</span> = <span class="symbol">0.0</span></span>, <span name="features">features: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <span class="name">HmFeature</span><span class="params">(<span name="feature">feature: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
       
-          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Class that represents the features and labels of a data point for Hivemall.
-</p></div><dl class="paramcmts block"><dt class="param">label</dt><dd class="cmt"><p>Label for this data point.</p></dd><dt class="param">features</dt><dd class="cmt"><p>List of features for this data point.
-</p></dd></dl><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><span class="extype" name="scala.Serializable">Serializable</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, <span class="extype" name="scala.Product">Product</span>, <span class="extype" name="scala.Equals">Equals</span>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
@@ -61,7 +59,7 @@
                 <span class="filtertype">Inherited<br />
                 </span>
                 <ol id="linearization">
-                  <li class="in" name="org.apache.spark.ml.feature.HmLabeledPoint"><span>HmLabeledPoint</span></li><li class="in" name="scala.Serializable"><span>Serializable</span></li><li class="in" name="java.io.Serializable"><span>Serializable</span></li><li class="in" name="scala.Product"><span>Product</span></li><li class="in" name="scala.Equals"><span>Equals</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                  <li class="in" name="org.apache.spark.ml.feature.HmFeature"><span>HmFeature</span></li><li class="in" name="scala.Serializable"><span>Serializable</span></li><li class="in" name="java.io.Serializable"><span>Serializable</span></li><li class="in" name="scala.Product"><span>Product</span></li><li class="in" name="scala.Equals"><span>Equals</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                 </ol>
               </div><div id="ancestors">
             <span class="filtertype"></span>
@@ -81,20 +79,19 @@
         <div id="allMembers">
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
-              <ol><li name="org.apache.spark.ml.feature.HmLabeledPoint#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="&lt;init&gt;(label:Double,features:Seq[String]):org.apache.spark.ml.feature.HmLabeledPoint"></a>
-      <a id="&lt;init&gt;:HmLabeledPoint"></a>
+              <ol><li name="org.apache.spark.ml.feature.HmFeature#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="&lt;init&gt;(feature:String):org.apache.spark.ml.feature.HmFeature"></a>
+      <a id="&lt;init&gt;:HmFeature"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">HmLabeledPoint</span><span class="params">(<span name="label">label: <span class="extype" name="scala.Double">Double</span> = <span class="symbol">0.0</span></span>, <span name="features">features: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>)</span>
+        <span class="name">HmFeature</span><span class="params">(<span name="feature">feature: <span class="extype" name="scala.Predef.String">String</span></span>)</span>
       </span>
       </h4>
-      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt class="param">label</dt><dd class="cmt"><p>Label for this data point.</p></dd><dt class="param">features</dt><dd class="cmt"><p>List of features for this data point.
-</p></dd></dl></div>
+      
     </li></ol>
             </div>
 
@@ -214,19 +211,19 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="org.apache.spark.ml.feature.HmLabeledPoint#features" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="features:Seq[String]"></a>
-      <a id="features:Seq[String]"></a>
+    </li><li name="org.apache.spark.ml.feature.HmFeature#feature" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="feature:String"></a>
+      <a id="feature:String"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">features</span><span class="result">: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>
+        <span class="name">feature</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
       </span>
       </h4>
-      <p class="shortcomment cmt">List of features for this data point.</p>
+      
     </li><li name="scala.AnyRef#finalize" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="finalize():Unit"></a>
       <a id="finalize():Unit"></a>
@@ -272,19 +269,6 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li name="org.apache.spark.ml.feature.HmLabeledPoint#label" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="label:Double"></a>
-      <a id="label:Double"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">label</span><span class="result">: <span class="extype" name="scala.Double">Double</span></span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">Label for this data point.</p>
     </li><li name="scala.AnyRef#ne" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ne(x$1:AnyRef):Boolean"></a>
       <a id="ne(AnyRef):Boolean"></a>
@@ -337,19 +321,6 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="org.apache.spark.ml.feature.HmLabeledPoint#toString" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="toString():String"></a>
-      <a id="toString():String"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">toString</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="org.apache.spark.ml.feature.HmLabeledPoint">HmLabeledPoint</a> → AnyRef → Any</dd></dl></div>
     </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait():Unit"></a>
       <a id="wait():Unit"></a>
