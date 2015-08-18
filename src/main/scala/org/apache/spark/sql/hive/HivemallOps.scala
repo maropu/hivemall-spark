@@ -42,7 +42,7 @@ import org.apache.spark.sql.types.StringType
  * @groupname tools.math
  * @groupname dataset
  */
-class HivemallOps(df: DataFrame) {
+final class HivemallOps(df: DataFrame) {
 
   /**
    * An implicit conversion to avoid doing annoying transformation.
@@ -60,7 +60,7 @@ class HivemallOps(df: DataFrame) {
     Generate(new HiveGenericUdtf(
         new HiveFunctionWrapper("hivemall.regression.AdaDeltaUDTF"),
         exprs.map(_.expr)),
-      join=false, outer=false, None,
+      join = false, outer = false, None,
       Seq("feature", "weight").map(UnresolvedAttribute(_)),
       df.logicalPlan)
   }
@@ -74,7 +74,7 @@ class HivemallOps(df: DataFrame) {
     Generate(new HiveGenericUdtf(
         new HiveFunctionWrapper("hivemall.regression.AdaGradUDTF"),
         exprs.map(_.expr)),
-      join=false, outer=false, None,
+      join = false, outer = false, None,
       Seq("feature", "weight").map(UnresolvedAttribute(_)),
       df.logicalPlan)
   }
@@ -88,7 +88,7 @@ class HivemallOps(df: DataFrame) {
     Generate(new HiveGenericUdtf(
         new HiveFunctionWrapper("hivemall.regression.AROWRegressionUDTF"),
         exprs.map(_.expr)),
-      join=false, outer=false, None,
+      join = false, outer = false, None,
       Seq("feature", "weight", "conv").map(UnresolvedAttribute(_)),
       df.logicalPlan)
   }
@@ -102,7 +102,7 @@ class HivemallOps(df: DataFrame) {
     Generate(new HiveGenericUdtf(
         new HiveFunctionWrapper("hivemall.regression.AROWRegressionUDTF$AROWe"),
         exprs.map(_.expr)),
-      join=false, outer=false, None,
+      join = false, outer = false, None,
       Seq("feature", "weight", "conv").map(UnresolvedAttribute(_)),
       df.logicalPlan)
   }
@@ -116,7 +116,7 @@ class HivemallOps(df: DataFrame) {
     Generate(new HiveGenericUdtf(
         new HiveFunctionWrapper("hivemall.regression.AROWRegressionUDTF$AROWe2"),
         exprs.map(_.expr)),
-      join=false, outer=false, None,
+      join = false, outer = false, None,
       Seq("feature", "weight", "conv").map(UnresolvedAttribute(_)),
       df.logicalPlan)
   }
@@ -130,7 +130,7 @@ class HivemallOps(df: DataFrame) {
     Generate(new HiveGenericUdtf(
         new HiveFunctionWrapper("hivemall.regression.LogressUDTF"),
         exprs.map(_.expr)),
-      join=false, outer=false, None,
+      join = false, outer = false, None,
       Seq("feature", "weight").map(UnresolvedAttribute(_)),
       df.logicalPlan)
   }
@@ -144,7 +144,7 @@ class HivemallOps(df: DataFrame) {
      Generate(new HiveGenericUdtf(
         new HiveFunctionWrapper("hivemall.regression.PassiveAggressiveRegressionUDTF"),
         exprs.map(_.expr)),
-      join=false, outer=false, None,
+      join = false, outer = false, None,
       Seq("feature", "weight").map(UnresolvedAttribute(_)),
       df.logicalPlan)
   }
@@ -158,7 +158,7 @@ class HivemallOps(df: DataFrame) {
      Generate(new HiveGenericUdtf(
         new HiveFunctionWrapper("hivemall.regression.PassiveAggressiveRegressionUDTF$PA1a"),
         exprs.map(_.expr)),
-      join=false, outer=false, None,
+      join = false, outer = false, None,
       Seq("feature", "weight").map(UnresolvedAttribute(_)),
       df.logicalPlan)
   }
@@ -172,7 +172,7 @@ class HivemallOps(df: DataFrame) {
      Generate(new HiveGenericUdtf(
         new HiveFunctionWrapper("hivemall.regression.PassiveAggressiveRegressionUDTF$PA2"),
         exprs.map(_.expr)),
-      join=false, outer=false, None,
+      join = false, outer = false, None,
       Seq("feature", "weight").map(UnresolvedAttribute(_)),
       df.logicalPlan)
   }
@@ -186,7 +186,7 @@ class HivemallOps(df: DataFrame) {
      Generate(new HiveGenericUdtf(
         new HiveFunctionWrapper("hivemall.regression.PassiveAggressiveRegressionUDTF$PA2a"),
         exprs.map(_.expr)),
-      join=false, outer=false, None,
+      join = false, outer = false, None,
       Seq("feature", "weight").map(UnresolvedAttribute(_)),
       df.logicalPlan)
   }
@@ -200,7 +200,7 @@ class HivemallOps(df: DataFrame) {
      Generate(new HiveGenericUdtf(
         new HiveFunctionWrapper("hivemall.classifier.PerceptronUDTF"),
         exprs.map(_.expr)),
-      join=false, outer=false, None,
+      join = false, outer = false, None,
       Seq("feature", "weight").map(UnresolvedAttribute(_)),
       df.logicalPlan)
   }
@@ -214,7 +214,7 @@ class HivemallOps(df: DataFrame) {
      Generate(new HiveGenericUdtf(
         new HiveFunctionWrapper("hivemall.classifier.PassiveAggressiveUDTF"),
         exprs.map(_.expr)),
-      join=false, outer=false, None,
+      join = false, outer = false, None,
       Seq("feature", "weight").map(UnresolvedAttribute(_)),
       df.logicalPlan)
   }
@@ -228,7 +228,7 @@ class HivemallOps(df: DataFrame) {
      Generate(new HiveGenericUdtf(
         new HiveFunctionWrapper("hivemall.classifier.PassiveAggressiveUDTF$PA1"),
         exprs.map(_.expr)),
-      join=false, outer=false, None,
+      join = false, outer = false, None,
       Seq("feature", "weight").map(UnresolvedAttribute(_)),
       df.logicalPlan)
   }
@@ -242,7 +242,7 @@ class HivemallOps(df: DataFrame) {
      Generate(new HiveGenericUdtf(
         new HiveFunctionWrapper("hivemall.classifier.PassiveAggressiveUDTF$PA2"),
         exprs.map(_.expr)),
-      join=false, outer=false, None,
+      join = false, outer = false, None,
       Seq("feature", "weight").map(UnresolvedAttribute(_)),
       df.logicalPlan)
   }
@@ -256,7 +256,7 @@ class HivemallOps(df: DataFrame) {
      Generate(new HiveGenericUdtf(
         new HiveFunctionWrapper("hivemall.classifier.ConfidenceWeightedUDTF"),
         exprs.map(_.expr)),
-      join=false, outer=false, None,
+      join = false, outer = false, None,
       Seq("feature", "weight", "conv").map(UnresolvedAttribute(_)),
       df.logicalPlan)
   }
@@ -270,7 +270,7 @@ class HivemallOps(df: DataFrame) {
      Generate(new HiveGenericUdtf(
         new HiveFunctionWrapper("hivemall.classifier.AROWClassifierUDTF"),
         exprs.map(_.expr)),
-      join=false, outer=false, None,
+      join = false, outer = false, None,
       Seq("feature", "weight", "conv").map(UnresolvedAttribute(_)),
       df.logicalPlan)
   }
@@ -284,7 +284,7 @@ class HivemallOps(df: DataFrame) {
      Generate(new HiveGenericUdtf(
         new HiveFunctionWrapper("hivemall.classifier.AROWClassifierUDTF$AROWh"),
         exprs.map(_.expr)),
-      join=false, outer=false, None,
+      join = false, outer = false, None,
       Seq("feature", "weight", "conv").map(UnresolvedAttribute(_)),
       df.logicalPlan)
   }
@@ -298,7 +298,7 @@ class HivemallOps(df: DataFrame) {
      Generate(new HiveGenericUdtf(
         new HiveFunctionWrapper("hivemall.classifier.SoftConfideceWeightedUDTF$SCW1"),
         exprs.map(_.expr)),
-      join=false, outer=false, None,
+      join = false, outer = false, None,
       Seq("feature", "weight", "conv").map(UnresolvedAttribute(_)),
       df.logicalPlan)
   }
@@ -312,7 +312,7 @@ class HivemallOps(df: DataFrame) {
      Generate(new HiveGenericUdtf(
         new HiveFunctionWrapper("hivemall.classifier.SoftConfideceWeightedUDTF$SCW2"),
         exprs.map(_.expr)),
-      join=false, outer=false, None,
+      join = false, outer = false, None,
       Seq("feature", "weight", "conv").map(UnresolvedAttribute(_)),
       df.logicalPlan)
   }
@@ -326,7 +326,7 @@ class HivemallOps(df: DataFrame) {
      Generate(new HiveGenericUdtf(
         new HiveFunctionWrapper("hivemall.classifier.AdaGradRDAUDTF"),
         exprs.map(_.expr)),
-      join=false, outer=false, None,
+      join = false, outer = false, None,
       Seq("feature", "weight").map(UnresolvedAttribute(_)),
       df.logicalPlan)
   }
@@ -340,7 +340,7 @@ class HivemallOps(df: DataFrame) {
      Generate(new HiveGenericUdtf(
         new HiveFunctionWrapper("hivemall.classifier.multiclass.MulticlassPerceptronUDTF"),
         exprs.map(_.expr)),
-      join=false, outer=false, None,
+      join = false, outer = false, None,
       Seq("label", "feature", "weight").map(UnresolvedAttribute(_)),
       df.logicalPlan)
   }
@@ -354,7 +354,7 @@ class HivemallOps(df: DataFrame) {
      Generate(new HiveGenericUdtf(
         new HiveFunctionWrapper("hivemall.classifier.multiclass.MulticlassPassiveAggressiveUDTF"),
         exprs.map(_.expr)),
-      join=false, outer=false, None,
+      join = false, outer = false, None,
       Seq("label", "feature", "weight").map(UnresolvedAttribute(_)),
       df.logicalPlan)
   }
@@ -368,7 +368,7 @@ class HivemallOps(df: DataFrame) {
      Generate(new HiveGenericUdtf(
         new HiveFunctionWrapper("hivemall.classifier.multiclass.MulticlassPassiveAggressiveUDTF$PA1"),
         exprs.map(_.expr)),
-      join=false, outer=false, None,
+      join = false, outer = false, None,
       Seq("label", "feature", "weight").map(UnresolvedAttribute(_)),
       df.logicalPlan)
   }
@@ -382,7 +382,7 @@ class HivemallOps(df: DataFrame) {
      Generate(new HiveGenericUdtf(
         new HiveFunctionWrapper("hivemall.classifier.multiclass.MulticlassPassiveAggressiveUDTF$PA2"),
         exprs.map(_.expr)),
-      join=false, outer=false, None,
+      join = false, outer = false, None,
       Seq("label", "feature", "weight").map(UnresolvedAttribute(_)),
       df.logicalPlan)
   }
@@ -396,7 +396,7 @@ class HivemallOps(df: DataFrame) {
      Generate(new HiveGenericUdtf(
         new HiveFunctionWrapper("hivemall.classifier.multiclass.MulticlassConfidenceWeightedUDTF"),
         exprs.map(_.expr)),
-      join=false, outer=false, None,
+      join = false, outer = false, None,
       Seq("label", "feature", "weight", "conv").map(UnresolvedAttribute(_)),
       df.logicalPlan)
   }
@@ -410,7 +410,7 @@ class HivemallOps(df: DataFrame) {
      Generate(new HiveGenericUdtf(
         new HiveFunctionWrapper("hivemall.classifier.multiclass.MulticlassAROWClassifierUDTF"),
         exprs.map(_.expr)),
-      join=false, outer=false, None,
+      join = false, outer = false, None,
       Seq("label", "feature", "weight", "conv").map(UnresolvedAttribute(_)),
       df.logicalPlan)
   }
@@ -424,7 +424,7 @@ class HivemallOps(df: DataFrame) {
      Generate(new HiveGenericUdtf(
         new HiveFunctionWrapper("hivemall.classifier.multiclass.MulticlassSoftConfidenceWeightedUDTF$SCW1"),
         exprs.map(_.expr)),
-      join=false, outer=false, None,
+      join = false, outer = false, None,
       Seq("label", "feature", "weight", "conv").map(UnresolvedAttribute(_)),
       df.logicalPlan)
   }
@@ -438,7 +438,7 @@ class HivemallOps(df: DataFrame) {
      Generate(new HiveGenericUdtf(
         new HiveFunctionWrapper("hivemall.classifier.multiclass.MulticlassSoftConfidenceWeightedUDTF$SCW2"),
         exprs.map(_.expr)),
-      join=false, outer=false, None,
+      join = false, outer = false, None,
       Seq("label", "feature", "weight", "conv").map(UnresolvedAttribute(_)),
       df.logicalPlan)
   }
@@ -482,7 +482,7 @@ class HivemallOps(df: DataFrame) {
     Generate(new HiveGenericUdtf(
         new HiveFunctionWrapper("hivemall.ftvec.amplify.AmplifierUDTF"),
         exprs.map(_.expr)),
-      join=false, outer=false, None,
+      join = false, outer = false, None,
       outputAttr,
       df.logicalPlan)
   }
@@ -500,7 +500,7 @@ class HivemallOps(df: DataFrame) {
     Generate(new HiveGenericUdtf(
         new HiveFunctionWrapper("hivemall.ftvec.amplify.RandomAmplifierUDTF"),
         exprs.map(_.expr)),
-      join=false, outer=false, None,
+      join = false, outer = false, None,
       outputAttr,
       df.logicalPlan)
   }
@@ -529,7 +529,7 @@ class HivemallOps(df: DataFrame) {
     Generate(new HiveGenericUdtf(
         new HiveFunctionWrapper("hivemall.dataset.LogisticRegressionDataGeneratorUDTFWrapper"),
         exprs.map(_.expr)),
-      join=false, outer=false, None,
+      join = false, outer = false, None,
       Seq("label", "features").map(UnresolvedAttribute(_)),
       df.logicalPlan)
   }
@@ -699,8 +699,9 @@ object HivemallOps {
    * @group tools.mapred
    */
   def rowid(): Column = {
-    new HiveGenericUdf(new HiveFunctionWrapper(
+    val hiveUdf = new HiveGenericUdf(new HiveFunctionWrapper(
       "hivemall.tools.mapred.RowIdUDFWrapper"), Nil)
+    hiveUdf.as("rowid")
   }
 
   /**

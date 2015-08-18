@@ -20,18 +20,15 @@ of data with names, types, and qualifiers.
 To apply Hivemall fuctions in DataFrame, you type codes below;
 
 ```
-// Fetch an initialization script for hivemall-spark
-# wget https://raw.githubusercontent.com/maropu/hivemall-spark/master/scripts/ddl/define-dfs.sh
-
-scala> :load define-dfs.sh
-
 // Assume that an input format is as follows:
 //   1.0,[1:0.5,3:0.3,8:0.1]
 //   0.0,[2:0.1,3:0.8,7:0.4,9:0.1]
 //   ...
-scala> val trainTable = sc.textFile(...).map(HmLabeledPoint.parse)
+scala> val trainRdd = sc.textFile(...).map(HmLabeledPoint.parse)
 
-scala> sqlContext.createDataFrame(trainTable)
+scala> :paste
+
+sqlContext.createDataFrame(trainRdd)
   .train_logregr(add_bias($"feature"), $"label")
   .groupby("feature")
   .agg("weight"->"avg")
@@ -51,6 +48,8 @@ say a SQL statements as follows;
 
 scala> :load define-udfs.sh
 
+scala> :paste
+
 sqlContext.sql("
   SELECT feature, AVG(weight) AS weight
     FROM (
@@ -58,6 +57,37 @@ sqlContext.sql("
         FROM trainTable
     ) model
     GROUP BY feature")
+```
+
+Hivemall in Spark Streaming
+--------------------
+Spark Streaming is an extension of the core Spark API that enables scalable,
+high-throughput, fault-tolerant stream processing of live data streams.
+A Hivemall model built from a batch of training data can be easily
+applied into these streams;
+
+```
+// Assume that an input streaming format is as follows:
+//   1.0,[1:0.5,3:0.3,8:0.1]
+//   0.0,[2:0.1,3:0.8,7:0.4,9:0.1]
+//   ...
+scala> val testData = ssc.textFileStream(...).map(LabeledPoint.parse)
+
+scala> :paste
+
+testData.predict { case testDf =>
+  // Explode features in input streams
+  val testDf_exploded = ...
+
+  val predictDf = testDf_exploded
+    .join(model, testDf_exploded("feature") === model("feature"), "LEFT_OUTER")
+    .select($"rowid", ($"weight" * $"value").as("value"))
+    .groupby("rowid").sum("value")
+    .select($"rowid", sigmoid($"SUM(value)"))
+
+  predictDf
+}
+
 ```
 
 Support Status
@@ -84,5 +114,3 @@ TODO
 --------------------
 
 * Support python APIs for Hivemall
-
-* Implement the wrappers of Spark Streaming and MLlib
