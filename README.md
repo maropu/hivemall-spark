@@ -10,7 +10,7 @@ Installation
 ```
 # $SPARK_HOME/bin/spark-shell --packages maropu:hivemall-spark:0.0.4
 
-scala> sqlContext.sql("add jar maropu_hivemall-spark-0.0.4.jar")
+scala> sql("ADD JAR maropu_hivemall-spark-0.0.4.jar")
 ```
 
 Hivemall in DataFrame
@@ -50,7 +50,7 @@ scala> :load define-udfs.sh
 
 scala> :paste
 
-sqlContext.sql("
+sql("
   SELECT feature, AVG(weight) AS weight
     FROM (
       SELECT train_logregr(add_bias(features), label AS(feature, weight)
