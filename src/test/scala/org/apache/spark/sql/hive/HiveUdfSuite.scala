@@ -24,7 +24,7 @@ class HiveUdfSuite extends QueryTest {
   import org.apache.spark.sql.hive.test.TestHive.implicits._
   import org.apache.spark.sql.hive.test.TestHive.sql
 
-  test("hivemall_version") {
+  ignore("hivemall_version") {
     sql(s"CREATE TEMPORARY FUNCTION hivemall_version " +
       s"AS '${classOf[hivemall.HivemallVersionUDF].getName}'")
     checkAnswer(
@@ -35,7 +35,7 @@ class HiveUdfSuite extends QueryTest {
     // TestHive.reset()
   }
 
-  test("train_logregr") {
+  ignore("train_logregr") {
     TinyTrainData.registerTempTable("TinyTrainData")
     sql(s"CREATE TEMPORARY FUNCTION train_logregr " +
       s"AS '${classOf[hivemall.regression.LogressUDTF].getName}'")

@@ -28,7 +28,7 @@ class HivemallOpsSuite extends TestSuiteBase {
   import org.apache.spark.sql.hive.test.TestHive.implicits._
   import org.apache.spark.streaming.HivemallOpsSuite._
 
-  test("streaming") {
+  ignore("streaming") {
     withStreamingContext(new StreamingContext(TestHive.sparkContext, Milliseconds(500))) { ssc =>
       val input = Seq(
         Seq(HmLabeledPoint(features = "1:0.6" :: "2:0.1" :: Nil)),

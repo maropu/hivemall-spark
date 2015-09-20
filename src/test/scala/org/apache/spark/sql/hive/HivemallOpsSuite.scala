@@ -32,10 +32,27 @@ class HivemallOpsSuite extends QueryTest {
   import org.apache.spark.test.TestDoubleWrapper._
 
   test("hivemall_version") {
-    checkAnswer(
-      DummyInputData.select(hivemall_version()).distinct,
-      Row("0.3.1")
-    )
+    assert(DummyInputData.select(hivemall_version()).collect.toSet === Set(Row("0.3.1")))
+    /**
+     * TODO: Why a test below does fail?
+     *
+     * checkAnswer(
+     *   DummyInputData.select(hivemall_version()).distinct,
+     *   Row("0.3.1")
+     * )
+     *
+     * The test throw an exception below:
+     *
+     * [info] - hivemall_version *** FAILED ***
+     * [info]   org.apache.spark.sql.AnalysisException: Cannot resolve column name "HiveSimpleUDF#hivemall.HivemallVersionUDF()" among (HiveSimpleUDF#hivemall.Hivemall VersionUDF());
+     * [info]   at org.apache.spark.sql.DataFrame$$anonfun$resolve$1.apply(DataFrame.scala:159)
+     * [info]   at org.apache.spark.sql.DataFrame$$anonfun$resolve$1.apply(DataFrame.scala:159)
+     * [info]   at scala.Option.getOrElse(Option.scala:120)
+     * [info]   at org.apache.spark.sql.DataFrame.resolve(DataFrame.scala:158)
+     * [info]   at org.apache.spark.sql.DataFrame$$anonfun$30.apply(DataFrame.scala:1227)
+     * [info]   at org.apache.spark.sql.DataFrame$$anonfun$30.apply(DataFrame.scala:1227)
+     * [info]   at scala.collection.TraversableLike$$anonfun$map$1.apply(TraversableLike.scala:244)
+     */
   }
 
   test("add_bias") {

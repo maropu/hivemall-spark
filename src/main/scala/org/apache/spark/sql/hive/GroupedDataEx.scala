@@ -20,6 +20,7 @@ package org.apache.spark.sql.hive
 import org.apache.spark.sql.catalyst.analysis.Star
 import org.apache.spark.sql.catalyst.expressions._
 import org.apache.spark.sql.catalyst.plans.logical.{Aggregate, Cube, Rollup}
+import org.apache.spark.sql.hive.HiveShim.HiveFunctionWrapper
 import org.apache.spark.sql.types._
 import org.apache.spark.sql.{AnalysisException, DataFrame, GroupedData}
 
@@ -70,10 +71,10 @@ class GroupedDataEx protected[sql](
   override def agg(exprs: Map[String, String]): DataFrame = {
     toDF(exprs.map { case (colName, expr) =>
       val a = expr match {
-        case "voted_avg" => new HiveUdaf(
+        case "voted_avg" => HiveUDAF(
           new HiveFunctionWrapper("hivemall.ensemble.bagging.VotedAvgUDAF"),
           Seq(df(colName).expr))
-        case "weight_voted_avg" => new HiveUdaf(
+        case "weight_voted_avg" => HiveUDAF(
           new HiveFunctionWrapper("hivemall.ensemble.bagging.WeightVotedAvgUDAF"),
           Seq(df(colName).expr))
         case _ => strToExpr(expr)(df(colName).expr)
@@ -96,7 +97,7 @@ class GroupedDataEx protected[sql](
   def argmin_kld(weight: String, conv: String): DataFrame = {
     // CheckType(weight, NumericType)
     // CheckType(conv, NumericType)
-    val udaf = new HiveUdaf(
+    val udaf = HiveUDAF(
       new HiveFunctionWrapper("hivemall.ensemble.ArgminKLDistanceUDAF"),
       Seq(weight, conv).map(df.resolve))
     toDF((Alias(udaf, udaf.prettyString)() :: Nil).toSeq)
@@ -108,7 +109,7 @@ class GroupedDataEx protected[sql](
   def max_label(score: String, label: String): DataFrame = {
     // checkType(score, NumericType)
     checkType(label, StringType)
-    val udaf = new HiveGenericUdaf(
+    val udaf = HiveGenericUDAF(
       new HiveFunctionWrapper("hivemall.ensemble.MaxValueLabelUDAF"),
       Seq(score, label).map(df.resolve))
     toDF((Alias(udaf, udaf.prettyString)() :: Nil).toSeq)
@@ -120,7 +121,7 @@ class GroupedDataEx protected[sql](
   def maxrow(score: String, label: String): DataFrame = {
     // checkType(score, NumericType)
     checkType(label, StringType)
-    val udaf = new HiveGenericUdaf(
+    val udaf = HiveGenericUDAF(
       new HiveFunctionWrapper("hivemall.ensemble.MaxRowUDAF"),
       Seq(score, label).map(df.resolve))
     toDF((Alias(udaf, udaf.prettyString)() :: Nil).toSeq)
@@ -132,7 +133,7 @@ class GroupedDataEx protected[sql](
   def f1score(target: String, predict: String): DataFrame = {
     checkType(target, ArrayType(IntegerType))
     checkType(predict, ArrayType(IntegerType))
-    val udaf = new HiveUdaf(
+    val udaf = HiveUDAF(
       new HiveFunctionWrapper("hivemall.evaluation.FMeasureUDAF"),
       Seq(target, predict).map(df.resolve))
     toDF((Alias(udaf, udaf.prettyString)() :: Nil).toSeq)
@@ -144,7 +145,7 @@ class GroupedDataEx protected[sql](
   def mae(predict: String, target: String): DataFrame = {
     checkType(predict, DoubleType)
     checkType(target, DoubleType)
-    val udaf = new HiveUdaf(
+    val udaf = HiveUDAF(
       new HiveFunctionWrapper("hivemall.evaluation.MeanAbsoluteErrorUDAF"),
       Seq(predict, target).map(df.resolve))
     toDF((Alias(udaf, udaf.prettyString)() :: Nil).toSeq)
@@ -156,7 +157,7 @@ class GroupedDataEx protected[sql](
   def mse(predict: String, target: String): DataFrame = {
     checkType(predict, DoubleType)
     checkType(target, DoubleType)
-    val udaf = new HiveUdaf(
+    val udaf = HiveUDAF(
       new HiveFunctionWrapper("hivemall.evaluation.MeanSquaredErrorUDAF"),
       Seq(predict, target).map(df.resolve))
     toDF((Alias(udaf, udaf.prettyString)() :: Nil).toSeq)
@@ -168,7 +169,7 @@ class GroupedDataEx protected[sql](
   def rmse(predict: String, target: String): DataFrame = {
     checkType(predict, DoubleType)
     checkType(target, DoubleType)
-    val udaf = new HiveUdaf(
+    val udaf = HiveUDAF(
       new HiveFunctionWrapper("hivemall.evaluation.RootMeanSquaredErrorUDAF"),
       Seq(predict, target).map(df.resolve))
     toDF((Alias(udaf, udaf.prettyString)() :: Nil).toSeq)

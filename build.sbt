@@ -4,9 +4,8 @@ version := "0.0.5"
 
 scalaVersion := "2.10.4"
 
-// Since spark-v1.4.0, it only bundles Hive jars of version 0.13.1.
-// https://spark.apache.org/docs/latest/sql-programming-guide.html#interacting-with-different-versions-of-hive-metastore
-unmanagedSourceDirectories in Compile += baseDirectory.value / "extra-src/v0.13.1"
+// Copied to handle compatibility stuffs for Hive UDFs
+unmanagedSourceDirectories in Compile += baseDirectory.value / "extra-src/hive"
 
 // To avoid compiler errors in sbt-doc
 // sources in doc in Compile := List()
@@ -19,7 +18,7 @@ net.virtualvoid.sbt.graph.Plugin.graphSettings
 // spark-package settings
 spName := "maropu/hivemall-spark"
 
-sparkVersion := "1.4.1"
+sparkVersion := "1.5.0"
 
 sparkComponents ++= Seq("sql", "mllib", "hive")
 
