@@ -175,58 +175,27 @@ class HivemallOpsSuite extends QueryTest {
     )
   }
 
-  test("train_adadelta") {
-    assert(
-      TinyTrainData
-        .train_adadelta(add_bias($"features"), $"label")
-        .groupby("feature")
-        .agg("weight"->"avg")
-        .count() > 0)
-  }
-
-  test("train_adagrad") {
-    assert(
-      TinyTrainData
-        .train_adagrad(add_bias($"features"), $"label")
-        .groupby("feature")
-        .agg("weight"->"avg")
-        .count() > 0)
-  }
-
-  test("train_arow_regr") {
-    assert(
-      TinyTrainData
-        .train_arow_regr(add_bias($"features"), $"label")
-        .groupby("feature")
-        .argmin_kld("weight", "conv")
-        .count() > 0)
-  }
-
-  test("train_arowe_regr") {
-    assert(
-      TinyTrainData
-        .train_arowe_regr(add_bias($"features"), $"label")
-        .groupby("feature")
-        .argmin_kld("weight", "conv")
-        .count() > 0)
-  }
-
-  test("train_arowe2_regr") {
-    assert(
-      TinyTrainData
-        .train_arowe_regr(add_bias($"features"), $"label")
-        .groupby("feature")
-        .argmin_kld("weight", "conv")
-        .count() > 0)
-  }
-
-  test("train_logregr") {
-    assert(
-      TinyTrainData
-        .train_logregr(add_bias($"features"), $"label")
-        .groupby("feature")
-        .agg("weight"->"avg")
-        .count() > 0)
+  test("invoke regression") {
+    Seq(
+      "train_adadelta",
+      "train_adagrad",
+      "train_arow_regr",
+      "train_arowe_regr",
+      "train_arowe2_regr",
+      "train_logregr",
+      "train_pa1_regr",
+      "train_pa1a_regr",
+      "train_pa2_regr",
+      "train_pa2a_regr"
+    )
+    .map { func =>
+      // Invoke a function with the given name via reflection
+      val im = scala.reflect.runtime.currentMirror.reflect(new HivemallOps(TinyTrainData))
+      val mSym = im.symbol.typeSignature.member(ru.newTermName(func)).asMethod
+      im.reflectMethod(mSym).apply(Seq($"features", $"label"))
+        .asInstanceOf[DataFrame]
+        .foreach(_ => {}) // just call each method
+    }
   }
 
   test("check regression precision") {
@@ -245,42 +214,6 @@ class HivemallOpsSuite extends QueryTest {
     .map { func =>
       checkRegrPrecision(func)
     }
-  }
-
-  test("train_pa1_regr") {
-    assert(
-      TinyTrainData
-        .train_pa1_regr(add_bias($"features"), $"label")
-        .groupby("feature")
-        .agg("weight"->"avg")
-        .count() > 0)
-  }
-
-  test("train_pa1a_regr") {
-    assert(
-      TinyTrainData
-        .train_pa1a_regr(add_bias($"features"), $"label")
-        .groupby("feature")
-        .agg("weight"->"avg")
-        .count() > 0)
-  }
-
-  test("train_pa2_regr") {
-    assert(
-      TinyTrainData
-        .train_pa2_regr(add_bias($"features"), $"label")
-        .groupby("feature")
-        .agg("weight"->"avg")
-        .count() > 0)
-  }
-
-  test("train_pa2a_regr") {
-    assert(
-      TinyTrainData
-        .train_pa2a_regr(add_bias($"features"), $"label")
-        .groupby("feature")
-        .agg("weight"->"avg")
-        .count() > 0)
   }
 
   test("train_perceptron") {
@@ -583,8 +516,7 @@ object HivemallOpsSuite {
 
   def checkRegrPrecision(func: String): Unit = {
     // Invoke a function with the given name via reflection
-    val m = scala.reflect.runtime.currentMirror
-    val im = m.reflect(new HivemallOps(LargeRegrTrainData))
+    val im = scala.reflect.runtime.currentMirror.reflect(new HivemallOps(LargeRegrTrainData))
     val mSym = im.symbol.typeSignature.member(ru.newTermName(func)).asMethod
     val method = im.reflectMethod(mSym)
 
