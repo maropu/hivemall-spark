@@ -130,7 +130,7 @@ class GroupedDataEx protected[sql](
   /**
    * @see hivemall.evaluation.FMeasureUDAF
    */
-  def f1score(target: String, predict: String): DataFrame = {
+  def f1score(predict: String, target: String): DataFrame = {
     checkType(target, ArrayType(IntegerType))
     checkType(predict, ArrayType(IntegerType))
     val udaf = HiveUDAF(

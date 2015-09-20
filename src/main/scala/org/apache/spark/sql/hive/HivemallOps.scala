@@ -31,7 +31,6 @@ import org.apache.spark.sql.types.StringType
  * @groupname misc
  * @groupname regression
  * @groupname classifier
- * @groupname classifier
  * @groupname classifier.multiclass
  * @groupname ensemble
  * @groupname ftvec

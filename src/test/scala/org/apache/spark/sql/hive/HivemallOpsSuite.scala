@@ -175,6 +175,20 @@ class HivemallOpsSuite extends QueryTest {
     )
   }
 
+  private[this] def invokeMethod(cls: Any, func: String, args: Any*): Unit = {
+    try {
+      // Invoke a function with the given name via reflection
+      val im = scala.reflect.runtime.currentMirror.reflect(cls)
+      val mSym = im.symbol.typeSignature.member(ru.newTermName(func)).asMethod
+      im.reflectMethod(mSym).apply(args: _*)
+        .asInstanceOf[DataFrame]
+        .foreach(_ => {}) // just call each method
+    } catch {
+      case e: Exception =>
+        assert(false, s"Invoking ${func} failed because: ${e.getMessage}")
+    }
+  }
+
   test("invoke regression") {
     Seq(
       "train_adadelta",
@@ -189,12 +203,7 @@ class HivemallOpsSuite extends QueryTest {
       "train_pa2a_regr"
     )
     .map { func =>
-      // Invoke a function with the given name via reflection
-      val im = scala.reflect.runtime.currentMirror.reflect(new HivemallOps(TinyTrainData))
-      val mSym = im.symbol.typeSignature.member(ru.newTermName(func)).asMethod
-      im.reflectMethod(mSym).apply(Seq($"features", $"label"))
-        .asInstanceOf[DataFrame]
-        .foreach(_ => {}) // just call each method
+      invokeMethod(new HivemallOps(TinyTrainData), func, Seq($"features", $"label"))
     }
   }
 
@@ -370,39 +379,28 @@ class HivemallOpsSuite extends QueryTest {
         .count() > 0)
   }
 
-  test("voted_avg") {
-    assert(TinyScoreData.groupby().agg("score"->"voted_avg").count() > 0)
+  test("user-defined aggregators for ensembles") {
+    Seq("voted_avg", "weight_voted_avg")
+      .map { udaf =>
+        TinyScoreData.groupby().agg("score"->udaf)
+          .foreach(_ => {})
+      }
   }
 
-  test("weight_voted_avg") {
-    assert(TinyScoreData.groupby().agg("score"->"weight_voted_avg").count() > 0)
+  test("user-defined aggregators for evaluation") {
+    Seq("mae", "mse", "rmse")
+      .map { udaf =>
+        invokeMethod(Double2Data.groupby(), udaf, "predict", "target")
+      }
+    Seq("f1score")
+      .map { udaf =>
+      invokeMethod(IntList2Data.groupby(), udaf, "predict", "target")
+    }
   }
 
-  test("f1score") {
-    assert(IntList2Data.groupby().f1score("target", "predict").count > 0)
-  }
-
-  test("mae") {
-    assert(Double2Data.groupby().mae("predict", "target").count > 0)
-  }
-
-  test("mse") {
-    assert(Double2Data.groupby().mse("predict", "target").count > 0)
-  }
-
-  test("rmse") {
-    assert(Double2Data.groupby().rmse("predict", "target").count > 0)
-  }
-
-  test("amplify") {
+  test("amplify functions") {
     assert(TinyTrainData.amplify(3, $"label", $"features").count() == 9)
-  }
-
-  test("rand_amplify") {
     assert(TinyTrainData.rand_amplify(3, 128, $"label", $"features").count() == 9)
-  }
-
-  test("part_amplify") {
     assert(TinyTrainData.part_amplify(3).count() == 9)
   }
 
