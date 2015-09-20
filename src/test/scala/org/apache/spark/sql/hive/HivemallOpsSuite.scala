@@ -189,7 +189,7 @@ class HivemallOpsSuite extends QueryTest {
     }
   }
 
-  test("invoke regression") {
+  test("invoke regression functions") {
     Seq(
       "train_adadelta",
       "train_adagrad",
@@ -203,11 +203,48 @@ class HivemallOpsSuite extends QueryTest {
       "train_pa2a_regr"
     )
     .map { func =>
-      invokeMethod(new HivemallOps(TinyTrainData), func, Seq($"features", $"label"))
+      invokeMethod(new HivemallOps(TinyTrainData),
+        func, Seq($"features", $"label"))
     }
   }
 
-  test("check regression precision") {
+  test("invoke classifier functions") {
+    Seq(
+      "train_perceptron",
+      "train_pa",
+      "train_pa1",
+      "train_pa2",
+      "train_cw",
+      "train_arow",
+      "train_arowh",
+      "train_scw",
+      "train_scw2",
+      "train_adagrad_rda"
+    )
+    .map { func =>
+      invokeMethod(new HivemallOps(TinyTrainData),
+        func, Seq($"features", $"label"))
+    }
+  }
+
+  test("invoke multiclass classifier functions") {
+    Seq(
+      "train_multiclass_perceptron",
+      "train_multiclass_pa",
+      "train_multiclass_pa1",
+      "train_multiclass_pa2",
+      "train_multiclass_cw",
+      "train_multiclass_arow",
+      "train_multiclass_scw",
+      "train_multiclass_scw2"
+    )
+    .map { func =>
+      invokeMethod(new HivemallOps(TinyTrainData),
+        func, Seq($"features", $"label".cast(IntegerType)))
+    }
+  }
+
+  ignore("check classification precision") {
     Seq(
       "train_adadelta",
       "train_adagrad",
