@@ -104,7 +104,7 @@ TBW
 System Requirements
 --------------------
 
-* Spark 1.4.1
+* Spark 1.5.0
 
 Presentations
 ------------
