@@ -21,15 +21,17 @@ import hivemall.tools.RegressionDatagen
 import org.apache.spark.sql.hive.HivemallOps._
 import org.apache.spark.sql.hive.HivemallUtils._
 import org.apache.spark.sql.hive.test.TestHive
+import org.apache.spark.sql.hive.test.TestHive.implicits._
 import org.apache.spark.sql.types._
-import org.apache.spark.sql.{QueryTest, Row}
+import org.apache.spark.sql.{DataFrame, QueryTest, Row}
+import org.apache.spark.test.TestDoubleWrapper._
+import org.apache.spark.test.TestUtils._
 
 import scala.collection.mutable.Seq
+import scala.reflect.runtime.{universe => ru}
 
 class HivemallOpsSuite extends QueryTest {
   import org.apache.spark.sql.hive.HivemallOpsSuite._
-  import org.apache.spark.sql.hive.test.TestHive.implicits._
-  import org.apache.spark.test.TestDoubleWrapper._
 
   test("hivemall_version") {
     assert(DummyInputData.select(hivemall_version()).collect.toSet === Set(Row("0.3.1")))
@@ -113,7 +115,7 @@ class HivemallOpsSuite extends QueryTest {
   }
 
   test("rowid") {
-    val df = LargeTrainData.select(rowid())
+    val df = DummyInputData.select(rowid())
     assert(df.distinct.count == df.count)
   }
 
@@ -225,6 +227,24 @@ class HivemallOpsSuite extends QueryTest {
         .groupby("feature")
         .agg("weight"->"avg")
         .count() > 0)
+  }
+
+  test("check regression precision") {
+    Seq(
+      "train_adadelta",
+      "train_adagrad",
+      "train_arow_regr",
+      "train_arowe_regr",
+      "train_arowe2_regr",
+      "train_logregr",
+      "train_pa1_regr",
+      "train_pa1a_regr",
+      "train_pa2_regr",
+      "train_pa2a_regr"
+    )
+    .map { func =>
+      checkRegrPrecision(func)
+    }
   }
 
   test("train_pa1_regr") {
@@ -555,9 +575,57 @@ object HivemallOpsSuite {
     df
   }
 
-  val LargeTrainData = RegressionDatagen.exec(
-    TestHive, n_partitions = 2, min_examples = 10000, seed = 3)
+  val LargeRegrTrainData = RegressionDatagen.exec(
+    TestHive, n_partitions = 2, min_examples = 100000, seed = 3).cache
 
-  val LargeTestData = RegressionDatagen.exec(
-    TestHive, n_partitions = 2, min_examples = 1000, seed = 15)
+  val LargeRegrTestData = RegressionDatagen.exec(
+    TestHive, n_partitions = 2, min_examples = 100, seed = 3).cache
+
+  def checkRegrPrecision(func: String): Unit = {
+    // Invoke a function with the given name via reflection
+    val m = scala.reflect.runtime.currentMirror
+    val im = m.reflect(new HivemallOps(LargeRegrTrainData))
+    val mSym = im.symbol.typeSignature.member(ru.newTermName(func)).asMethod
+    val method = im.reflectMethod(mSym)
+
+    // Build a model
+    val model = {
+      val res = method.apply(Seq(add_bias($"features"), $"label"))
+        .asInstanceOf[DataFrame]
+      if (!res.columns.contains("conv")) {
+        res.groupby("feature").agg("weight"->"avg")
+      } else {
+        res.groupby("feature").argmin_kld("weight", "conv")
+      }
+    }.as("feature", "weight")
+
+    // Data preparation
+    val testDf = LargeRegrTrainData
+      .select(rowid(), $"label".as("target"), $"features")
+      .cache
+    val testDf_exploded = testDf
+      .explode_array($"features")
+      .select($"rowid", extract_feature($"feature"), extract_weight($"feature"))
+
+    // Do prediction
+    val predict = testDf_exploded
+      .join(model, testDf_exploded("feature") === model("feature"), "LEFT_OUTER")
+      .select($"rowid", ($"weight" * $"value").as("value"))
+      .groupby("rowid").sum("value")
+      .as("rowid", "predicted")
+
+    // Evaluation
+    val eval = predict
+      .join(testDf, predict("rowid") === testDf("rowid"))
+      .groupby()
+      .agg(Map("target"->"avg", "predicted"->"avg"))
+      .as("target", "predicted")
+
+    val diff = eval.map {
+      case Row(target: Double, predicted: Double) =>
+        Math.abs(target - predicted)
+    }.first
+
+    expectResult(diff > 0.10, s"Low precision -> func:${func} diff:${diff}")
+  }
 }

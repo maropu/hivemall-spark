@@ -60,6 +60,6 @@ object RegressionDatagen {
         + (if (dense) " -dense" else "")
         + (if (sort) " -sort" else "")
         + (if (cl) " -cl" else ""))
-      .select($"label".cast(DoubleType), $"features")
+      .select($"label".cast(DoubleType).as("label"), $"features")
   }
 }

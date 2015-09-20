@@ -17,6 +17,14 @@
 
 package org.apache.spark.test
 
+import org.apache.spark.Logging
+
+object TestUtils extends Logging {
+  def expectResult(res: Boolean, errMsg: String) = if (res) {
+    logWarning(errMsg)
+  }
+}
+
 // TODO: Any same function in o.a.spark.*?
 class TestDoubleWrapper(d: Double) {
   // Check an equality between Double values
