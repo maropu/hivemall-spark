@@ -53,6 +53,7 @@ val testRdd = sc.textFile("news20.test")
 // into a Spark Vector type.
 val testDf = sqlContext.createDataFrame(testRdd)
   .select(rowid(), $"label".cast(IntegerType).as("target"), $"features")
+  .cache
 
 val testDf_exploded = testDf.explode_array($"features")
   .select($"rowid", $"target", extract_feature($"feature"), extract_weight($"feature"))
