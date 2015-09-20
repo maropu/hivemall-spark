@@ -17,9 +17,9 @@
 
 package org.apache.spark.ml.feature
 
-import org.scalatest.FunSuite
+import org.apache.spark.SparkFunSuite
 
-class HivemallLabeledPointSuite extends FunSuite {
+class HivemallLabeledPointSuite extends SparkFunSuite {
 
   test("toString") {
     val lp = HmLabeledPoint(1.0, Seq("1:0.5", "3:0.3", "8:0.1"))

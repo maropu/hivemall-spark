@@ -25,7 +25,6 @@ import org.apache.spark.sql.catalyst.plans._
 import org.apache.spark.sql.catalyst.util._
 import org.apache.spark.sql.columnar.InMemoryRelation
 
-// Copyed from spark-v1.4.0
 class QueryTest extends PlanTest {
 
   // Timezone is fixed to America/Los_Angeles for those timezone sensitive tests (timestamp_*)
@@ -70,12 +69,6 @@ class QueryTest extends PlanTest {
 
   protected def checkAnswer(df: DataFrame, expectedAnswer: DataFrame): Unit = {
     checkAnswer(df, expectedAnswer.collect())
-  }
-
-  def sqlTest(sqlString: String, expectedAnswer: Seq[Row])(implicit sqlContext: SQLContext) {
-    test(sqlString) {
-      checkAnswer(sqlContext.sql(sqlString), expectedAnswer)
-    }
   }
 
   /**
