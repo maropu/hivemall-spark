@@ -23,7 +23,7 @@ import org.apache.spark.sql.hive.HivemallUtils._
 import org.apache.spark.sql.hive.test.TestHive
 import org.apache.spark.sql.hive.test.TestHive.implicits._
 import org.apache.spark.sql.types._
-import org.apache.spark.sql.{DataFrame, QueryTest, Row}
+import org.apache.spark.sql.{DataFrame, QueryTest, Row, functions}
 import org.apache.spark.test.TestDoubleWrapper._
 import org.apache.spark.test.TestUtils._
 
@@ -239,6 +239,7 @@ class HivemallOpsSuite extends QueryTest {
       "train_multiclass_scw2"
     )
     .map { func =>
+      // TODO: Why is a label type [Int|Text] only in multiclass classifiers?
       invokeMethod(new HivemallOps(TinyTrainData),
         func, Seq($"features", $"label".cast(IntegerType)))
     }
@@ -262,158 +263,22 @@ class HivemallOpsSuite extends QueryTest {
     }
   }
 
-  test("train_perceptron") {
-    assert(
-      TinyTrainData
-        .train_perceptron(add_bias($"features"), $"label")
-        .groupby("feature")
-        .agg("weight"->"avg")
-        .count() > 0)
-  }
-
-  test("train_pa") {
-    assert(
-      TinyTrainData
-        .train_pa(add_bias($"features"), $"label")
-        .groupby("feature")
-        .agg("weight"->"avg")
-        .count() > 0)
-  }
-
-  test("train_pa1") {
-    assert(
-      TinyTrainData
-        .train_pa1(add_bias($"features"), $"label")
-        .groupby("feature")
-        .agg("weight"->"avg")
-        .count() > 0)
-  }
-
-  test("train_pa2") {
-    assert(
-      TinyTrainData
-        .train_pa2(add_bias($"features"), $"label")
-        .groupby("feature")
-        .agg("weight"->"avg")
-        .count() > 0)
-  }
-
-  test("train_cw") {
-    assert(
-      TinyTrainData
-        .train_cw(add_bias($"features"), $"label")
-        .groupby("feature")
-        .argmin_kld("weight", "conv")
-        .count() > 0)
-  }
-
-  test("train_arow") {
-    assert(
-      TinyTrainData
-        .train_arow(add_bias($"features"), $"label")
-        .groupby("feature")
-        .argmin_kld("weight", "conv")
-        .count() > 0)
-  }
-
-  test("train_arowh") {
-    assert(
-      TinyTrainData
-        .train_arowh(add_bias($"features"), $"label")
-        .groupby("feature")
-        .argmin_kld("weight", "conv")
-        .count() > 0)
-  }
-
-  test("train_scw") {
-    assert(
-      TinyTrainData
-        .train_scw(add_bias($"features"), $"label")
-        .groupby("feature")
-        .argmin_kld("weight", "conv")
-        .count() > 0)
-  }
-
-  test("train_scw2") {
-    assert(
-      TinyTrainData
-        .train_scw2(add_bias($"features"), $"label")
-        .groupby("feature")
-        .argmin_kld("weight", "conv")
-        .count() > 0)
-  }
-
-  test("train_adagrad_rda") {
-    assert(
-      TinyTrainData
-        .train_adagrad_rda(add_bias($"features"), $"label")
-        .groupby("feature")
-        .agg("weight"->"avg")
-        .count() > 0)
-  }
-
-  test("train_multiclass_perceptron") {
-    assert(
-      TinyTrainData
-        // TODO: Why is a label type [Int|Text] only in multiclass classifiers?
-        .train_multiclass_perceptron(add_bias($"features"), $"label".cast(IntegerType))
-        .groupby("label", "feature")
-        .agg("weight"->"avg")
-        .count() > 0)
-  }
-
-  test("train_multiclass_pa") {
-    assert(
-      TinyTrainData
-        .train_multiclass_pa(add_bias($"features"), $"label".cast(IntegerType))
-        .groupby("label", "feature")
-        .agg("weight"->"avg")
-        .count() > 0)
-  }
-
-  test("train_multiclass_pa1") {
-    assert(
-      TinyTrainData
-        .train_multiclass_pa1(add_bias($"features"), $"label".cast(IntegerType))
-        .groupby("label", "feature")
-        .agg("weight"->"avg")
-        .count() > 0)
-  }
-
-  test("train_multiclass_pa2") {
-    assert(
-      TinyTrainData
-        .train_multiclass_pa2(add_bias($"features"), $"label".cast(IntegerType))
-        .groupby("label", "feature")
-        .agg("weight"->"avg")
-        .count() > 0)
-  }
-
-  test("train_multiclass_cw") {
-    assert(
-      TinyTrainData
-        .train_multiclass_cw(add_bias($"features"), $"label".cast(IntegerType))
-        .groupby("label", "feature")
-        .argmin_kld("weight", "conv")
-        .count() > 0)
-  }
-
-  test("train_multiclass_scw") {
-    assert(
-      TinyTrainData
-        .train_multiclass_scw(add_bias($"features"), $"label".cast(IntegerType))
-        .groupby("label", "feature")
-        .argmin_kld("weight", "conv")
-        .count() > 0)
-  }
-
-  test("train_multiclass_scw2") {
-    assert(
-      TinyTrainData
-        .train_multiclass_scw2(add_bias($"features"), $"label".cast(IntegerType))
-        .groupby("label", "feature")
-        .argmin_kld("weight", "conv")
-        .count() > 0)
+  ignore("check classifier precision") {
+    Seq(
+      "train_perceptron",
+      "train_pa",
+      "train_pa1",
+      "train_pa2",
+      "train_cw",
+      "train_arow",
+      "train_arowh",
+      "train_scw",
+      "train_scw2",
+      "train_adagrad_rda"
+    )
+    .map { func =>
+      checkClassifierPrecision(func)
+    }
   }
 
   test("user-defined aggregators for ensembles") {
@@ -543,11 +408,17 @@ object HivemallOpsSuite {
     df
   }
 
-  val LargeRegrTrainData = RegressionDatagen.exec(
+  private[this] val LargeRegrTrainData = RegressionDatagen.exec(
     TestHive, n_partitions = 2, min_examples = 100000, seed = 3).cache
 
-  val LargeRegrTestData = RegressionDatagen.exec(
+  private[this] val LargeRegrTestData = RegressionDatagen.exec(
     TestHive, n_partitions = 2, min_examples = 100, seed = 3).cache
+
+  private[this] val LargeClassifierTrainData = RegressionDatagen.exec(
+    TestHive, n_partitions = 2, min_examples = 100000, seed = 5, cl = true).cache
+
+  private[this] val LargeClassifierTestData = RegressionDatagen.exec(
+    TestHive, n_partitions = 2, min_examples = 100, seed = 5, cl = true).cache
 
   def checkRegrPrecision(func: String): Unit = {
     // Invoke a function with the given name via reflection
@@ -570,6 +441,7 @@ object HivemallOpsSuite {
     val testDf = LargeRegrTrainData
       .select(rowid(), $"label".as("target"), $"features")
       .cache
+
     val testDf_exploded = testDf
       .explode_array($"features")
       .select($"rowid", extract_feature($"feature"), extract_weight($"feature"))
@@ -594,5 +466,56 @@ object HivemallOpsSuite {
     }.first
 
     expectResult(diff > 0.10, s"Low precision -> func:${func} diff:${diff}")
+  }
+
+  def checkClassifierPrecision(func: String): Unit = {
+    // Invoke a function with the given name via reflection
+    val im = scala.reflect.runtime.currentMirror.reflect(new HivemallOps(LargeClassifierTrainData))
+    val mSym = im.symbol.typeSignature.member(ru.newTermName(func)).asMethod
+    val method = im.reflectMethod(mSym)
+
+    // Build a model
+    val model = {
+      val res = method.apply(Seq(add_bias($"features"), $"label"))
+        .asInstanceOf[DataFrame]
+      if (!res.columns.contains("conv")) {
+        res.groupby("feature").agg("weight"->"avg")
+      } else {
+        res.groupby("feature").argmin_kld("weight", "conv")
+      }
+    }.as("feature", "weight")
+
+    // Data preparation
+    val testDf = LargeClassifierTestData
+      .select(rowid(), $"label".as("target"), $"features")
+      .cache
+
+    val testDf_exploded = testDf
+      .explode_array($"features")
+      .select($"rowid", extract_feature($"feature"), extract_weight($"feature"))
+
+    // Do prediction
+    val predict = testDf_exploded
+      .join(model, testDf_exploded("feature") === model("feature"), "LEFT_OUTER")
+      /**
+       * TODO: This sentence throw an exception below:
+       *
+       * [info]   org.apache.spark.sql.catalyst.analysis.UnresolvedException: Invalid call to dataType on unresolved object, tree: 'value
+       * [info]   at org.apache.spark.sql.catalyst.analysis.UnresolvedAttribute.dataType(unresolved.scala:59)
+       * [info]   at org.apache.spark.sql.hive.HiveSimpleUDF$$anonfun$method$1.apply(hiveUDFs.scala:119)
+       * [info]   at org.apache.spark.sql.hive.HiveSimpleUDF$$anonfun$method$1.apply(hiveUDFs.scala:119)
+       */
+      .select($"rowid", ($"weight" * $"value").as("value"))
+      .groupby("rowid").sum("value")
+      .select($"rowid", functions.when(sigmoid($"sum(value)") > 0.50, 1.0).otherwise(0.0).as("predicted"))
+
+    // Evaluation
+    val eval = predict
+      .join(testDf, predict("rowid") === testDf("rowid"))
+      .where($"target" === $"predicted")
+
+    val precision = (eval.count + 0.0) / predict.count
+
+    expectResult(precision < 0.10, s"Low precision -> func:${func} value:${precision}")
   }
 }
