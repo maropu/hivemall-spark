@@ -20,10 +20,11 @@ package org.apache.spark.sql.hive
 import org.apache.spark.ml.feature.HmFeature
 import org.apache.spark.sql._
 import org.apache.spark.sql.catalyst.analysis.UnresolvedAttribute
-import org.apache.spark.sql.catalyst.expressions.{ScalaUDF, Expression, NamedExpression}
+import org.apache.spark.sql.catalyst.expressions.{Expression, NamedExpression, ScalaUDF, Literal}
 import org.apache.spark.sql.catalyst.plans.logical.{Generate, LogicalPlan}
 import org.apache.spark.sql.hive.HiveShim.HiveFunctionWrapper
-import org.apache.spark.sql.types.StringType
+import org.apache.spark.sql.types._
+import org.apache.spark.sql.functions._
 
 /**
  * A wrapper of hivemall for DataFrame.
@@ -715,7 +716,14 @@ object HivemallOps {
    */
   @scala.annotation.varargs
   def sigmoid(exprs: Column*): Column = {
-    HiveSimpleUDF(new HiveFunctionWrapper(
-      "hivemall.tools.math.SigmodUDF"), exprs.map(_.expr))
+    /**
+     * TODO: SigmodUDF only accepts floating-point types in spark-v1.5.0?
+     *
+     * HiveSimpleUDF(new HiveFunctionWrapper(
+     * "hivemall.tools.math.SigmodUDF"), exprs.map(_.expr))
+     */
+    val value = exprs.head
+    val one: () => Literal = () => Literal.create(1.0, DoubleType)
+    Column(one()) / (Column(one()) + exp(-value))
   }
 }

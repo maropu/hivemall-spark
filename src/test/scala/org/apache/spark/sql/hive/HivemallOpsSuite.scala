@@ -139,11 +139,19 @@ class HivemallOpsSuite extends QueryTest {
   }
 
   test("sigmoid") {
-    val rows = DummyInputData.select(sigmoid($"data".cast(FloatType))).collect
-    assert(rows(0).getFloat(0) ~== 0.5f)
-    assert(rows(1).getFloat(0) ~== 0.731f)
-    assert(rows(2).getFloat(0) ~== 0.880f)
-    assert(rows(3).getFloat(0) ~== 0.952f)
+    /**
+     * TODO: SigmodUDF only accepts floating-point types in spark-v1.5.0?
+     * This test throws an exception below:
+     *
+     * [info]   org.apache.spark.sql.catalyst.analysis.UnresolvedException: Invalid call to dataType on unresolved object, tree: 'data
+     * [info]   at org.apache.spark.sql.catalyst.analysis.UnresolvedAttribute.dataType(unresolved.scala:59)
+     * [info]   at org.apache.spark.sql.hive.HiveSimpleUDF$$anonfun$method$1.apply(hiveUDFs.scala:119)
+     */
+    val rows = DummyInputData.select(sigmoid($"data")).collect
+    assert(rows(0).getDouble(0) ~== 0.500)
+    assert(rows(1).getDouble(0) ~== 0.731)
+    assert(rows(2).getDouble(0) ~== 0.880)
+    assert(rows(3).getDouble(0) ~== 0.952)
   }
 
   /**
@@ -232,7 +240,7 @@ class HivemallOpsSuite extends QueryTest {
     }
   }
 
-  test("check classification precision") {
+  ignore("check classification precision") {
     Seq(
       "train_adadelta",
       "train_adagrad",
