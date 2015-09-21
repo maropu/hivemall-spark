@@ -92,10 +92,9 @@ testData.predict { case testDf =>
 
 Support Status
 --------------------
-Hivemall v0.3.1 is currently incorporated in hivemall-spark.
-The most functions can be available in HiveContext.
-On the other hand, binary/multiclass classification and regression is supported in DataFrame
-and other tasks such as recommendation will appear in upcomming releases.
+Hivemall v0.3.1 is currently incorporated in hivemall-spark and the most functions can be available in HiveContext.
+On the other hand, binary/multiclass classification and regression is only supported in DataFrame.
+Other tasks such as recommendation and nearest neighbors appear in upcomming releases.
 
 API Documentations
 --------------------
