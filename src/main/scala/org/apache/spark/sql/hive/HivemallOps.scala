@@ -718,10 +718,9 @@ object HivemallOps {
   def sigmoid(exprs: Column*): Column = {
     /**
      * TODO: SigmodUDF only accepts floating-point types in spark-v1.5.0?
-     *
-     * HiveSimpleUDF(new HiveFunctionWrapper(
-     * "hivemall.tools.math.SigmodUDF"), exprs.map(_.expr))
      */
+    // HiveSimpleUDF(new HiveFunctionWrapper(
+    //   "hivemall.tools.math.SigmodUDF"), exprs.map(_.expr))
     val value = exprs.head
     val one: () => Literal = () => Literal.create(1.0, DoubleType)
     Column(one()) / (Column(one()) + exp(-value))

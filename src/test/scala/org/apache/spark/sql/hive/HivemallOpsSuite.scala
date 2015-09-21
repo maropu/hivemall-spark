@@ -258,7 +258,7 @@ class HivemallOpsSuite extends QueryTest {
     }
   }
 
-  ignore("check classifier precision") {
+  test("check classifier precision") {
     Seq(
       "train_perceptron",
       "train_pa",
@@ -450,12 +450,17 @@ object HivemallOpsSuite {
       .agg(Map("target"->"avg", "predicted"->"avg"))
       .as("target", "predicted")
 
+    eval.show
+
     val diff = eval.map {
       case Row(target: Double, predicted: Double) =>
         Math.abs(target - predicted)
     }.first
 
-    expectResult(diff > 0.10, s"Low precision -> func:${func} diff:${diff}")
+    println("diff:" + diff)
+
+    expectResult(diff > 0.10,
+      s"Low precision -> func:${func} diff:${diff}")
   }
 
   def checkClassifierPrecision(func: String): Unit = {
@@ -482,17 +487,17 @@ object HivemallOpsSuite {
     // Do prediction
     val predict = testDf_exploded
       .join(model, testDf_exploded("feature") === model("feature"), "LEFT_OUTER")
-      /**
-       * TODO: This sentence throw an exception below:
-       *
-       * [info]   org.apache.spark.sql.catalyst.analysis.UnresolvedException: Invalid call to dataType on unresolved object, tree: 'value
-       * [info]   at org.apache.spark.sql.catalyst.analysis.UnresolvedAttribute.dataType(unresolved.scala:59)
-       * [info]   at org.apache.spark.sql.hive.HiveSimpleUDF$$anonfun$method$1.apply(hiveUDFs.scala:119)
-       * [info]   at org.apache.spark.sql.hive.HiveSimpleUDF$$anonfun$method$1.apply(hiveUDFs.scala:119)
-       */
       .select($"rowid", ($"weight" * $"value").as("value"))
       .groupby("rowid").sum("value")
-      .select($"rowid", functions.when(sigmoid($"sum(value)") > 0.50, 1.0).otherwise(0.0).as("predicted"))
+      /**
+       * TODO: This sentence throws an exception below:
+       *
+       * WARN Column: Constructing trivially true equals predicate, 'rowid#1323 = rowid#1323'.
+       * Perhaps you need to use aliases.
+       */
+      // .select($"rowid", functions.when(sigmoid($"sum(value)") > 0.50, 1.0).otherwise(0.0).as("predicted"))
+      .select($"rowid", functions.when(sigmoid($"sum(value)") > 0.50, 1.0).otherwise(0.0))
+      .as("rowid", "predicted")
 
     // Evaluation
     val eval = predict
@@ -501,19 +506,22 @@ object HivemallOpsSuite {
 
     val precision = (eval.count + 0.0) / predict.count
 
-    expectResult(precision < 0.10, s"Low precision -> func:${func} value:${precision}")
+    expectResult(precision < 0.70,
+      s"Low precision -> func:${func} value:${precision}")
   }
 
   // Only used in this local scope
   private[this] val LargeRegrTrainData = RegressionDatagen.exec(
-    TestHive, n_partitions = 2, min_examples = 100000, seed = 3).cache
+    TestHive, n_partitions = 2, min_examples = 100000, seed = 3, prob_one = 0.8f).cache
 
   private[this] val LargeRegrTestData = RegressionDatagen.exec(
-    TestHive, n_partitions = 2, min_examples = 100, seed = 3).cache
+    TestHive, n_partitions = 2, min_examples = 100, seed = 3, prob_one = 0.5f).cache
 
   private[this] val LargeClassifierTrainData = RegressionDatagen.exec(
-    TestHive, n_partitions = 2, min_examples = 100000, seed = 5, cl = true).cache
+    TestHive, n_partitions = 2, min_examples = 100000, seed = 5, prob_one = 0.8f, cl = true)
+    .cache
 
   private[this] val LargeClassifierTestData = RegressionDatagen.exec(
-    TestHive, n_partitions = 2, min_examples = 100, seed = 5, cl = true).cache
+    TestHive, n_partitions = 2, min_examples = 100, seed = 5, prob_one = 0.5f, cl = true)
+    .cache
 }
