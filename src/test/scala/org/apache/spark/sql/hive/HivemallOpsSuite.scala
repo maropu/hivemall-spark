@@ -175,19 +175,6 @@ class HivemallOpsSuite extends QueryTest {
     )
   }
 
-  private[this] def invokeMethod(cls: Any, func: String, args: Any*): Unit = {
-    try {
-      // Invoke a function with the given name via reflection
-      val im = scala.reflect.runtime.currentMirror.reflect(cls)
-      val mSym = im.symbol.typeSignature.member(ru.newTermName(func)).asMethod
-      im.reflectMethod(mSym).apply(args: _*)
-        .asInstanceOf[DataFrame]
-        .foreach(_ => {}) // just call each method
-    } catch {
-      case e: Exception =>
-        assert(false, s"Invoking ${func} failed because: ${e.getMessage}")
-    }
-  }
 
   test("invoke regression functions") {
     Seq(
@@ -203,8 +190,8 @@ class HivemallOpsSuite extends QueryTest {
       "train_pa2a_regr"
     )
     .map { func =>
-      invokeMethod(new HivemallOps(TinyTrainData),
-        func, Seq($"features", $"label"))
+      invokeFunc(new HivemallOps(TinyTrainData), func, Seq($"features", $"label"))
+        .foreach(_ => {}) // Just call it
     }
   }
 
@@ -222,8 +209,8 @@ class HivemallOpsSuite extends QueryTest {
       "train_adagrad_rda"
     )
     .map { func =>
-      invokeMethod(new HivemallOps(TinyTrainData),
-        func, Seq($"features", $"label"))
+      invokeFunc(new HivemallOps(TinyTrainData), func, Seq($"features", $"label"))
+        .foreach(_ => {}) // Just call it
     }
   }
 
@@ -240,12 +227,12 @@ class HivemallOpsSuite extends QueryTest {
     )
     .map { func =>
       // TODO: Why is a label type [Int|Text] only in multiclass classifiers?
-      invokeMethod(new HivemallOps(TinyTrainData),
-        func, Seq($"features", $"label".cast(IntegerType)))
+      invokeFunc(new HivemallOps(TinyTrainData), func, Seq($"features", $"label".cast(IntegerType)))
+        .foreach(_ => {}) // Just call it
     }
   }
 
-  ignore("check classification precision") {
+  test("check classification precision") {
     Seq(
       "train_adadelta",
       "train_adagrad",
@@ -292,11 +279,11 @@ class HivemallOpsSuite extends QueryTest {
   test("user-defined aggregators for evaluation") {
     Seq("mae", "mse", "rmse")
       .map { udaf =>
-        invokeMethod(Double2Data.groupby(), udaf, "predict", "target")
+        invokeFunc(Double2Data.groupby(), udaf, "predict", "target")
       }
     Seq("f1score")
       .map { udaf =>
-      invokeMethod(IntList2Data.groupby(), udaf, "predict", "target")
+      invokeFunc(IntList2Data.groupby(), udaf, "predict", "target")
     }
   }
 
@@ -408,28 +395,23 @@ object HivemallOpsSuite {
     df
   }
 
-  private[this] val LargeRegrTrainData = RegressionDatagen.exec(
-    TestHive, n_partitions = 2, min_examples = 100000, seed = 3).cache
-
-  private[this] val LargeRegrTestData = RegressionDatagen.exec(
-    TestHive, n_partitions = 2, min_examples = 100, seed = 3).cache
-
-  private[this] val LargeClassifierTrainData = RegressionDatagen.exec(
-    TestHive, n_partitions = 2, min_examples = 100000, seed = 5, cl = true).cache
-
-  private[this] val LargeClassifierTestData = RegressionDatagen.exec(
-    TestHive, n_partitions = 2, min_examples = 100, seed = 5, cl = true).cache
+  def invokeFunc(cls: Any, func: String, args: Any*): DataFrame = try {
+    // Invoke a function with the given name via reflection
+    val im = scala.reflect.runtime.currentMirror.reflect(cls)
+    val mSym = im.symbol.typeSignature.member(ru.newTermName(func)).asMethod
+    im.reflectMethod(mSym).apply(args: _*)
+      .asInstanceOf[DataFrame]
+  } catch {
+    case e: Exception =>
+      assert(false, s"Invoking ${func} failed because: ${e.getMessage}")
+      null // Not executed
+  }
 
   def checkRegrPrecision(func: String): Unit = {
-    // Invoke a function with the given name via reflection
-    val im = scala.reflect.runtime.currentMirror.reflect(new HivemallOps(LargeRegrTrainData))
-    val mSym = im.symbol.typeSignature.member(ru.newTermName(func)).asMethod
-    val method = im.reflectMethod(mSym)
-
     // Build a model
     val model = {
-      val res = method.apply(Seq(add_bias($"features"), $"label"))
-        .asInstanceOf[DataFrame]
+      val res = invokeFunc(new HivemallOps(LargeRegrTrainData),
+        func, Seq(add_bias($"features"), $"label"))
       if (!res.columns.contains("conv")) {
         res.groupby("feature").agg("weight"->"avg")
       } else {
@@ -469,15 +451,10 @@ object HivemallOpsSuite {
   }
 
   def checkClassifierPrecision(func: String): Unit = {
-    // Invoke a function with the given name via reflection
-    val im = scala.reflect.runtime.currentMirror.reflect(new HivemallOps(LargeClassifierTrainData))
-    val mSym = im.symbol.typeSignature.member(ru.newTermName(func)).asMethod
-    val method = im.reflectMethod(mSym)
-
     // Build a model
     val model = {
-      val res = method.apply(Seq(add_bias($"features"), $"label"))
-        .asInstanceOf[DataFrame]
+      val res = invokeFunc(new HivemallOps(LargeClassifierTrainData),
+        func, Seq(add_bias($"features"), $"label"))
       if (!res.columns.contains("conv")) {
         res.groupby("feature").agg("weight"->"avg")
       } else {
@@ -518,4 +495,17 @@ object HivemallOpsSuite {
 
     expectResult(precision < 0.10, s"Low precision -> func:${func} value:${precision}")
   }
+
+  // Only used in this local scope
+  private[this] val LargeRegrTrainData = RegressionDatagen.exec(
+    TestHive, n_partitions = 2, min_examples = 100000, seed = 3).cache
+
+  private[this] val LargeRegrTestData = RegressionDatagen.exec(
+    TestHive, n_partitions = 2, min_examples = 100, seed = 3).cache
+
+  private[this] val LargeClassifierTrainData = RegressionDatagen.exec(
+    TestHive, n_partitions = 2, min_examples = 100000, seed = 5, cl = true).cache
+
+  private[this] val LargeClassifierTestData = RegressionDatagen.exec(
+    TestHive, n_partitions = 2, min_examples = 100, seed = 5, cl = true).cache
 }
