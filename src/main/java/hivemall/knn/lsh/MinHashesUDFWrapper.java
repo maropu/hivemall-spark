@@ -20,6 +20,7 @@ package hivemall.knn.lsh;
 import org.apache.hadoop.hive.ql.exec.Description;
 import org.apache.hadoop.hive.ql.exec.UDFArgumentException;
 import org.apache.hadoop.hive.ql.exec.UDFArgumentLengthException;
+import org.apache.hadoop.hive.ql.exec.UDFArgumentTypeException;
 import org.apache.hadoop.hive.ql.metadata.HiveException;
 import org.apache.hadoop.hive.ql.udf.UDFType;
 import org.apache.hadoop.hive.ql.udf.generic.GenericUDF;
@@ -32,6 +33,7 @@ import org.apache.hadoop.hive.serde2.objectinspector.primitive.PrimitiveObjectIn
 import java.util.Arrays;
 import java.util.List;
 
+/** A wrapper of [[hivemall.knn.lsh.MinHashesUDF]]. */
 @Description(
     name = "minhashes",
     value = "_FUNC_(features in array<string>, noWeight in boolean) - Returns hashed features as array<int>")
@@ -60,7 +62,7 @@ public class MinHashesUDFWrapper extends GenericUDF {
                     }
                 }
             default:
-                throw new UDFArgumentException("Type mismatch: features");
+                throw new UDFArgumentTypeException(0, "Type mismatch: features");
         }
 
         noWeightOI = (PrimitiveObjectInspector) arguments[1];

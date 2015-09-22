@@ -28,9 +28,7 @@ import org.apache.hadoop.hive.serde2.objectinspector.*;
 import org.apache.hadoop.hive.serde2.objectinspector.ObjectInspector.Category;
 import org.apache.hadoop.hive.serde2.objectinspector.PrimitiveObjectInspector.PrimitiveCategory;
 import org.apache.hadoop.hive.serde2.objectinspector.primitive.PrimitiveObjectInspectorFactory;
-import org.apache.hadoop.io.Text;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -43,24 +41,23 @@ import java.util.List;
  */
 @Description(
     name = "add_feature_index",
-    value = "_FUNC_(ARRAY[DOUBLE]: dense feature vector) - Returns a feature vector with feature indicies")
+    value = "_FUNC_(dense features in array<double>) - Returns a feature vector with feature indicies")
 @UDFType(deterministic = true, stateful = false)
 public class AddFeatureIndexUDFWrapper extends GenericUDF {
     private AddFeatureIndexUDF udf = new AddFeatureIndexUDF();
-
-    private List<Text> retValue = new ArrayList<Text>();
     private ListObjectInspector argumentOI = null;
 
     @Override
     public ObjectInspector initialize(ObjectInspector[] arguments) throws UDFArgumentException {
         if(arguments.length != 1) {
             throw new UDFArgumentLengthException(
-                    "add_feature_index() has an only single argument.");
+                "add_feature_index() has an single arguments: array<double> features");
         }
 
         switch(arguments[0].getCategory()) {
             case LIST:
-                ObjectInspector elmOI = ((ListObjectInspector) arguments[0]).getListElementObjectInspector();
+                argumentOI = (ListObjectInspector) arguments[0];
+                ObjectInspector elmOI = argumentOI.getListElementObjectInspector();
                 if(elmOI.getCategory().equals(Category.PRIMITIVE)) {
                     if (((PrimitiveObjectInspector) elmOI).getPrimitiveCategory()
                             == PrimitiveCategory.DOUBLE) {
@@ -68,12 +65,8 @@ public class AddFeatureIndexUDFWrapper extends GenericUDF {
                     }
                 }
             default:
-                throw new UDFArgumentTypeException(0,
-                    "add_feature_index() must have List[double] as an argument, but "
-                        + arguments[0].getTypeName() + " was found.");
+                throw new UDFArgumentTypeException(0, "Type mismatch: features");
         }
-
-        argumentOI = (ListObjectInspector) arguments[0];
 
         return ObjectInspectorFactory.getStandardListObjectInspector(
                 PrimitiveObjectInspectorFactory.javaStringObjectInspector);
@@ -82,12 +75,9 @@ public class AddFeatureIndexUDFWrapper extends GenericUDF {
     @Override
     public Object evaluate(DeferredObject[] arguments) throws HiveException {
         assert(arguments.length == 1);
-        final Object arrayObject = arguments[0].get();
-        final ListObjectInspector arrayOI = argumentOI;
         @SuppressWarnings("unchecked")
-        final List<Double> input = (List<Double>) arrayOI.getList(arrayObject);
-        retValue = udf.evaluate(input);
-        return retValue;
+        final List<Double> input = (List<Double>) argumentOI.getList(arguments[0].get());
+        return udf.evaluate(input);
     }
 
     @Override

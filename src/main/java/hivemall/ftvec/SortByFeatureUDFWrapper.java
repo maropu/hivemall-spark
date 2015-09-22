@@ -31,7 +31,6 @@ import org.apache.hadoop.io.FloatWritable;
 import org.apache.hadoop.io.IntWritable;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -45,21 +44,20 @@ import java.util.Map;
 @UDFType(deterministic = true, stateful = false)
 public class SortByFeatureUDFWrapper extends GenericUDF {
     private SortByFeatureUDF udf = new SortByFeatureUDF();
-
-    private Map<IntWritable, FloatWritable> retValue = new HashMap<IntWritable, FloatWritable>();
     private MapObjectInspector argumentOI = null;
 
     @Override
     public ObjectInspector initialize(ObjectInspector[] arguments) throws UDFArgumentException {
         if(arguments.length != 1) {
             throw new UDFArgumentLengthException(
-                    "sort_by_feature() has an only single argument.");
+                "sorted_by_feature() has an single arguments: map<int, float> map");
         }
 
         switch(arguments[0].getCategory()) {
             case MAP:
-                ObjectInspector keyOI = ((MapObjectInspector) arguments[0]).getMapKeyObjectInspector();
-                ObjectInspector valueOI = ((MapObjectInspector) arguments[0]).getMapValueObjectInspector();
+                argumentOI = (MapObjectInspector) arguments[0];
+                ObjectInspector keyOI = argumentOI.getMapKeyObjectInspector();
+                ObjectInspector valueOI = argumentOI.getMapValueObjectInspector();
                 if(keyOI.getCategory().equals(Category.PRIMITIVE)
                         && valueOI.getCategory().equals(Category.PRIMITIVE)) {
                     final PrimitiveCategory keyCategory = ((PrimitiveObjectInspector) keyOI).getPrimitiveCategory();
@@ -70,12 +68,9 @@ public class SortByFeatureUDFWrapper extends GenericUDF {
                     }
                 }
             default:
-                throw new UDFArgumentTypeException(0,
-                    "sort_by_feature() must have Map[int, float] as an argument, but "
-                        + arguments[0].getTypeName() + " was found.");
+                throw new UDFArgumentTypeException(0, "Type mismatch: map");
         }
 
-        argumentOI = (MapObjectInspector) arguments[0];
 
         return ObjectInspectorFactory.getStandardMapObjectInspector(
                 argumentOI.getMapKeyObjectInspector(),
@@ -88,9 +83,9 @@ public class SortByFeatureUDFWrapper extends GenericUDF {
         final Object arrayObject = arguments[0].get();
         final MapObjectInspector arrayOI = argumentOI;
         @SuppressWarnings("unchecked")
-        final Map<IntWritable, FloatWritable> input = (Map<IntWritable, FloatWritable>) arrayOI.getMap(arrayObject);
-        retValue = udf.evaluate(input);
-        return retValue;
+        final Map<IntWritable, FloatWritable> input =
+            (Map<IntWritable, FloatWritable>) argumentOI.getMap(arguments[0].get());
+        return udf.evaluate(input);
     }
 
     @Override
