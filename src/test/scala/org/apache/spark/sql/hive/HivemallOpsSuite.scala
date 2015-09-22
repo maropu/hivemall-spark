@@ -74,6 +74,31 @@ class HivemallOpsSuite extends QueryTest {
     assert(TinyTrainData.select(minhashes($"features", false)).count == TinyTrainData.count)
   }
 
+  test("cosine_sim") {
+    val row = DummyInputData.select(cosine_sim(Seq(1, 2, 3, 4), Seq(3, 4, 5, 6))).collect
+    assert(row(0).getFloat(0) ~== 0.500f)
+  }
+
+  test("hamming_distance") {
+    val row = DummyInputData.select(hamming_distance(1, 3)).collect
+    assert(row(0).getInt(0) == 1)
+  }
+
+  test("jaccard") {
+    val row = DummyInputData.select(jaccard(5, 6)).collect
+    assert(row(0).getFloat(0) ~== 0.96875f)
+  }
+
+  test("popcnt") {
+    val row = DummyInputData.select(popcnt(1)).collect
+    assert(row(0).getInt(0) == 1)
+  }
+
+  test("kld") {
+    val row = DummyInputData.select(kld(0.1, 0.5, 0.2, 0.5)).collect
+    assert(row(0).getDouble(0) ~== 0.01)
+  }
+
   test("add_bias") {
     assert(TinyTrainData.select(add_bias($"features")).collect.toSet
       === Set(
@@ -283,7 +308,7 @@ class HivemallOpsSuite extends QueryTest {
     }
   }
 
-  test("check classifier precision") {
+  ignore("check classifier precision") {
     Seq(
       "train_perceptron",
       "train_pa",

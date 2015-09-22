@@ -34,6 +34,7 @@ import org.apache.spark.sql.functions._
  * @groupname classifier
  * @groupname classifier.multiclass
  * @groupname ensemble
+ * @groupname knn.distance
  * @groupname knn.lsh
  * @groupname ftvec
  * @groupname ftvec.amplify
@@ -597,6 +598,56 @@ object HivemallOps {
   def hivemall_version(): Column = {
     HiveSimpleUDF(new HiveFunctionWrapper(
       "hivemall.HivemallVersionUDF"), Nil)
+  }
+
+  /**
+   * @see hivemall.knn.distance.CosineSimilarityUDF
+   * @group knn.distance
+   */
+  @scala.annotation.varargs
+  def cosine_sim(exprs: Column*): Column = {
+    HiveSimpleUDF(new HiveFunctionWrapper(
+      "hivemall.knn.distance.CosineSimilarityUDF"), exprs.map(_.expr))
+  }
+
+  /**
+   * @see hivemall.knn.distance.HammingDistanceUDF
+   * @group knn.distance
+   */
+  @scala.annotation.varargs
+  def hamming_distance(exprs: Column*): Column = {
+    HiveSimpleUDF(new HiveFunctionWrapper(
+      "hivemall.knn.distance.HammingDistanceUDF"), exprs.map(_.expr))
+  }
+
+  /**
+   * @see hivemall.knn.distance.JaccardIndexUDF
+   * @group knn.distance
+   */
+  @scala.annotation.varargs
+  def jaccard(exprs: Column*): Column = {
+    HiveSimpleUDF(new HiveFunctionWrapper(
+      "hivemall.knn.distance.JaccardIndexUDF"), exprs.map(_.expr))
+  }
+
+  /**
+   * @see hivemall.knn.distance.PopcountUDF
+   * @group knn.distance
+   */
+  @scala.annotation.varargs
+  def popcnt(exprs: Column*): Column = {
+    HiveSimpleUDF(new HiveFunctionWrapper(
+      "hivemall.knn.distance.PopcountUDF"), exprs.map(_.expr))
+  }
+
+  /**
+   * @see hivemall.knn.distance.KLDivergenceUDF
+   * @group knn.distance
+   */
+  @scala.annotation.varargs
+  def kld(exprs: Column*): Column = {
+    HiveSimpleUDF(new HiveFunctionWrapper(
+      "hivemall.knn.distance.KLDivergenceUDF"), exprs.map(_.expr))
   }
 
   /**

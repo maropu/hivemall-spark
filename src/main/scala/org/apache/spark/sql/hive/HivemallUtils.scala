@@ -38,6 +38,7 @@ object HivemallUtils {
   @inline implicit def toFloatLiteral(i: Float) = Column(Literal.create(i, FloatType))
   @inline implicit def toDoubleLiteral(i: Double) = Column(Literal.create(i, DoubleType))
   @inline implicit def toStringLiteral(i: String) = Column(Literal.create(i, StringType))
+  @inline implicit def toIntArrayLiteral(i: Seq[Int]) = Column(Literal.create(i, ArrayType(IntegerType)))
 
   /**
    * Check whether the given schema contains a column of the required data type.
