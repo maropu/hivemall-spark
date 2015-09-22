@@ -116,7 +116,7 @@ sqlContext.sql("CREATE TEMPORARY FUNCTION kld AS 'hivemall.knn.distance.KLDiverg
  */
 
 // sqlContext.sql("DROP TEMPORARY FUNCTION IF EXISTS minhashes")
-sqlContext.sql("CREATE TEMPORARY FUNCTION minhashes AS 'hivemall.knn.lsh.MinHashesUDF'")
+sqlContext.sql("CREATE TEMPORARY FUNCTION minhashes AS 'hivemall.knn.lsh.MinHashesUDFWrapper'")
 
 // sqlContext.sql("DROP TEMPORARY FUNCTION IF EXISTS minhash")
 sqlContext.sql("CREATE TEMPORARY FUNCTION minhash AS 'hivemall.knn.lsh.MinHashUDTF'")
