@@ -104,13 +104,13 @@ class HivemallOpsSuite extends QueryTest {
   }
 
   test("extract_feature") {
-    assert(TinyTrainData.select(extract_feature("1:0.8")).collect.toSet
-      === Set(Row("1")))
+    val row = DummyInputData.select(extract_feature("1:0.8")).collect
+    assert(row(0).getString(0) == "1")
   }
 
   test("extract_weight") {
-    assert(TinyTrainData.select(extract_weight("3:0.1")).collect.toSet
-      === Set(Row("0.1")))
+    val row = DummyInputData.select(extract_weight("3:0.1")).collect
+    assert(row(0).getFloat(0) ~== 0.1f)
   }
 
   test("explode_array") {

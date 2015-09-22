@@ -20,11 +20,11 @@ package org.apache.spark.sql.hive
 import org.apache.spark.ml.feature.HmFeature
 import org.apache.spark.sql._
 import org.apache.spark.sql.catalyst.analysis.UnresolvedAttribute
-import org.apache.spark.sql.catalyst.expressions.{Expression, NamedExpression, ScalaUDF, Literal}
+import org.apache.spark.sql.catalyst.expressions.{Expression, Literal, NamedExpression}
 import org.apache.spark.sql.catalyst.plans.logical.{Generate, LogicalPlan}
+import org.apache.spark.sql.functions._
 import org.apache.spark.sql.hive.HiveShim.HiveFunctionWrapper
 import org.apache.spark.sql.types._
-import org.apache.spark.sql.functions._
 
 /**
  * A wrapper of hivemall for DataFrame.
@@ -705,15 +705,8 @@ object HivemallOps {
    */
   @scala.annotation.varargs
   def extract_weight(exprs: Column*): Column = {
-    // HiveGenericUDF(new HiveFunctionWrapper(
-    //   "hivemall.ftvec.ExtractWeightUDFWrapper"), exprs.map(_.expr))
-    val f: String => String = (s: String) => {
-      s.split(':') match {
-        case d if d.size == 2 => d(1)
-        case _ => ""
-      }
-    }
-    Column(ScalaUDF(f, StringType, exprs.map(_.expr))).as("value")
+    HiveGenericUDF(new HiveFunctionWrapper(
+      "hivemall.ftvec.ExtractWeightUDFWrapper"), exprs.map(_.expr))
   }
 
   /**

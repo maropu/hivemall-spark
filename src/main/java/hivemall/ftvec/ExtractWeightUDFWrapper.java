@@ -57,8 +57,8 @@ public class ExtractWeightUDFWrapper extends GenericUDF {
             throw new UDFArgumentTypeException(0, "Type mismatch: feature");
         }
 
-        return ObjectInspectorFactory.getStandardListObjectInspector(
-                PrimitiveObjectInspectorFactory.writableFloatObjectInspector);
+        return PrimitiveObjectInspectorFactory
+            .getPrimitiveWritableObjectInspector(PrimitiveCategory.FLOAT);
     }
 
     @Override
