@@ -43,7 +43,7 @@ import java.util.List;
  */
 @Description(
     name = "extract_feature",
-    value = "_FUNC_(feature_vector in array<string>) - Returns features in array<string>")
+    value = "_FUNC_(feature_vector in array<string>) - Returns features as array<string>")
 @UDFType(deterministic = true, stateful = false)
 public class ExtractFeatureUDFWrapper extends GenericUDF {
     private ExtractFeatureUDF udf = new ExtractFeatureUDF();

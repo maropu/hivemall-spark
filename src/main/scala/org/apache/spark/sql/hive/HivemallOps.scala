@@ -666,8 +666,8 @@ object HivemallOps {
    */
   @scala.annotation.varargs
   def minhashes(exprs: Column*): Column = {
-    HiveSimpleUDF(new HiveFunctionWrapper(
-      "hivemall.knn.lsh.MinHashesUDF"), exprs.map(_.expr))
+    HiveGenericUDF(new HiveFunctionWrapper(
+      "hivemall.knn.lsh.MinHashesUDFWrapper"), exprs.map(_.expr))
   }
 
   /**

@@ -64,7 +64,7 @@ class HivemallOpsSuite extends QueryTest {
       == DummyInputData.count)
   }
 
-  ignore("minhashes") {
+  test("minhashes") {
     // Assume no exception
     assert(DummyInputData.select(minhashes(Seq("1:0.1", "2:0.5"), false)).count
       == DummyInputData.count)

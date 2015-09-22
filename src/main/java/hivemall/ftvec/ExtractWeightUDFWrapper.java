@@ -47,7 +47,7 @@ import java.util.List;
  */
 @Description(
     name = "extract_weight",
-    value = "_FUNC_(feature_vector in array<string>) - Returns the weights of features in array<string>")
+    value = "_FUNC_(feature_vector in array<string>) - Returns the weights of features as array<string>")
 @UDFType(deterministic = true, stateful = false)
 public class ExtractWeightUDFWrapper extends GenericUDF {
     private ExtractWeightUDF udf = new ExtractWeightUDF();
