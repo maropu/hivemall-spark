@@ -58,20 +58,16 @@ class HivemallOpsSuite extends QueryTest {
      */
   }
 
-  /**
-   * TODO: Two UDF tests below throw an exception:
-   *
-   * [info]   org.apache.spark.sql.catalyst.analysis.UnresolvedException:
-   *    Invalid call to dataType on unresolved object, tree: 'features
-   */
-  ignore("bbit_minhash") {
+  test("bbit_minhash") {
     // Assume no exception
-    assert(TinyTrainData.select(bbit_minhash($"features")).count == TinyTrainData.count)
+    assert(DummyInputData.select(bbit_minhash(Seq("1:0.1", "2:0.5"), false)).count
+      == DummyInputData.count)
   }
 
   ignore("minhashes") {
     // Assume no exception
-    assert(TinyTrainData.select(minhashes($"features", false)).count == TinyTrainData.count)
+    assert(DummyInputData.select(minhashes(Seq("1:0.1", "2:0.5"), false)).count
+      == DummyInputData.count)
   }
 
   test("cosine_sim") {
@@ -225,7 +221,6 @@ class HivemallOpsSuite extends QueryTest {
         Row(Map(1->0.1f, 2->0.4f, 3->0.2f, 4->0.6f))))
     )
   }
-
 
   test("invoke regression functions") {
     Seq(

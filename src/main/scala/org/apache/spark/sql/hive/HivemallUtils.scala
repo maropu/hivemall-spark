@@ -39,6 +39,7 @@ object HivemallUtils {
   @inline implicit def toDoubleLiteral(i: Double) = Column(Literal.create(i, DoubleType))
   @inline implicit def toStringLiteral(i: String) = Column(Literal.create(i, StringType))
   @inline implicit def toIntArrayLiteral(i: Seq[Int]) = Column(Literal.create(i, ArrayType(IntegerType)))
+  @inline implicit def toStringArrayLiteral(i: Seq[String]) = Column(Literal.create(i, ArrayType(StringType)))
 
   /**
    * Check whether the given schema contains a column of the required data type.
