@@ -46,7 +46,8 @@ class HivemallOpsSuite extends QueryTest {
      * The test throw an exception below:
      *
      * [info] - hivemall_version *** FAILED ***
-     * [info]   org.apache.spark.sql.AnalysisException: Cannot resolve column name "HiveSimpleUDF#hivemall.HivemallVersionUDF()" among (HiveSimpleUDF#hivemall.Hivemall VersionUDF());
+     * [info]   org.apache.spark.sql.AnalysisException:
+     *    Cannot resolve column name "HiveSimpleUDF#hivemall.HivemallVersionUDF()" among (HiveSimpleUDF#hivemall.Hivemall VersionUDF());
      * [info]   at org.apache.spark.sql.DataFrame$$anonfun$resolve$1.apply(DataFrame.scala:159)
      * [info]   at org.apache.spark.sql.DataFrame$$anonfun$resolve$1.apply(DataFrame.scala:159)
      * [info]   at scala.Option.getOrElse(Option.scala:120)
@@ -55,6 +56,22 @@ class HivemallOpsSuite extends QueryTest {
      * [info]   at org.apache.spark.sql.DataFrame$$anonfun$30.apply(DataFrame.scala:1227)
      * [info]   at scala.collection.TraversableLike$$anonfun$map$1.apply(TraversableLike.scala:244)
      */
+  }
+
+  /**
+   * TODO: Two UDF tests below throw an exception:
+   *
+   * [info]   org.apache.spark.sql.catalyst.analysis.UnresolvedException:
+   *    Invalid call to dataType on unresolved object, tree: 'features
+   */
+  ignore("bbit_minhash") {
+    // Assume no exception
+    assert(TinyTrainData.select(bbit_minhash($"features")).count == TinyTrainData.count)
+  }
+
+  ignore("minhashes") {
+    // Assume no exception
+    assert(TinyTrainData.select(minhashes($"features", false)).count == TinyTrainData.count)
   }
 
   test("add_bias") {
@@ -143,7 +160,8 @@ class HivemallOpsSuite extends QueryTest {
      * TODO: SigmodUDF only accepts floating-point types in spark-v1.5.0?
      * This test throws an exception below:
      *
-     * [info]   org.apache.spark.sql.catalyst.analysis.UnresolvedException: Invalid call to dataType on unresolved object, tree: 'data
+     * [info]   org.apache.spark.sql.catalyst.analysis.UnresolvedException:
+     *    Invalid call to dataType on unresolved object, tree: 'data
      * [info]   at org.apache.spark.sql.catalyst.analysis.UnresolvedAttribute.dataType(unresolved.scala:59)
      * [info]   at org.apache.spark.sql.hive.HiveSimpleUDF$$anonfun$method$1.apply(hiveUDFs.scala:119)
      */
@@ -236,6 +254,13 @@ class HivemallOpsSuite extends QueryTest {
     .map { func =>
       // TODO: Why is a label type [Int|Text] only in multiclass classifiers?
       invokeFunc(new HivemallOps(TinyTrainData), func, Seq($"features", $"label".cast(IntegerType)))
+        .foreach(_ => {}) // Just call it
+    }
+  }
+
+  test("invoke misc udtf functions") {
+    Seq("minhash").map { func =>
+      invokeFunc(new HivemallOps(TinyTrainData), func, Seq($"label", $"features"))
         .foreach(_ => {}) // Just call it
     }
   }

@@ -34,6 +34,7 @@ import org.apache.spark.sql.functions._
  * @groupname classifier
  * @groupname classifier.multiclass
  * @groupname ensemble
+ * @groupname knn.lsh
  * @groupname ftvec
  * @groupname ftvec.amplify
  * @groupname ftvec.hashing
@@ -476,6 +477,20 @@ final class HivemallOps(df: DataFrame) {
   }
 
   /**
+   * @see hivemall.knn.lsh.MinHashUDTF
+   * @group knn.lsh
+   */
+  @scala.annotation.varargs
+  def minhash(exprs: Column*): DataFrame = {
+     Generate(HiveGenericUDTF(
+        new HiveFunctionWrapper("hivemall.knn.lsh.MinHashUDTF"),
+        exprs.map(_.expr)),
+      join = false, outer = false, None,
+      Seq("clusterid", "item").map(UnresolvedAttribute(_)),
+      df.logicalPlan)
+  }
+
+  /**
    * @see hivemall.ftvec.amplify.AmplifierUDTF
    * @group ftvec.amplify
    */
@@ -582,6 +597,26 @@ object HivemallOps {
   def hivemall_version(): Column = {
     HiveSimpleUDF(new HiveFunctionWrapper(
       "hivemall.HivemallVersionUDF"), Nil)
+  }
+
+  /**
+   * @see hivemall.knn.lsh.bBitMinHashUDF
+   * @group knn.lsh
+   */
+  @scala.annotation.varargs
+  def bbit_minhash(exprs: Column*): Column = {
+    HiveSimpleUDF(new HiveFunctionWrapper(
+      "hivemall.knn.lsh.bBitMinHashUDF"), exprs.map(_.expr))
+  }
+
+  /**
+   * @see hivemall.knn.lsh.MinHashesUDF
+   * @group knn.lsh
+   */
+  @scala.annotation.varargs
+  def minhashes(exprs: Column*): Column = {
+    HiveSimpleUDF(new HiveFunctionWrapper(
+      "hivemall.knn.lsh.MinHashesUDF"), exprs.map(_.expr))
   }
 
   /**
