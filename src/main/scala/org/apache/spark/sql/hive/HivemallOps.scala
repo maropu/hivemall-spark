@@ -17,6 +17,7 @@
 
 package org.apache.spark.sql.hive
 
+import org.apache.spark.Logging
 import org.apache.spark.ml.feature.HmFeature
 import org.apache.spark.sql._
 import org.apache.spark.sql.catalyst.analysis.UnresolvedAttribute
@@ -44,14 +45,36 @@ import org.apache.spark.sql.types._
  * @groupname tools.math
  * @groupname dataset
  */
-final class HivemallOps(df: DataFrame) {
+final class HivemallOps(df: DataFrame) extends Logging {
 
   /**
    * An implicit conversion to avoid doing annoying transformation.
    */
   @inline
-  private implicit def toDataFrame(logicalPlan: LogicalPlan) =
+  private[this] implicit def toDataFrame(logicalPlan: LogicalPlan) =
     DataFrame(df.sqlContext, logicalPlan)
+
+  /**
+   * If a parameter '-mix' does not exist in a 3rd argument,
+   * set it from an environmental variable
+   * 'HIVEMALL_MIX_SERVERS'.
+   *
+   * TODO: This could work if '--deploy-mode' has 'client';
+   * otherwise, we need to set HIVEMALL_MIX_SERVERS
+   * in all possible spark workers.
+   */
+  private[this] def setMixServs(exprs: Column*): Seq[Column] = {
+    val mixes = System.getenv("HIVEMALL_MIX_SERVERS")
+    if (mixes != null && !mixes.isEmpty()) {
+      exprs.size match {
+        case 2 => exprs :+ Column(Literal.create(s"-mix ${mixes}", StringType))
+        /** TODO: Add codes in the case where exprs.size == 3. */
+        case _ => exprs
+      }
+    } else {
+      exprs
+    }
+  }
 
   /**
    * @see hivemall.regression.AdaDeltaUDTF
@@ -61,7 +84,7 @@ final class HivemallOps(df: DataFrame) {
   def train_adadelta(exprs: Column*): DataFrame = {
     Generate(HiveGenericUDTF(
         new HiveFunctionWrapper("hivemall.regression.AdaDeltaUDTF"),
-        exprs.map(_.expr)),
+        setMixServs(exprs: _*).map(_.expr)),
       join = false, outer = false, None,
       Seq("feature", "weight").map(UnresolvedAttribute(_)),
       df.logicalPlan)
@@ -75,7 +98,7 @@ final class HivemallOps(df: DataFrame) {
   def train_adagrad(exprs: Column*): DataFrame = {
     Generate(HiveGenericUDTF(
         new HiveFunctionWrapper("hivemall.regression.AdaGradUDTF"),
-        exprs.map(_.expr)),
+        setMixServs(exprs: _*).map(_.expr)),
       join = false, outer = false, None,
       Seq("feature", "weight").map(UnresolvedAttribute(_)),
       df.logicalPlan)
@@ -89,7 +112,7 @@ final class HivemallOps(df: DataFrame) {
   def train_arow_regr(exprs: Column*): DataFrame = {
     Generate(HiveGenericUDTF(
         new HiveFunctionWrapper("hivemall.regression.AROWRegressionUDTF"),
-        exprs.map(_.expr)),
+        setMixServs(exprs: _*).map(_.expr)),
       join = false, outer = false, None,
       Seq("feature", "weight", "conv").map(UnresolvedAttribute(_)),
       df.logicalPlan)
@@ -103,7 +126,7 @@ final class HivemallOps(df: DataFrame) {
   def train_arowe_regr(exprs: Column*): DataFrame = {
     Generate(HiveGenericUDTF(
         new HiveFunctionWrapper("hivemall.regression.AROWRegressionUDTF$AROWe"),
-        exprs.map(_.expr)),
+        setMixServs(exprs: _*).map(_.expr)),
       join = false, outer = false, None,
       Seq("feature", "weight", "conv").map(UnresolvedAttribute(_)),
       df.logicalPlan)
@@ -117,7 +140,7 @@ final class HivemallOps(df: DataFrame) {
   def train_arowe2_regr(exprs: Column*): DataFrame = {
     Generate(HiveGenericUDTF(
         new HiveFunctionWrapper("hivemall.regression.AROWRegressionUDTF$AROWe2"),
-        exprs.map(_.expr)),
+        setMixServs(exprs: _*).map(_.expr)),
       join = false, outer = false, None,
       Seq("feature", "weight", "conv").map(UnresolvedAttribute(_)),
       df.logicalPlan)
@@ -131,7 +154,7 @@ final class HivemallOps(df: DataFrame) {
   def train_logregr(exprs: Column*): DataFrame = {
     Generate(HiveGenericUDTF(
         new HiveFunctionWrapper("hivemall.regression.LogressUDTF"),
-        exprs.map(_.expr)),
+        setMixServs(exprs: _*).map(_.expr)),
       join = false, outer = false, None,
       Seq("feature", "weight").map(UnresolvedAttribute(_)),
       df.logicalPlan)
@@ -145,7 +168,7 @@ final class HivemallOps(df: DataFrame) {
   def train_pa1_regr(exprs: Column*): DataFrame = {
      Generate(HiveGenericUDTF(
         new HiveFunctionWrapper("hivemall.regression.PassiveAggressiveRegressionUDTF"),
-        exprs.map(_.expr)),
+        setMixServs(exprs: _*).map(_.expr)),
       join = false, outer = false, None,
       Seq("feature", "weight").map(UnresolvedAttribute(_)),
       df.logicalPlan)
@@ -159,7 +182,7 @@ final class HivemallOps(df: DataFrame) {
   def train_pa1a_regr(exprs: Column*): DataFrame = {
      Generate(HiveGenericUDTF(
         new HiveFunctionWrapper("hivemall.regression.PassiveAggressiveRegressionUDTF$PA1a"),
-        exprs.map(_.expr)),
+        setMixServs(exprs: _*).map(_.expr)),
       join = false, outer = false, None,
       Seq("feature", "weight").map(UnresolvedAttribute(_)),
       df.logicalPlan)
@@ -173,7 +196,7 @@ final class HivemallOps(df: DataFrame) {
   def train_pa2_regr(exprs: Column*): DataFrame = {
      Generate(HiveGenericUDTF(
         new HiveFunctionWrapper("hivemall.regression.PassiveAggressiveRegressionUDTF$PA2"),
-        exprs.map(_.expr)),
+        setMixServs(exprs: _*).map(_.expr)),
       join = false, outer = false, None,
       Seq("feature", "weight").map(UnresolvedAttribute(_)),
       df.logicalPlan)
@@ -187,7 +210,7 @@ final class HivemallOps(df: DataFrame) {
   def train_pa2a_regr(exprs: Column*): DataFrame = {
      Generate(HiveGenericUDTF(
         new HiveFunctionWrapper("hivemall.regression.PassiveAggressiveRegressionUDTF$PA2a"),
-        exprs.map(_.expr)),
+        setMixServs(exprs: _*).map(_.expr)),
       join = false, outer = false, None,
       Seq("feature", "weight").map(UnresolvedAttribute(_)),
       df.logicalPlan)
@@ -201,7 +224,7 @@ final class HivemallOps(df: DataFrame) {
   def train_perceptron(exprs: Column*): DataFrame = {
      Generate(HiveGenericUDTF(
         new HiveFunctionWrapper("hivemall.classifier.PerceptronUDTF"),
-        exprs.map(_.expr)),
+        setMixServs(exprs: _*).map(_.expr)),
       join = false, outer = false, None,
       Seq("feature", "weight").map(UnresolvedAttribute(_)),
       df.logicalPlan)
@@ -215,7 +238,7 @@ final class HivemallOps(df: DataFrame) {
   def train_pa(exprs: Column*): DataFrame = {
      Generate(HiveGenericUDTF(
         new HiveFunctionWrapper("hivemall.classifier.PassiveAggressiveUDTF"),
-        exprs.map(_.expr)),
+        setMixServs(exprs: _*).map(_.expr)),
       join = false, outer = false, None,
       Seq("feature", "weight").map(UnresolvedAttribute(_)),
       df.logicalPlan)
@@ -229,7 +252,7 @@ final class HivemallOps(df: DataFrame) {
   def train_pa1(exprs: Column*): DataFrame = {
      Generate(HiveGenericUDTF(
         new HiveFunctionWrapper("hivemall.classifier.PassiveAggressiveUDTF$PA1"),
-        exprs.map(_.expr)),
+        setMixServs(exprs: _*).map(_.expr)),
       join = false, outer = false, None,
       Seq("feature", "weight").map(UnresolvedAttribute(_)),
       df.logicalPlan)
@@ -243,7 +266,7 @@ final class HivemallOps(df: DataFrame) {
   def train_pa2(exprs: Column*): DataFrame = {
      Generate(HiveGenericUDTF(
         new HiveFunctionWrapper("hivemall.classifier.PassiveAggressiveUDTF$PA2"),
-        exprs.map(_.expr)),
+        setMixServs(exprs: _*).map(_.expr)),
       join = false, outer = false, None,
       Seq("feature", "weight").map(UnresolvedAttribute(_)),
       df.logicalPlan)
@@ -257,7 +280,7 @@ final class HivemallOps(df: DataFrame) {
   def train_cw(exprs: Column*): DataFrame = {
      Generate(HiveGenericUDTF(
         new HiveFunctionWrapper("hivemall.classifier.ConfidenceWeightedUDTF"),
-        exprs.map(_.expr)),
+        setMixServs(exprs: _*).map(_.expr)),
       join = false, outer = false, None,
       Seq("feature", "weight", "conv").map(UnresolvedAttribute(_)),
       df.logicalPlan)
@@ -271,7 +294,7 @@ final class HivemallOps(df: DataFrame) {
   def train_arow(exprs: Column*): DataFrame = {
      Generate(HiveGenericUDTF(
         new HiveFunctionWrapper("hivemall.classifier.AROWClassifierUDTF"),
-        exprs.map(_.expr)),
+        setMixServs(exprs: _*).map(_.expr)),
       join = false, outer = false, None,
       Seq("feature", "weight", "conv").map(UnresolvedAttribute(_)),
       df.logicalPlan)
@@ -285,7 +308,7 @@ final class HivemallOps(df: DataFrame) {
   def train_arowh(exprs: Column*): DataFrame = {
      Generate(HiveGenericUDTF(
         new HiveFunctionWrapper("hivemall.classifier.AROWClassifierUDTF$AROWh"),
-        exprs.map(_.expr)),
+        setMixServs(exprs: _*).map(_.expr)),
       join = false, outer = false, None,
       Seq("feature", "weight", "conv").map(UnresolvedAttribute(_)),
       df.logicalPlan)
@@ -299,7 +322,7 @@ final class HivemallOps(df: DataFrame) {
   def train_scw(exprs: Column*): DataFrame = {
      Generate(HiveGenericUDTF(
         new HiveFunctionWrapper("hivemall.classifier.SoftConfideceWeightedUDTF$SCW1"),
-        exprs.map(_.expr)),
+        setMixServs(exprs: _*).map(_.expr)),
       join = false, outer = false, None,
       Seq("feature", "weight", "conv").map(UnresolvedAttribute(_)),
       df.logicalPlan)
@@ -313,7 +336,7 @@ final class HivemallOps(df: DataFrame) {
   def train_scw2(exprs: Column*): DataFrame = {
      Generate(HiveGenericUDTF(
         new HiveFunctionWrapper("hivemall.classifier.SoftConfideceWeightedUDTF$SCW2"),
-        exprs.map(_.expr)),
+        setMixServs(exprs: _*).map(_.expr)),
       join = false, outer = false, None,
       Seq("feature", "weight", "conv").map(UnresolvedAttribute(_)),
       df.logicalPlan)
@@ -327,7 +350,7 @@ final class HivemallOps(df: DataFrame) {
   def train_adagrad_rda(exprs: Column*): DataFrame = {
      Generate(HiveGenericUDTF(
         new HiveFunctionWrapper("hivemall.classifier.AdaGradRDAUDTF"),
-        exprs.map(_.expr)),
+        setMixServs(exprs: _*).map(_.expr)),
       join = false, outer = false, None,
       Seq("feature", "weight").map(UnresolvedAttribute(_)),
       df.logicalPlan)
@@ -341,7 +364,7 @@ final class HivemallOps(df: DataFrame) {
   def train_multiclass_perceptron(exprs: Column*): DataFrame = {
      Generate(HiveGenericUDTF(
         new HiveFunctionWrapper("hivemall.classifier.multiclass.MulticlassPerceptronUDTF"),
-        exprs.map(_.expr)),
+        setMixServs(exprs: _*).map(_.expr)),
       join = false, outer = false, None,
       Seq("label", "feature", "weight").map(UnresolvedAttribute(_)),
       df.logicalPlan)
@@ -355,7 +378,7 @@ final class HivemallOps(df: DataFrame) {
   def train_multiclass_pa(exprs: Column*): DataFrame = {
      Generate(HiveGenericUDTF(
         new HiveFunctionWrapper("hivemall.classifier.multiclass.MulticlassPassiveAggressiveUDTF"),
-        exprs.map(_.expr)),
+        setMixServs(exprs: _*).map(_.expr)),
       join = false, outer = false, None,
       Seq("label", "feature", "weight").map(UnresolvedAttribute(_)),
       df.logicalPlan)
@@ -369,7 +392,7 @@ final class HivemallOps(df: DataFrame) {
   def train_multiclass_pa1(exprs: Column*): DataFrame = {
      Generate(HiveGenericUDTF(
         new HiveFunctionWrapper("hivemall.classifier.multiclass.MulticlassPassiveAggressiveUDTF$PA1"),
-        exprs.map(_.expr)),
+        setMixServs(exprs: _*).map(_.expr)),
       join = false, outer = false, None,
       Seq("label", "feature", "weight").map(UnresolvedAttribute(_)),
       df.logicalPlan)
@@ -383,7 +406,7 @@ final class HivemallOps(df: DataFrame) {
   def train_multiclass_pa2(exprs: Column*): DataFrame = {
      Generate(HiveGenericUDTF(
         new HiveFunctionWrapper("hivemall.classifier.multiclass.MulticlassPassiveAggressiveUDTF$PA2"),
-        exprs.map(_.expr)),
+        setMixServs(exprs: _*).map(_.expr)),
       join = false, outer = false, None,
       Seq("label", "feature", "weight").map(UnresolvedAttribute(_)),
       df.logicalPlan)
@@ -397,7 +420,7 @@ final class HivemallOps(df: DataFrame) {
   def train_multiclass_cw(exprs: Column*): DataFrame = {
      Generate(HiveGenericUDTF(
         new HiveFunctionWrapper("hivemall.classifier.multiclass.MulticlassConfidenceWeightedUDTF"),
-        exprs.map(_.expr)),
+        setMixServs(exprs: _*).map(_.expr)),
       join = false, outer = false, None,
       Seq("label", "feature", "weight", "conv").map(UnresolvedAttribute(_)),
       df.logicalPlan)
@@ -411,7 +434,7 @@ final class HivemallOps(df: DataFrame) {
   def train_multiclass_arow(exprs: Column*): DataFrame = {
      Generate(HiveGenericUDTF(
         new HiveFunctionWrapper("hivemall.classifier.multiclass.MulticlassAROWClassifierUDTF"),
-        exprs.map(_.expr)),
+        setMixServs(exprs: _*).map(_.expr)),
       join = false, outer = false, None,
       Seq("label", "feature", "weight", "conv").map(UnresolvedAttribute(_)),
       df.logicalPlan)
@@ -425,7 +448,7 @@ final class HivemallOps(df: DataFrame) {
   def train_multiclass_scw(exprs: Column*): DataFrame = {
      Generate(HiveGenericUDTF(
         new HiveFunctionWrapper("hivemall.classifier.multiclass.MulticlassSoftConfidenceWeightedUDTF$SCW1"),
-        exprs.map(_.expr)),
+        setMixServs(exprs: _*).map(_.expr)),
       join = false, outer = false, None,
       Seq("label", "feature", "weight", "conv").map(UnresolvedAttribute(_)),
       df.logicalPlan)
@@ -439,7 +462,7 @@ final class HivemallOps(df: DataFrame) {
   def train_multiclass_scw2(exprs: Column*): DataFrame = {
      Generate(HiveGenericUDTF(
         new HiveFunctionWrapper("hivemall.classifier.multiclass.MulticlassSoftConfidenceWeightedUDTF$SCW2"),
-        exprs.map(_.expr)),
+        setMixServs(exprs: _*).map(_.expr)),
       join = false, outer = false, None,
       Seq("label", "feature", "weight", "conv").map(UnresolvedAttribute(_)),
       df.logicalPlan)
@@ -705,8 +728,9 @@ object HivemallOps {
    */
   @scala.annotation.varargs
   def extract_weight(exprs: Column*): Column = {
-    HiveGenericUDF(new HiveFunctionWrapper(
-      "hivemall.ftvec.ExtractWeightUDFWrapper"), exprs.map(_.expr))
+    val hiveUdf = HiveGenericUDF(
+      new HiveFunctionWrapper("hivemall.ftvec.ExtractWeightUDFWrapper"), exprs.map(_.expr))
+    Column(hiveUdf).as("value")
   }
 
   /**

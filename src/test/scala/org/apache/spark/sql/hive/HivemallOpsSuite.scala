@@ -551,6 +551,8 @@ object HivemallOpsSuite {
 
     val precision = (eval.count + 0.0) / predict.count
 
+    println(s"${func} --> ${precision}")
+
     expectResult(precision < 0.70,
       s"Low precision -> func:${func} value:${precision}")
   }
