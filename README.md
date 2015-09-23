@@ -101,7 +101,7 @@ On the other hand, functions listed below are available in DataFrame:
 
 * nearest neighbors
 
-* MIX server cooperation
+* [MIX server cooperation](./tutorials/mixserv.md)
 
 API Documentations
 --------------------
