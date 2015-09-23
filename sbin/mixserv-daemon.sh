@@ -30,12 +30,13 @@ if [ "$HIVEMALL_HOME" == "" ]; then
   exit 1
 fi
 
+# Loads global variables
+. "$HIVEMALL_HOME/conf/load-env.sh"
+
 HIVEMALL_PID_DIR=/tmp
 HIVEMALL_PID_FILE="$HIVEMALL_PID_DIR/hivemall-$USER.pid"
 HIVEMALL_LOG_DIR="$HIVEMALL_HOME/logs"
 HIVEMALL_LOG_FILE="$HIVEMALL_LOG_DIR/hivemall-$USER-$HOSTNAME.out"
-HIVEMALL_JMXOPTS="-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=9010 -Dcom.sun.management.jmxremote.local.only=false -Dcom.sun.management.jmxremote.authenticate=false"
-HIVEMALL_VMOPTS="-Xmx4g -da -server -XX:+PrintGCDetails -XX:+UseNUMA -XX:+UseParallelGC"
 
 hivemall_rotate_log() {
   log=$1

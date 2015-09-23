@@ -25,6 +25,9 @@ if [ "$HIVEMALL_HOME" == "" ]; then
   exit 1
 fi
 
+# Loads global variables
+. "$HIVEMALL_HOME/conf/load-env.sh"
+
 HIVEMALL_MIX_SERVERS="$HIVEMALL_HOME/conf/servers"
 HIVEMALL_SSH_OPTS="-o StrictHostKeyChecking=no"
 
