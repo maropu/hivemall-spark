@@ -17,9 +17,6 @@
 # limitations under the License.
 #
 
-# Stops MIX server instances on each machine specified
-# in the conf/servers file.
-
 if [ "$HIVEMALL_HOME" == "" ]; then
   echo env HIVEMALL_HOME not defined
   exit 1

@@ -17,7 +17,7 @@
 # limitations under the License.
 #
 
-usage="Usage: mixserv-daemon.sh (start|stop)"
+usage="Usage: mixserv-daemon.sh (start|stop|status)"
 
 # If no args specified, show usage
 if [ $# -ne 1 ]; then
@@ -73,6 +73,23 @@ case $1 in
       fi
     else
       echo "no MIX server to stop"
+    fi
+    ;;
+
+  (status)
+
+    if [ -f $HIVEMALL_PID_FILE ]; then
+      TARGET_ID="$(cat "$HIVEMALL_PID_FILE")"
+      if [[ $(ps -p "$TARGET_ID" -o comm=) =~ "java" ]]; then
+        echo the MIX server is running
+        exit 0
+      else
+        echo file $HIVEMALL_PID_FILE is present but the MIX server is not running
+        exit 1
+      fi
+    else
+      echo the MIX server is not running
+      exit 2
     fi
     ;;
 
