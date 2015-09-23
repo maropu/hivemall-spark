@@ -17,6 +17,8 @@
 
 package org.apache.spark.sql.hive
 
+import java.util.UUID
+
 import org.apache.spark.Logging
 import org.apache.spark.ml.feature.HmFeature
 import org.apache.spark.sql._
@@ -66,8 +68,8 @@ final class HivemallOps(df: DataFrame) extends Logging {
   private[this] def setMixServs(exprs: Column*): Seq[Column] = {
     val mixes = System.getenv("HIVEMALL_MIX_SERVERS")
     if (mixes != null && !mixes.isEmpty()) {
-      val groupId = df.sqlContext.sparkContext.applicationId
-      logInfo(s"set hosts '${mixes}' as default mix servers (session: ${groupId})")
+      val groupId = df.sqlContext.sparkContext.applicationId + "-" + UUID.randomUUID()
+      logWarning(s"set '${mixes}' as default mix servers (session: ${groupId})")
       exprs.size match {
         case 2 => exprs :+ Column(Literal.create(s"-mix ${mixes} -mix_session ${groupId}", StringType))
         /** TODO: Add codes in the case where exprs.size == 3. */
