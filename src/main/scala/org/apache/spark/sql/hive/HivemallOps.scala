@@ -66,8 +66,10 @@ final class HivemallOps(df: DataFrame) extends Logging {
   private[this] def setMixServs(exprs: Column*): Seq[Column] = {
     val mixes = System.getenv("HIVEMALL_MIX_SERVERS")
     if (mixes != null && !mixes.isEmpty()) {
+      val groupId = df.sqlContext.sparkContext.applicationId
+      logInfo(s"set hosts '${mixes}' as default mix servers (session: ${groupId})")
       exprs.size match {
-        case 2 => exprs :+ Column(Literal.create(s"-mix ${mixes}", StringType))
+        case 2 => exprs :+ Column(Literal.create(s"-mix ${mixes} -mix_session ${groupId}", StringType))
         /** TODO: Add codes in the case where exprs.size == 3. */
         case _ => exprs
       }

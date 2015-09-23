@@ -285,7 +285,7 @@ class HivemallOpsSuite extends QueryTest {
     }
   }
 
-  ignore("check classification precision") {
+  ignore("check regression precision") {
     Seq(
       "train_adadelta",
       "train_adagrad",
@@ -495,14 +495,10 @@ object HivemallOpsSuite {
       .agg(Map("target"->"avg", "predicted"->"avg"))
       .as("target", "predicted")
 
-    eval.show
-
     val diff = eval.map {
       case Row(target: Double, predicted: Double) =>
         Math.abs(target - predicted)
     }.first
-
-    println("diff:" + diff)
 
     expectResult(diff > 0.10,
       s"Low precision -> func:${func} diff:${diff}")
@@ -550,8 +546,6 @@ object HivemallOpsSuite {
       .where($"target" === $"predicted")
 
     val precision = (eval.count + 0.0) / predict.count
-
-    println(s"${func} --> ${precision}")
 
     expectResult(precision < 0.70,
       s"Low precision -> func:${func} value:${precision}")
