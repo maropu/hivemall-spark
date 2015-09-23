@@ -32,24 +32,60 @@ fi
 
 HIVEMALL_PID_DIR=/tmp
 HIVEMALL_PID_FILE="$HIVEMALL_PID_DIR/hivemall-$USER.pid"
+HIVEMALL_LOG_DIR="$HIVEMALL_HOME/logs"
+HIVEMALL_LOG_FILE="$HIVEMALL_LOG_DIR/hivemall-$USER-$HOSTNAME.out"
 HIVEMALL_JMXOPTS="-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=9010 -Dcom.sun.management.jmxremote.local.only=false -Dcom.sun.management.jmxremote.authenticate=false"
 HIVEMALL_VMOPTS="-Xmx4g -da -server -XX:+PrintGCDetails -XX:+UseNUMA -XX:+UseParallelGC"
+
+hivemall_rotate_log() {
+  log=$1
+  num=5
+  if [ -n "$2" ]; then
+    num=$2
+  fi
+  if [ -f "$log" ]; then # rotate logs
+    while [ $num -gt 1 ]; do
+      prev=`expr $num - 1`
+      [ -f "$log.$prev" ] && mv "$log.$prev" "$log.$num"
+      num=$prev
+    done
+  mv "$log" "$log.$num";
+  fi
+}
+
+# Sanitizes log directory
+mkdir -p "$HIVEMALL_LOG_DIR"
+touch "$HIVEMALL_LOG_DIR"/.hivemall_test > /dev/null 2>&1
+TEST_LOG_DIR=$?
+if [ "${TEST_LOG_DIR}" = "0" ]; then
+  rm -f "$HIVEMALL_LOG_DIR"/.hivemall_test
+else
+  chown "$USER" "$HIVEMALL_LOG_DIR"
+fi
+
+# Sets default scheduling priority
+if [ "$HIVEMALL_NICENESS" = "" ]; then
+  export HIVEMALL_NICENESS=0
+fi
 
 case $1 in
 
   (start)
-    echo "starting the MIX server"
 
     # Check if the MIX server has already run
     if [ -f $HIVEMALL_PID_FILE ]; then
       TARGET_ID="$(cat "$HIVEMALL_PID_FILE")"
       if [[ $(ps -p "$TARGET_ID" -o comm=) =~ "java" ]]; then
-        echo "the MIX server has already run as process $TARGET_ID"
+        echo the MIX server has already run as process $TARGET_ID
         exit 0
       fi
     fi
 
-    nohup java ${HIVEMALL_JMXOPTS} ${HIVEMALL_VMOPTS} -jar "$HIVEMALL_HOME/bin/hivemall-fat.jar" > /dev/null 2>&1 &
+    hivemall_rotate_log "$HIVEMALL_LOG_FILE"
+    echo starting the MIX server, logging to $HIVEMALL_LOG_FILE
+
+    nohup nice -n "$HIVEMALL_NICENESS" java ${HIVEMALL_JMXOPTS} ${HIVEMALL_VMOPTS} \
+      -jar "$HIVEMALL_HOME/bin/hivemall-fat.jar" > "$HIVEMALL_LOG_FILE" 2>&1 &
 
     newpid="$!"
     echo "$newpid" > "$HIVEMALL_PID_FILE"
@@ -57,7 +93,7 @@ case $1 in
 
     # Checks if the process has died
     if [[ ! $(ps -p "$newpid" -o comm=) =~ "java" ]]; then
-      echo "failed to launch the MIX server"
+      echo failed to launch the MIX server
     fi
     ;;
 
@@ -66,13 +102,13 @@ case $1 in
     if [ -f $HIVEMALL_PID_FILE ]; then
       TARGET_ID="$(cat "$HIVEMALL_PID_FILE")"
       if [[ $(ps -p "$TARGET_ID" -o comm=) =~ "java" ]]; then
-        echo "stopping the MIX server"
+        echo stopping the MIX server
         kill "$TARGET_ID" && rm -f "$HIVEMALL_PID_FILE"
       else
-        echo "no MIX server to stop"
+        echo no MIX server to stop
       fi
     else
-      echo "no MIX server to stop"
+      echo no MIX server to stop
     fi
     ;;
 
