@@ -82,32 +82,39 @@ class MixServerSuite extends FunSuite with BeforeAndAfter {
     }
   }
 
-  Seq(1024, 65536).map { ndims =>
-    Seq(1, 2, 4, 8).map { nclient =>
-      val testName = s"dense-dim:${ndims}-clinet:${nclient}"
-      ignore(testName) {
-        val clients = Executors.newCachedThreadPool()
-        val numClients = nclient
-        val models = (0 until numClients).map(i => new DenseModel(ndims, false))
-        (0 until numClients).map { i =>
-          clients.submit(new Runnable() {
-            override def run(): Unit = {
-              try {
-                clientDriver(
-                  s"${testName}-${counter.next}",
-                  models(i)
-                )
-              } catch {
-                case e: InterruptedException =>
-                  assert(false, e.getMessage)
+  private[this] def fixedGroup: (String, () => String) =
+    ("fixed", () => "fixed")
+  private[this] def uniqueGroup: (String, () => String) =
+    ("unique", () => s"${counter.next}")
+
+  Seq(65536).map { ndims =>
+    Seq(4).map { nclient =>
+      Seq(fixedGroup, uniqueGroup).map { id =>
+        val testName = s"dense-dim:${ndims}-clinet:${nclient}-${id._1}"
+        test(testName) {
+          val clients = Executors.newCachedThreadPool()
+          val numClients = nclient
+          val models = (0 until numClients).map(i => new DenseModel(ndims, false))
+          (0 until numClients).map { i =>
+            clients.submit(new Runnable() {
+              override def run(): Unit = {
+                try {
+                  clientDriver(
+                    s"${testName}-${id._2}",
+                    models(i)
+                  )
+                } catch {
+                  case e: InterruptedException =>
+                    assert(false, e.getMessage)
+                }
               }
-            }
-          })
+            })
+          }
+          clients.awaitTermination(eachTestTime, TimeUnit.SECONDS)
+          clients.shutdown()
+          val nMixes = models.map(d => d.getNumMixed).reduce(_ + _)
+          logger.info(s"${testName} --> ${(nMixes + 0.0) / eachTestTime} mixes/s")
         }
-        clients.awaitTermination(eachTestTime, TimeUnit.SECONDS)
-        clients.shutdown()
-        val nMixes = models.map(d => d.getNumMixed).reduce(_ + _)
-        logger.info(s"${testName} --> ${(nMixes + 0.0) / eachTestTime} mixes/s")
       }
     }
   }
