@@ -91,7 +91,7 @@ class MixServerSuite extends FunSuite with BeforeAndAfter {
     Seq(4).map { nclient =>
       Seq(fixedGroup, uniqueGroup).map { id =>
         val testName = s"dense-dim:${ndims}-clinet:${nclient}-${id._1}"
-        test(testName) {
+        ignore(testName) {
           val clients = Executors.newCachedThreadPool()
           val numClients = nclient
           val models = (0 until numClients).map(i => new DenseModel(ndims, false))
