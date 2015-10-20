@@ -4,13 +4,18 @@
 This is a simple wrapper implementation of [Hivemall](https://github.com/myui/hivemall/) for Spark.
 This can make highly scalable machine learning algorithms available in DataFrame and HiveContext.
 
-Installation
+Quick Installation
 --------------------
 
 ```
-# $SPARK_HOME/bin/spark-shell --packages maropu:hivemall-spark:0.0.4
+// Fetch an initialization script for hivemall-spark
+# wget https://raw.githubusercontent.com/maropu/hivemall-spark/master/scripts/ddl/define-udfs.sh
 
-scala> sql("ADD JAR maropu_hivemall-spark-0.0.4.jar")
+// Download Spark-v1.5.1 from 'http://spark.apache.org/downloads.html' and
+// invoke an interactive shell
+# $SPARK_HOME/bin/spark-shell --packages maropu:hivemall-spark:0.0.5
+
+scala> :load define-udfs.sh
 ```
 
 Hivemall in DataFrame
@@ -43,11 +48,6 @@ run a script to register the user-defined functions of Hivemall in spark-shell a
 say a SQL statements as follows;
 
 ```
-// Fetch an initialization script for hivemall-spark
-# wget https://raw.githubusercontent.com/maropu/hivemall-spark/master/scripts/ddl/define-udfs.sh
-
-scala> :load define-udfs.sh
-
 scala> :paste
 
 sql("
