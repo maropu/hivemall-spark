@@ -9,7 +9,7 @@ object HivemallSparkBuild extends Build {
     settings = Project.defaultSettings ++ Seq(
       name := "hivemall-spark",
       organization := "maropu",
-      version := "0.0.5",
+      version := "0.0.6",
       scalaVersion := "2.10.4"
       // add other settings here
     )
