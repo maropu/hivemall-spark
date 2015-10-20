@@ -18,7 +18,7 @@ net.virtualvoid.sbt.graph.Plugin.graphSettings
 // spark-package settings
 spName := "maropu/hivemall-spark"
 
-sparkVersion := "1.5.0"
+sparkVersion := "1.5.1"
 
 sparkComponents ++= Seq("sql", "mllib", "hive")
 
