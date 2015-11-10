@@ -114,7 +114,10 @@ System Requirements
 
 Presentations
 ------------
-[Hivemall Meetup#1](http://eventdots.jp/event/458208) - [Slide](http://www.slideshare.net/maropu0804/20150512-hivemall-meetup1)
+
+ * [Hivemall Meetup#1](http://eventdots.jp/event/458208) - [Slide](http://www.slideshare.net/maropu0804/20150512-hivemall-meetup1)
+
+ * [Cloudera World Tokyo 2015](https://groups.google.com/forum/#!topic/hadoop-jp/ZanMFB3F4LQ) - [Slide](http://www.slideshare.net/maropu0804/cloudera-world-tokyo-2015)
 
 TODO
 --------------------
