@@ -86,7 +86,7 @@ case $1 in
     echo starting the MIX server, logging to $HIVEMALL_LOG_FILE
 
     nohup nice -n "$HIVEMALL_NICENESS" java ${HIVEMALL_JMXOPTS} ${HIVEMALL_VMOPTS} \
-      -jar "$HIVEMALL_HOME/bin/hivemall-fat.jar" > "$HIVEMALL_LOG_FILE" 2>&1 &
+      -jar "$HIVEMALL_HOME/bin/hivemall-fat.jar" "$HIVEMALL_OPS" > "$HIVEMALL_LOG_FILE" 2>&1 &
 
     newpid="$!"
     echo "$newpid" > "$HIVEMALL_PID_FILE"
