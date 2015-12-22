@@ -18,10 +18,33 @@
 package org.apache.spark.test
 
 import org.apache.spark.Logging
+import org.apache.spark.sql.DataFrame
+
+import scala.reflect.runtime.{universe => ru}
 
 object TestUtils extends Logging {
+
+  // Do benchmark if INFO-log enabled
+  def benchmark(benchName: String)(testFunc: => Unit): Unit = {
+    if (log.isDebugEnabled) {
+      testFunc
+    }
+  }
+
   def expectResult(res: Boolean, errMsg: String) = if (res) {
     logWarning(errMsg)
+  }
+
+  def invokeFunc(cls: Any, func: String, args: Any*): DataFrame = try {
+    // Invoke a function with the given name via reflection
+    val im = scala.reflect.runtime.currentMirror.reflect(cls)
+    val mSym = im.symbol.typeSignature.member(ru.newTermName(func)).asMethod
+    im.reflectMethod(mSym).apply(args: _*)
+      .asInstanceOf[DataFrame]
+  } catch {
+    case e: Exception =>
+      assert(false, s"Invoking ${func} failed because: ${e.getMessage}")
+      null // Not executed
   }
 }
 

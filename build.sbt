@@ -30,7 +30,9 @@ credentials += Credentials(Path.userHome / ".ivy2" / ".sbtcredentials")
 // addCompilerPlugin("org.scalamacros" % "paradise" % "2.1.0-M5" cross CrossVersion.full)
 
 libraryDependencies ++= Seq(
-  "io.github.myui" % "hivemall" % "0.3.1",
+  "org.apache.commons" % "commons-compress" % "1.8",
+  "io.github.myui" % "hivemall-core" % "0.4.1-alpha.2",
+  "io.github.myui" % "hivemall-mixserv" % "0.4.1-alpha.2",
   "org.scalatest" % "scalatest_2.10" % "2.2.4" % "provided",
   "org.xerial" % "xerial-core" % "3.2.3" % "provided"
 )

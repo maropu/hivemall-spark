@@ -22,7 +22,7 @@ import org.apache.spark.SparkFunSuite
 class HivemallLabeledPointSuite extends SparkFunSuite {
 
   test("toString") {
-    val lp = HmLabeledPoint(1.0, Seq("1:0.5", "3:0.3", "8:0.1"))
+    val lp = HmLabeledPoint(1.0f, Seq("1:0.5", "3:0.3", "8:0.1"))
     assert(lp.toString === "1.0,[1:0.5,3:0.3,8:0.1]")
   }
 

@@ -32,7 +32,7 @@ import scala.collection.mutable.ListBuffer
  * @param label Label for this data point.
  * @param features List of features for this data point.
  */
-case class HmLabeledPoint(label: Double = 0.0, features: Seq[String]) {
+case class HmLabeledPoint(label: Float = 0.0f, features: Seq[String]) {
   override def toString: String = {
     "%s,%s".format(label, features.mkString("[", ",", "]"))
   }
@@ -46,7 +46,7 @@ object HmLabeledPoint {
       case d if d > 0 => (s.substring(0, d), s.substring(d + 1))
       case _ => ("0.0", "[]") // Dummy
     }
-    HmLabeledPoint(label.toDouble, parseTuple(new StringTokenizer(features, "[],", true)))
+    HmLabeledPoint(label.toFloat, parseTuple(new StringTokenizer(features, "[],", true)))
   }
 
   // TODO: Support to parse rows without labels

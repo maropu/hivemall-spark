@@ -143,8 +143,8 @@ class GroupedDataEx protected[sql](
    * @see hivemall.evaluation.MeanAbsoluteErrorUDAF
    */
   def mae(predict: String, target: String): DataFrame = {
-    checkType(predict, DoubleType)
-    checkType(target, DoubleType)
+    checkType(predict, FloatType)
+    checkType(target, FloatType)
     val udaf = HiveUDAF(
       new HiveFunctionWrapper("hivemall.evaluation.MeanAbsoluteErrorUDAF"),
       Seq(predict, target).map(df.resolve))
@@ -155,8 +155,8 @@ class GroupedDataEx protected[sql](
    * @see hivemall.evaluation.MeanSquareErrorUDAF
    */
   def mse(predict: String, target: String): DataFrame = {
-    checkType(predict, DoubleType)
-    checkType(target, DoubleType)
+    checkType(predict, FloatType)
+    checkType(target, FloatType)
     val udaf = HiveUDAF(
       new HiveFunctionWrapper("hivemall.evaluation.MeanSquaredErrorUDAF"),
       Seq(predict, target).map(df.resolve))
@@ -167,8 +167,8 @@ class GroupedDataEx protected[sql](
    * @see hivemall.evaluation.RootMeanSquareErrorUDAF
    */
   def rmse(predict: String, target: String): DataFrame = {
-    checkType(predict, DoubleType)
-    checkType(target, DoubleType)
+    checkType(predict, FloatType)
+    checkType(target, FloatType)
     val udaf = HiveUDAF(
       new HiveFunctionWrapper("hivemall.evaluation.RootMeanSquaredErrorUDAF"),
       Seq(predict, target).map(df.resolve))

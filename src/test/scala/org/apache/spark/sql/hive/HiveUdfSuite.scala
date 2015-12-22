@@ -29,7 +29,7 @@ class HiveUdfSuite extends QueryTest {
       s"AS '${classOf[hivemall.HivemallVersionUDF].getName}'")
     checkAnswer(
       sql(s"SELECT DISTINCT hivemall_version()"),
-      Row("0.3.1")
+      Row("0.4.1-alpha.2")
     )
     // sql("DROP TEMPORARY FUNCTION IF EXISTS hivemall_version")
     // TestHive.reset()

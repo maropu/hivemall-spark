@@ -17,7 +17,10 @@
 
 package hivemall.dataset;
 
-import hivemall.UDTFWithOptions;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.Random;
+
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Options;
 import org.apache.hadoop.hive.ql.exec.Description;
@@ -28,9 +31,7 @@ import org.apache.hadoop.hive.ql.udf.generic.GenericUDTF;
 import org.apache.hadoop.hive.serde2.objectinspector.ObjectInspector;
 import org.apache.hadoop.hive.serde2.objectinspector.StructObjectInspector;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.util.Random;
+import hivemall.UDTFWithOptions;
 
 /**
  * A wrapper of [[hivemall.dataset.LogisticRegressionDataGeneratorUDTF]].

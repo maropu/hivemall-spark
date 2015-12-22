@@ -58,7 +58,7 @@ public class ExtractWeightUDFWrapper extends GenericUDF {
         }
 
         return PrimitiveObjectInspectorFactory
-            .getPrimitiveWritableObjectInspector(PrimitiveCategory.FLOAT);
+            .getPrimitiveWritableObjectInspector(PrimitiveCategory.DOUBLE);
     }
 
     @Override
