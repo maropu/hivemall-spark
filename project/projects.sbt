@@ -1,5 +1,3 @@
-scalaVersion := "2.10.4"
-
 resolvers += "Spark Package Main Repo" at "https://dl.bintray.com/spark-packages/maven"
 
 resolvers += "sonatype-releases" at "https://oss.sonatype.org/content/repositories/releases/"

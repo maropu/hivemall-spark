@@ -1,9 +1,3 @@
-name := "hivemall-spark"
-
-version := "0.0.6"
-
-scalaVersion := "2.10.4"
-
 // Copied to handle compatibility stuffs for Hive UDFs
 unmanagedSourceDirectories in Compile += baseDirectory.value / "extra-src/hive"
 
