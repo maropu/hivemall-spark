@@ -17,10 +17,10 @@
 
 package org.apache.spark.test
 
+import scala.reflect.runtime.{universe => ru}
+
 import org.apache.spark.Logging
 import org.apache.spark.sql.DataFrame
-
-import scala.reflect.runtime.{universe => ru}
 
 object TestUtils extends Logging {
 

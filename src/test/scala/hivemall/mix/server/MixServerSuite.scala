@@ -19,6 +19,9 @@ package hivemall.mix.server
 
 import java.util.Random
 import java.util.concurrent.{TimeUnit, ExecutorService, Executors}
+import java.util.logging.Logger
+
+import org.scalatest.{BeforeAndAfter, FunSuite}
 
 import hivemall.io.{DenseModel, PredictionModel, WeightValue}
 import hivemall.mix.MixMessage.MixEventName
@@ -27,8 +30,6 @@ import hivemall.mix.server.MixServer.ServerState
 import hivemall.utils.io.IOUtils
 import hivemall.utils.lang.CommandLineUtils
 import hivemall.utils.net.NetUtils
-import java.util.logging.Logger
-import org.scalatest.{BeforeAndAfter, FunSuite}
 
 class MixServerSuite extends FunSuite with BeforeAndAfter {
 

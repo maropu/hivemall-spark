@@ -17,6 +17,9 @@
 
 package hivemall.ftvec;
 
+import java.util.Arrays;
+import java.util.Map;
+
 import org.apache.hadoop.hive.ql.exec.Description;
 import org.apache.hadoop.hive.ql.exec.UDFArgumentException;
 import org.apache.hadoop.hive.ql.exec.UDFArgumentLengthException;
@@ -29,9 +32,6 @@ import org.apache.hadoop.hive.serde2.objectinspector.ObjectInspector.Category;
 import org.apache.hadoop.hive.serde2.objectinspector.PrimitiveObjectInspector.PrimitiveCategory;
 import org.apache.hadoop.io.FloatWritable;
 import org.apache.hadoop.io.IntWritable;
-
-import java.util.Arrays;
-import java.util.Map;
 
 /**
  * A wrapper of [[hivemall.ftvec.SortByFeatureUDF]].

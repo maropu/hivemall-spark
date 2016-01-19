@@ -17,6 +17,8 @@
 
 package org.apache.spark.test
 
+import scala.collection.mutable.Seq
+
 import org.apache.spark.sql.hive.HivemallOps
 import org.apache.spark.sql.hive.HivemallOps._
 import org.apache.spark.sql.hive.test.TestHiveSingleton
@@ -24,7 +26,6 @@ import org.apache.spark.sql.types._
 import org.apache.spark.sql.{QueryTest, functions, Row, SQLContext}
 import org.apache.spark.test.TestUtils._
 
-import scala.collection.mutable.Seq
 import hivemall.tools.RegressionDatagen
 
 /**

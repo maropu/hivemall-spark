@@ -17,12 +17,12 @@
 
 package org.apache.spark.streaming
 
+import scala.reflect.ClassTag
+
 import org.apache.spark.ml.feature.HmLabeledPoint
 import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.{Row, DataFrame, SQLContext}
 import org.apache.spark.streaming.dstream.DStream
-
-import scala.reflect.ClassTag
 
 final class HivemallStreamingOps(ds: DStream[HmLabeledPoint]) {
 
