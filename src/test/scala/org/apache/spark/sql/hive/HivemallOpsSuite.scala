@@ -120,7 +120,7 @@ final class HivemallOpsSuite extends HivemallQueryTest {
 
   test("add_feature_index") {
     // import hiveContext.implicits._
-    val DoubleListData = {
+    val doubleListData = {
       val rowRdd = hiveContext.sparkContext.parallelize(
           Row(0.8 :: 0.5 :: Nil) ::
           Row(0.3 :: 0.1 :: Nil) ::
@@ -135,12 +135,42 @@ final class HivemallOpsSuite extends HivemallQueryTest {
         )
     }
 
-    assert(DoubleListData.select(
-        add_feature_index(DoubleListData.col("data"))).collect.toSet
+    assert(doubleListData.select(
+        add_feature_index(doubleListData.col("data"))).collect.toSet
       === Set(
         Row(Seq("1:0.8", "2:0.5")),
         Row(Seq("1:0.3", "2:0.1")),
         Row(Seq("1:0.2"))))
+  }
+
+  test("each_top_k") {
+    // import hiveContext.implicits._
+    val groupedData = {
+      val rowRdd = hiveContext.sparkContext.parallelize(
+          Row("a", "1", 0.5) ::
+          Row("a", "2", 0.6) ::
+          Row("a", "3", 0.8) ::
+          Row("b", "4", 0.3) ::
+          Row("b", "5", 0.1) ::
+          Row("c", "6", 0.3) ::
+          Nil
+        )
+      hiveContext.createDataFrame(
+        rowRdd,
+        StructType(
+          StructField("group", StringType, true) ::
+          StructField("attr", StringType, true) ::
+          StructField("value", DoubleType, true) ::
+          Nil)
+        )
+    }
+
+    // Compute top-1 rows for each group
+    val top1 = groupedData.each_top_k(
+      1, groupedData.col("group"), groupedData.col("value"), groupedData.col("attr"))
+
+    assert(top1.select(top1.col("attr")).collect.toSet ===
+      Set(Row("3"), Row("4"), Row("6")))
   }
 
   test("mhash") {
@@ -198,7 +228,7 @@ final class HivemallOpsSuite extends HivemallQueryTest {
 
   test("sort_by_feature") {
     // import hiveContext.implicits._
-    val IntFloatMapData = {
+    val intFloatMapData = {
       val rowRdd = hiveContext.sparkContext.parallelize(
           Row(Map(1->0.3f, 2->0.1f, 3->0.5f)) ::
           Row(Map(2->0.4f, 1->0.2f)) ::
@@ -213,7 +243,7 @@ final class HivemallOpsSuite extends HivemallQueryTest {
         )
     }
 
-    val sortedKeys = IntFloatMapData.select(sort_by_feature(IntFloatMapData.col("data")))
+    val sortedKeys = intFloatMapData.select(sort_by_feature(intFloatMapData.col("data")))
       .collect.map {
         case Row(m: Map[Int, Float]) => m.keysIterator.toSeq
     }

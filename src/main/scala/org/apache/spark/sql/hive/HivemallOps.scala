@@ -44,6 +44,7 @@ import org.apache.spark.sql.types._
  * @groupname ftvec.hashing
  * @groupname ftvec.scaling
  * @groupname tools.mapred
+ * @groupname tools
  * @groupname tools.math
  * @groupname dataset
  */
@@ -596,6 +597,20 @@ final class HivemallOps(df: DataFrame) extends Logging {
 
   def explode_array(input: String): DataFrame =
     this.explode_array(df(input))
+
+  /**
+   * Returns a top-`k` records for each `group`.
+   * @group tools
+   */
+  def each_top_k(k: Column, group: Column, value: Column, args: Column*): DataFrame = {
+    Generate(HiveGenericUDTF(
+      new HiveFunctionWrapper("hivemall.tools.EachTopKUDTF"),
+      (Seq(k, group, value) ++ args).map(_.expr)),
+    join = false, outer = false, None,
+    (Seq("rank", "key") ++ args.map(_.named.name)).map(UnresolvedAttribute(_)),
+    // Repartition rows by the given `group` column
+    df.repartition(group).logicalPlan)
+  }
 
   /**
    * Returns a new [[DataFrame]] with columns renamed.
