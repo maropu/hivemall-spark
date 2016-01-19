@@ -196,13 +196,8 @@ final class HivemallOpsSuite extends HivemallQueryTest {
     assert(rows(3).getDouble(0) ~== 0.952)
   }
 
-  /**
-   * TODO: The test below currently fails because Spark
-   * can't handle Map<K, V> as a return type in Hive UDF correctly.
-   * This issue was reported in SPARK-6921.
-   */
-  ignore("sort_by_feature") {
-    import hiveContext.implicits._
+  test("sort_by_feature") {
+    // import hiveContext.implicits._
     val IntFloatMapData = {
       val rowRdd = hiveContext.sparkContext.parallelize(
           Row(Map(1->0.3f, 2->0.1f, 3->0.5f)) ::
@@ -218,12 +213,12 @@ final class HivemallOpsSuite extends HivemallQueryTest {
         )
     }
 
-    checkAnswer(IntFloatMapData.select(sort_by_feature($"data")),
-      Seq(
-        Row(Map(1->0.3f, 2->0.1f, 3->0.5f),
-        Row(Map(1->0.2f, 2->0.4f)),
-        Row(Map(1->0.1f, 2->0.4f, 3->0.2f, 4->0.6f))))
-    )
+    val sortedKeys = IntFloatMapData.select(sort_by_feature(IntFloatMapData.col("data")))
+      .collect.map {
+        case Row(m: Map[Int, Float]) => m.keysIterator.toSeq
+    }
+
+    assert(sortedKeys.toSet === Set(Seq(1, 2, 3), Seq(1, 2), Seq(1, 2, 3, 4)))
   }
 
   test("invoke regression functions") {
@@ -334,8 +329,7 @@ final class HivemallOpsSuite extends HivemallQueryTest {
   }
 
   ignore("user-defined aggregators for evaluation") {
-    // Seq("mae", "mse", "rmse")
-    Seq("mse", "rmse")
+    Seq("mae", "mse", "rmse")
       .map { udaf =>
         invokeFunc(Float2Data.groupby(), udaf, "predict", "target")
       }
