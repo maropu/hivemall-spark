@@ -17,31 +17,31 @@
 
 package org.apache.spark.sql.hive
 
-import org.apache.spark.sql.{QueryTest, Row}
+import org.apache.spark.sql.Row
+import org.apache.spark.test.HivemallQueryTest
 
-class HiveUdfSuite extends QueryTest {
-  import org.apache.spark.sql.hive.HivemallOpsSuite._
-  import org.apache.spark.sql.hive.test.TestHive.implicits._
-  import org.apache.spark.sql.hive.test.TestHive.sql
+class HiveUdfSuite extends HivemallQueryTest {
+
+  import hiveContext.implicits._
 
   test("hivemall_version") {
-    sql(s"CREATE TEMPORARY FUNCTION hivemall_version " +
+    hiveContext.sql(s"CREATE TEMPORARY FUNCTION hivemall_version " +
       s"AS '${classOf[hivemall.HivemallVersionUDF].getName}'")
     checkAnswer(
-      sql(s"SELECT DISTINCT hivemall_version()"),
+      hiveContext.sql(s"SELECT DISTINCT hivemall_version()"),
       Row("0.4.1-alpha.2")
     )
-    // sql("DROP TEMPORARY FUNCTION IF EXISTS hivemall_version")
-    // TestHive.reset()
+    // hiveContext.sql("DROP TEMPORARY FUNCTION IF EXISTS hivemall_version")
+    // hiveContext.reset()
   }
 
   test("train_logregr") {
     TinyTrainData.registerTempTable("TinyTrainData")
-    sql(s"CREATE TEMPORARY FUNCTION train_logregr " +
+    hiveContext.sql(s"CREATE TEMPORARY FUNCTION train_logregr " +
       s"AS '${classOf[hivemall.regression.LogressUDTF].getName}'")
-    sql(s"CREATE TEMPORARY FUNCTION add_bias " +
+    hiveContext.sql(s"CREATE TEMPORARY FUNCTION add_bias " +
       s"AS '${classOf[hivemall.ftvec.AddBiasUDFWrapper].getName}'")
-    val model = sql(
+    val model = hiveContext.sql(
       "SELECT feature, AVG(weight) AS weight " +
         "FROM (SELECT train_logregr(add_bias(features), label) AS (feature, weight)" +
         "  FROM TinyTrainData) t " +
@@ -51,8 +51,8 @@ class HiveUdfSuite extends QueryTest {
     // ERROR RetryingHMSHandler: MetaException(message:NoSuchObjectException
     //   (message:Function default.train_logregr does not exist))
     //
-    // sql("DROP TEMPORARY FUNCTION IF EXISTS train_logregr")
-    // TestHive.reset()
+    // hiveContext.sql("DROP TEMPORARY FUNCTION IF EXISTS train_logregr")
+    // hiveContext.reset()
   }
 }
 

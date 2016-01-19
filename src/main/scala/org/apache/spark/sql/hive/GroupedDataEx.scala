@@ -17,12 +17,15 @@
 
 package org.apache.spark.sql.hive
 
+import org.apache.spark.sql.catalyst.analysis.{UnresolvedAlias, UnresolvedAttribute, UnresolvedFunction}
+import org.apache.spark.sql.catalyst.plans.logical.Pivot
+import org.apache.spark.sql.{AnalysisException, DataFrame, GroupedData}
 import org.apache.spark.sql.catalyst.analysis.Star
 import org.apache.spark.sql.catalyst.expressions._
+import org.apache.spark.sql.catalyst.expressions.aggregate._
 import org.apache.spark.sql.catalyst.plans.logical.{Aggregate, Cube, Rollup}
 import org.apache.spark.sql.hive.HiveShim.HiveFunctionWrapper
 import org.apache.spark.sql.types._
-import org.apache.spark.sql.{AnalysisException, DataFrame, GroupedData}
 
 class GroupedDataEx protected[sql](
     df: DataFrame,
@@ -30,53 +33,76 @@ class GroupedDataEx protected[sql](
     private val groupType: GroupedData.GroupType)
   extends GroupedData(df, groupingExprs, groupType) {
 
-  private[this] def toDF(aggExprs: Seq[NamedExpression]): DataFrame = {
+  // TODO: toDF, alias, and strToExpr are totally duplicated with the base class.
+  // We need to remove these methods by using reflections.
+
+  private[this] def toDF(aggExprs: Seq[Expression]): DataFrame = {
     val aggregates = if (df.sqlContext.conf.dataFrameRetainGroupColumns) {
-        val retainedExprs = groupingExprs.map {
-          case expr: NamedExpression => expr
-          case expr: Expression => Alias(expr, expr.prettyString)()
-        }
-        retainedExprs ++ aggExprs
-      } else {
-        aggExprs
-      }
+      groupingExprs ++ aggExprs
+    } else {
+      aggExprs
+    }
+
+    val aliasedAgg = aggregates.map(alias)
+
     groupType match {
       case GroupedData.GroupByType =>
         DataFrame(
-          df.sqlContext, Aggregate(groupingExprs, aggregates, df.logicalPlan))
+          df.sqlContext, Aggregate(groupingExprs, aliasedAgg, df.logicalPlan))
       case GroupedData.RollupType =>
         DataFrame(
-          df.sqlContext, Rollup(groupingExprs, df.logicalPlan, aggregates))
+          df.sqlContext, Rollup(groupingExprs, df.logicalPlan, aliasedAgg))
       case GroupedData.CubeType =>
         DataFrame(
-          df.sqlContext, Cube(groupingExprs, df.logicalPlan, aggregates))
+          df.sqlContext, Cube(groupingExprs, df.logicalPlan, aliasedAgg))
+      case GroupedData.PivotType(pivotCol, values) =>
+        val aliasedGrps = groupingExprs.map(alias)
+        DataFrame(
+          df.sqlContext, Pivot(aliasedGrps, pivotCol, values, aggExprs, df.logicalPlan))
     }
   }
 
+  // Wrap UnresolvedAttribute with UnresolvedAlias, as when we resolve UnresolvedAttribute, we
+  // will remove intermediate Alias for ExtractValue chain, and we need to alias it again to
+  // make it a NamedExpression.
+  private[this] def alias(expr: Expression): NamedExpression = expr match {
+    case u: UnresolvedAttribute => UnresolvedAlias(u)
+    case expr: NamedExpression => expr
+    case expr: Expression => Alias(expr, expr.prettyString)()
+  }
+
   private[this] def strToExpr(expr: String): (Expression => Expression) = {
-    expr.toLowerCase match {
-      case "avg" | "average" | "mean" => Average
-      case "max" => Max
-      case "min" => Min
-      case "sum" => Sum
-      case "count" | "size" =>
-        // Turn count(*) into count(1)
-        (inputExpr: Expression) => inputExpr match {
-          case s: Star => Count(Literal(1))
-          case _ => Count(inputExpr)
-        }
+    val exprToFunc: (Expression => Expression) = {
+      (inputExpr: Expression) => expr.toLowerCase match {
+        // We special handle a few cases that have alias that are not in function registry.
+        case "avg" | "average" | "mean" =>
+          UnresolvedFunction("avg", inputExpr :: Nil, isDistinct = false)
+        case "stddev" | "std" =>
+          UnresolvedFunction("stddev", inputExpr :: Nil, isDistinct = false)
+        // Also special handle count because we need to take care count(*).
+        case "count" | "size" =>
+          // Turn count(*) into count(1)
+          inputExpr match {
+            case s: Star => Count(Literal(1)).toAggregateExpression()
+            case _ => Count(inputExpr).toAggregateExpression()
+          }
+        case name => UnresolvedFunction(name, inputExpr :: Nil, isDistinct = false)
+      }
     }
+    (inputExpr: Expression) => exprToFunc(inputExpr)
   }
 
   override def agg(exprs: Map[String, String]): DataFrame = {
     toDF(exprs.map { case (colName, expr) =>
       val a = expr match {
-        case "voted_avg" => HiveUDAF(
+        case "voted_avg" => HiveUDAFFunction(
           new HiveFunctionWrapper("hivemall.ensemble.bagging.VotedAvgUDAF"),
-          Seq(df(colName).expr))
-        case "weight_voted_avg" => HiveUDAF(
+          Seq(df.col(colName).expr),
+          isUDAFBridgeRequired = true).toAggregateExpression()
+        case "weight_voted_avg" => HiveUDAFFunction(
           new HiveFunctionWrapper("hivemall.ensemble.bagging.WeightVotedAvgUDAF"),
-          Seq(df(colName).expr))
+          Seq(df.col(colName).expr),
+          isUDAFBridgeRequired = true).toAggregateExpression()
         case _ => strToExpr(expr)(df(colName).expr)
       }
       Alias(a, a.prettyString)()
@@ -97,7 +123,7 @@ class GroupedDataEx protected[sql](
   def argmin_kld(weight: String, conv: String): DataFrame = {
     // CheckType(weight, NumericType)
     // CheckType(conv, NumericType)
-    val udaf = HiveUDAF(
+    val udaf = HiveUDAFFunction(
       new HiveFunctionWrapper("hivemall.ensemble.ArgminKLDistanceUDAF"),
       Seq(weight, conv).map(df.resolve))
     toDF((Alias(udaf, udaf.prettyString)() :: Nil).toSeq)
@@ -109,7 +135,7 @@ class GroupedDataEx protected[sql](
   def max_label(score: String, label: String): DataFrame = {
     // checkType(score, NumericType)
     checkType(label, StringType)
-    val udaf = HiveGenericUDAF(
+    val udaf = HiveUDAFFunction(
       new HiveFunctionWrapper("hivemall.ensemble.MaxValueLabelUDAF"),
       Seq(score, label).map(df.resolve))
     toDF((Alias(udaf, udaf.prettyString)() :: Nil).toSeq)
@@ -121,7 +147,7 @@ class GroupedDataEx protected[sql](
   def maxrow(score: String, label: String): DataFrame = {
     // checkType(score, NumericType)
     checkType(label, StringType)
-    val udaf = HiveGenericUDAF(
+    val udaf = HiveUDAFFunction(
       new HiveFunctionWrapper("hivemall.ensemble.MaxRowUDAF"),
       Seq(score, label).map(df.resolve))
     toDF((Alias(udaf, udaf.prettyString)() :: Nil).toSeq)
@@ -133,7 +159,7 @@ class GroupedDataEx protected[sql](
   def f1score(predict: String, target: String): DataFrame = {
     checkType(target, ArrayType(IntegerType))
     checkType(predict, ArrayType(IntegerType))
-    val udaf = HiveUDAF(
+    val udaf = HiveUDAFFunction(
       new HiveFunctionWrapper("hivemall.evaluation.FMeasureUDAF"),
       Seq(target, predict).map(df.resolve))
     toDF((Alias(udaf, udaf.prettyString)() :: Nil).toSeq)
@@ -145,7 +171,7 @@ class GroupedDataEx protected[sql](
   def mae(predict: String, target: String): DataFrame = {
     checkType(predict, FloatType)
     checkType(target, FloatType)
-    val udaf = HiveUDAF(
+    val udaf = HiveUDAFFunction(
       new HiveFunctionWrapper("hivemall.evaluation.MeanAbsoluteErrorUDAF"),
       Seq(predict, target).map(df.resolve))
     toDF((Alias(udaf, udaf.prettyString)() :: Nil).toSeq)
@@ -157,7 +183,7 @@ class GroupedDataEx protected[sql](
   def mse(predict: String, target: String): DataFrame = {
     checkType(predict, FloatType)
     checkType(target, FloatType)
-    val udaf = HiveUDAF(
+    val udaf = HiveUDAFFunction(
       new HiveFunctionWrapper("hivemall.evaluation.MeanSquaredErrorUDAF"),
       Seq(predict, target).map(df.resolve))
     toDF((Alias(udaf, udaf.prettyString)() :: Nil).toSeq)
@@ -169,7 +195,7 @@ class GroupedDataEx protected[sql](
   def rmse(predict: String, target: String): DataFrame = {
     checkType(predict, FloatType)
     checkType(target, FloatType)
-    val udaf = HiveUDAF(
+    val udaf = HiveUDAFFunction(
       new HiveFunctionWrapper("hivemall.evaluation.RootMeanSquaredErrorUDAF"),
       Seq(predict, target).map(df.resolve))
     toDF((Alias(udaf, udaf.prettyString)() :: Nil).toSeq)

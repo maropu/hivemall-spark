@@ -25,6 +25,7 @@ import org.apache.spark.sql.types._
 import org.apache.spark.streaming.HivemallStreamingOps._
 
 class HivemallOpsSuite extends TestSuiteBase {
+
   import org.apache.spark.sql.hive.test.TestHive.implicits._
   import org.apache.spark.streaming.HivemallOpsSuite._
 
