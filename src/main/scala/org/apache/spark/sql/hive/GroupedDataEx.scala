@@ -17,24 +17,24 @@
 
 package org.apache.spark.sql.hive
 
-import org.apache.spark.sql.catalyst.analysis.{UnresolvedAlias, UnresolvedAttribute, UnresolvedFunction}
-import org.apache.spark.sql.catalyst.plans.logical.Pivot
 import org.apache.spark.sql.{AnalysisException, DataFrame, GroupedData}
-import org.apache.spark.sql.catalyst.analysis.Star
+import org.apache.spark.sql.catalyst.analysis.{Star, UnresolvedAlias, UnresolvedAttribute, UnresolvedFunction}
 import org.apache.spark.sql.catalyst.expressions._
 import org.apache.spark.sql.catalyst.expressions.aggregate._
-import org.apache.spark.sql.catalyst.plans.logical.{Aggregate, Cube, Rollup}
+import org.apache.spark.sql.catalyst.plans.logical.{Aggregate, Cube, Rollup, Pivot}
 import org.apache.spark.sql.hive.HiveShim.HiveFunctionWrapper
 import org.apache.spark.sql.types._
 
-class GroupedDataEx protected[sql](
+final class GroupedDataEx protected[sql](
     df: DataFrame,
     groupingExprs: Seq[Expression],
     private val groupType: GroupedData.GroupType)
   extends GroupedData(df, groupingExprs, groupType) {
 
-  // TODO: toDF, alias, and strToExpr are totally duplicated with the base class.
-  // We need to remove these methods by using reflections.
+  //////////////////////////////////////////////////////////////////////////////////////////////
+  // toDF, alias, and strToExpr are copyed from the base class, GroupedData, because
+  // these methods have 'private[this]' modifiers.
+  //////////////////////////////////////////////////////////////////////////////////////////////
 
   private[this] def toDF(aggExprs: Seq[Expression]): DataFrame = {
     val aggregates = if (df.sqlContext.conf.dataFrameRetainGroupColumns) {
@@ -62,9 +62,6 @@ class GroupedDataEx protected[sql](
     }
   }
 
-  // Wrap UnresolvedAttribute with UnresolvedAlias, as when we resolve UnresolvedAttribute, we
-  // will remove intermediate Alias for ExtractValue chain, and we need to alias it again to
-  // make it a NamedExpression.
   private[this] def alias(expr: Expression): NamedExpression = expr match {
     case u: UnresolvedAttribute => UnresolvedAlias(u)
     case expr: NamedExpression => expr
@@ -74,7 +71,6 @@ class GroupedDataEx protected[sql](
   private[this] def strToExpr(expr: String): (Expression => Expression) = {
     val exprToFunc: (Expression => Expression) = {
       (inputExpr: Expression) => expr.toLowerCase match {
-        // We special handle a few cases that have alias that are not in function registry.
         case "avg" | "average" | "mean" =>
           UnresolvedFunction("avg", inputExpr :: Nil, isDistinct = false)
         case "stddev" | "std" =>
@@ -92,18 +88,26 @@ class GroupedDataEx protected[sql](
     (inputExpr: Expression) => exprToFunc(inputExpr)
   }
 
+  //////////////////////////////////////////////////////////////////////////////////////////////
+  //////////////////////////////////////////////////////////////////////////////////////////////
+
   override def agg(exprs: Map[String, String]): DataFrame = {
     toDF(exprs.map { case (colName, expr) =>
       val a = expr match {
-        case "voted_avg" => HiveUDAFFunction(
-          new HiveFunctionWrapper("hivemall.ensemble.bagging.VotedAvgUDAF"),
-          Seq(df.col(colName).expr),
-          isUDAFBridgeRequired = true).toAggregateExpression()
-        case "weight_voted_avg" => HiveUDAFFunction(
-          new HiveFunctionWrapper("hivemall.ensemble.bagging.WeightVotedAvgUDAF"),
-          Seq(df.col(colName).expr),
-          isUDAFBridgeRequired = true).toAggregateExpression()
-        case _ => strToExpr(expr)(df(colName).expr)
+        case "voted_avg" =>
+          HiveUDAFFunction(
+            new HiveFunctionWrapper("hivemall.ensemble.bagging.VotedAvgUDAF"),
+            Seq(df.col(colName).expr),
+            isUDAFBridgeRequired = true
+          ).toAggregateExpression
+        case "weight_voted_avg" =>
+          HiveUDAFFunction(
+            new HiveFunctionWrapper("hivemall.ensemble.bagging.WeightVotedAvgUDAF"),
+            Seq(df.col(colName).expr),
+            isUDAFBridgeRequired = true
+          ).toAggregateExpression()
+        case _ =>
+          strToExpr(expr)(df(colName).expr)
       }
       Alias(a, a.prettyString)()
     }.toSeq)
