@@ -92,7 +92,7 @@ testData.predict { case testDf =>
 
 Support Status
 --------------------
-Hivemall v0.3.1 is currently incorporated in hivemall-spark and the most functions can be available in HiveContext.
+Hivemall v0.4.1-alpha.2 is currently incorporated in hivemall-spark and the most functions can be available in HiveContext.
 On the other hand, functions listed below are available in DataFrame:
 
 * regression
@@ -101,7 +101,7 @@ On the other hand, functions listed below are available in DataFrame:
 
 * nearest neighbors
 
-* [MIX server cooperation](./tutorials/mixserv.md)
+* some utility functions
 
 API Documentations
 --------------------
@@ -110,7 +110,7 @@ TBW
 System Requirements
 --------------------
 
-* Spark 1.5.0
+* Spark 1.6.0
 
 Presentations
 ------------
@@ -123,3 +123,4 @@ TODO
 --------------------
 
 * Support python APIs for Hivemall
+
