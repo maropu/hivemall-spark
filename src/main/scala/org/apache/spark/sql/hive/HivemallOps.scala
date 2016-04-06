@@ -885,16 +885,6 @@ object HivemallOps {
   }
 
   /**
-   * @see hivemall.smile.tools.GuessAttributesUDF
-   * @group tools
-   */
-  @scala.annotation.varargs
-  def guess_attribute_types(exprs: Column*): Column = {
-    HiveGenericUDF(new HiveFunctionWrapper(
-      "hivemall.smile.tools.GuessAttributesUDF"), exprs.map(_.expr))
-  }
-
-  /**
    * @see hivemall.tools.mapred.RowIdUDF
    * @group tools.mapred
    */
