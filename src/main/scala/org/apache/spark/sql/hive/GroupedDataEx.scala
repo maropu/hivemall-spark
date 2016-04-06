@@ -106,6 +106,12 @@ final class GroupedDataEx protected[sql](
             Seq(df.col(colName).expr),
             isUDAFBridgeRequired = true
           ).toAggregateExpression()
+        case "rf_ensemble" =>
+          HiveUDAFFunction(
+            new HiveFunctionWrapper("hivemall.smile.tools.RandomForestEnsembleUDAF"),
+            Seq(df.col(colName).expr),
+            isUDAFBridgeRequired = true
+          ).toAggregateExpression()
         case _ =>
           strToExpr(expr)(df(colName).expr)
       }

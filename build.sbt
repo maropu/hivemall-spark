@@ -25,8 +25,8 @@ credentials += Credentials(Path.userHome / ".ivy2" / ".sbtcredentials")
 
 libraryDependencies ++= Seq(
   "org.apache.commons" % "commons-compress" % "1.8",
-  "io.github.myui" % "hivemall-core" % "0.4.1-alpha.2",
-  "io.github.myui" % "hivemall-mixserv" % "0.4.1-alpha.2",
+  "io.github.myui" % "hivemall-core" % "0.4.1-alpha.6",
+  "io.github.myui" % "hivemall-mixserv" % "0.4.1-alpha.6",
   "org.scalatest" % "scalatest_2.10" % "2.2.4" % "provided",
   "org.xerial" % "xerial-core" % "3.2.3" % "provided"
 )

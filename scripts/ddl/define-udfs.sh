@@ -108,6 +108,9 @@ sqlContext.sql("CREATE TEMPORARY FUNCTION tree_predict AS 'hivemall.smile.tools.
 // sqlContext.sql("DROP TEMPORARY FUNCTION IF EXISTS rf_ensemble")
 sqlContext.sql("CREATE TEMPORARY FUNCTION rf_ensemble AS 'hivemall.smile.tools.RandomForestEnsembleUDAF'")
 
+// sqlContext.sql("DROP TEMPORARY FUNCTION IF EXISTS guess_attribute_types")
+sqlContext.sql("CREATE TEMPORARY FUNCTION guess_attribute_typesAS 'hivemall.smile.tools.GuessAttributesUDF'")
+
 /**
  * Factorization Machine
  */

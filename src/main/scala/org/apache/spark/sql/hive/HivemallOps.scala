@@ -384,7 +384,7 @@ final class HivemallOps(df: DataFrame) extends Logging {
   @scala.annotation.varargs
   def train_randomforest_classifier(exprs: Column*): DataFrame = {
      Generate(HiveGenericUDTF(
-        new HiveFunctionWrapper("train_randomforest_classifier"),
+        new HiveFunctionWrapper("hivemall.smile.classification.RandomForestClassifierUDTF"),
         setMixServs(exprs: _*).map(_.expr)),
       join = false, outer = false, None,
       Seq("model_id", "model_type", "pred_model", "var_importance", "oob_errors", "oob_tests")
@@ -667,8 +667,9 @@ final class HivemallOps(df: DataFrame) extends Logging {
   /**
    * Returns all the columns as Seq[Column] in this [[DataFrame]].
    */
-  @scala.annotation.varargs
-  def cols: Seq[Column] = df.schema.fields.map(col => df.col(col.name)).toSeq
+  def cols: Seq[Column] = {
+    df.schema.fields.map(col => df.col(col.name)).toSeq
+  }
 }
 
 object HivemallOps {
@@ -879,8 +880,18 @@ object HivemallOps {
    */
   @scala.annotation.varargs
   def tree_predict(exprs: Column*): Column = {
-    HiveSimpleUDF(new HiveFunctionWrapper(
+    HiveGenericUDF(new HiveFunctionWrapper(
       "hivemall.smile.tools.TreePredictUDF"), exprs.map(_.expr))
+  }
+
+  /**
+   * @see hivemall.smile.tools.GuessAttributesUDF
+   * @group tools
+   */
+  @scala.annotation.varargs
+  def guess_attribute_types(exprs: Column*): Column = {
+    HiveGenericUDF(new HiveFunctionWrapper(
+      "hivemall.smile.tools.GuessAttributesUDF"), exprs.map(_.expr))
   }
 
   /**
