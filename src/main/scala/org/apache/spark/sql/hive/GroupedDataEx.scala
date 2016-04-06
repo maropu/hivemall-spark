@@ -158,6 +158,17 @@ final class GroupedDataEx protected[sql](
   }
 
   /**
+   * @see hivemall.smile.tools.RandomForestEnsembleUDAF
+   */
+  def rf_ensemble(predict: String): DataFrame = {
+    // checkType(predict, NumericType)
+    val udaf = HiveUDAFFunction(
+      new HiveFunctionWrapper("hivemall.smile.tools.RandomForestEnsembleUDAF"),
+      Seq(predict).map(df.resolve))
+    toDF((Alias(udaf, udaf.prettyString)() :: Nil).toSeq)
+  }
+
+  /**
    * @see hivemall.evaluation.FMeasureUDAF
    */
   def f1score(predict: String, target: String): DataFrame = {

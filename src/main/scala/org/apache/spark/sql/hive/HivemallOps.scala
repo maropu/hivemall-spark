@@ -43,6 +43,7 @@ import org.apache.spark.sql.types._
  * @groupname ftvec.amplify
  * @groupname ftvec.hashing
  * @groupname ftvec.scaling
+ * @groupname ftvec.conv
  * @groupname tools.mapred
  * @groupname tools
  * @groupname tools.math
@@ -222,6 +223,21 @@ final class HivemallOps(df: DataFrame) extends Logging {
   }
 
   /**
+   * @see hivemall.smile.regression.RandomForestRegressionUDTF
+   * @group regression
+   */
+  @scala.annotation.varargs
+  def train_randomforest_regr(exprs: Column*): DataFrame = {
+     Generate(HiveGenericUDTF(
+        new HiveFunctionWrapper("hivemall.smile.regression.RandomForestRegressionUDTF"),
+        setMixServs(exprs: _*).map(_.expr)),
+      join = false, outer = false, None,
+      Seq("model_id", "model_type", "pred_model", "var_importance", "oob_errors", "oob_tests")
+        .map(UnresolvedAttribute(_)),
+      df.logicalPlan)
+  }
+
+  /**
    * @see hivemall.classifier.PerceptronUDTF
    * @group classifier
    */
@@ -358,6 +374,21 @@ final class HivemallOps(df: DataFrame) extends Logging {
         setMixServs(exprs: _*).map(_.expr)),
       join = false, outer = false, None,
       Seq("feature", "weight").map(UnresolvedAttribute(_)),
+      df.logicalPlan)
+  }
+
+  /**
+   * @see hivemall.smile.classification.RandomForestClassifierUDTF
+   * @group classifier
+   */
+  @scala.annotation.varargs
+  def train_randomforest_classifier(exprs: Column*): DataFrame = {
+     Generate(HiveGenericUDTF(
+        new HiveFunctionWrapper("train_randomforest_classifier"),
+        setMixServs(exprs: _*).map(_.expr)),
+      join = false, outer = false, None,
+      Seq("model_id", "model_type", "pred_model", "var_importance", "oob_errors", "oob_tests")
+        .map(UnresolvedAttribute(_)),
       df.logicalPlan)
   }
 
@@ -568,6 +599,20 @@ final class HivemallOps(df: DataFrame) extends Logging {
       scala.util.Random.shuffle(elems)
     }, true)
     df.sqlContext.createDataFrame(rdd, df.schema)
+  }
+
+  /**
+   * Quantify input columns.
+   * @see hivemall.ftvec.conv.QuantifyColumnsUDTF
+   * @group ftvec.conv
+   */
+  def quantify(exprs: Column*): DataFrame = {
+    Generate(HiveGenericUDTF(
+        new HiveFunctionWrapper("hivemall.ftvec.conv.QuantifyColumnsUDTF"),
+        exprs.map(_.expr)),
+      join = false, outer = false, None,
+      (0 until exprs.size).map(i => s"$i").map(UnresolvedAttribute(_)),
+      df.logicalPlan)
   }
 
   /**
@@ -820,6 +865,16 @@ object HivemallOps {
   def normalize(exprs: Column*): Column = {
     HiveGenericUDF(new HiveFunctionWrapper(
       "hivemall.ftvec.scaling.L2NormalizationUDFWrapper"), exprs.map(_.expr))
+  }
+
+  /**
+   * @see hivemall.smile.tools.TreePredictUDF
+   * @group tools
+   */
+  @scala.annotation.varargs
+  def tree_predict(exprs: Column*): Column = {
+    HiveSimpleUDF(new HiveFunctionWrapper(
+      "hivemall.smile.tools.TreePredictUDF"), exprs.map(_.expr))
   }
 
   /**

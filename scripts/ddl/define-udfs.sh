@@ -93,6 +93,22 @@ sqlContext.sql("CREATE TEMPORARY FUNCTION train_arow_regr AS 'hivemall.regressio
 sqlContext.sql("CREATE TEMPORARY FUNCTION train_arow_regr AS 'hivemall.regression.AROWRegressionUDTF$AROWe2'")
 
 /**
+ * Random forest functions
+ */
+
+// sqlContext.sql("DROP TEMPORARY FUNCTION IF EXISTS train_randomforest_classifier")
+sqlContext.sql("CREATE TEMPORARY FUNCTION train_randomforest_classifier AS 'hivemall.smile.classification.RandomForestClassifierUDTF'")
+
+// sqlContext.sql("DROP TEMPORARY FUNCTION IF EXISTS train_randomforest_regr")
+sqlContext.sql("CREATE TEMPORARY FUNCTION train_randomforest_regr AS 'hivemall.smile.regression.RandomForestRegressionUDTF'")
+
+// sqlContext.sql("DROP TEMPORARY FUNCTION IF EXISTS tree_predict")
+sqlContext.sql("CREATE TEMPORARY FUNCTION tree_predict AS 'hivemall.smile.tools.TreePredictUDF'")
+
+// sqlContext.sql("DROP TEMPORARY FUNCTION IF EXISTS rf_ensemble")
+sqlContext.sql("CREATE TEMPORARY FUNCTION rf_ensemble AS 'hivemall.smile.tools.RandomForestEnsembleUDAF'")
+
+/**
  * Factorization Machine
  */
 
