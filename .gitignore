@@ -19,9 +19,6 @@ out/
 .waf*
 third_party/libmesos.so
 third_party/libmesos.dylib
-build/apache-maven*
-build/zinc*
-build/scala*
 docs/_site
 docs/api
 target/
@@ -56,3 +53,7 @@ ec2/lib/
 rat-results.txt
 scalastyle.txt
 scalastyle-output.xml
+bin/apache-maven*
+bin/zinc*
+bin/scala*
+
