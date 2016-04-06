@@ -3,7 +3,7 @@ This tutorial uses [Kaggle Titanic binary classification](https://github.com/myu
 Data preparation
 --------------------
 ```
-// Fetch training and test data in [Kaggle](https://www.kaggle.com/c/titanic/data), train.csv and test.csv
+// Fetch training and test data in Kaggle(https://www.kaggle.com/c/titanic/data), train.csv and test.csv
 
 // Fetch an initialization script for hivemall-spark
 # wget https://raw.githubusercontent.com/maropu/hivemall-spark/master/scripts/ddl/define-dfs.sh
@@ -45,8 +45,7 @@ Training
 // Make a model from the training data
 val model = trainDf
   .coalesce(4)
-  .train_randomforest_classifier($"features", $"survived", "-trees 100")
-  .select($"model_id", $"model_type", $"pred_model")
+  .train_randomforest_classifier($"features", $"survived", "-trees 400")
 ```
 
 Test
@@ -69,7 +68,6 @@ val testQuantifiedDf = testCsvDf
   .quantify($"output" +: testCsvDf.cols: _*)
   // Rename output columns for readability
   .as("passengerid", "pclass", "name", "sex", "age", "sibsp", "parch", "ticket", "fare", "cabin", "embarked")
-  .sort($"passengerid".asc)
 
 val testDf = testQuantifiedDf
   .select($"passengerid", array(testQuantifiedDf.cols.drop(1): _*).as("features"))
