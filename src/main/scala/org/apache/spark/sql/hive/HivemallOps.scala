@@ -611,7 +611,7 @@ final class HivemallOps(df: DataFrame) extends Logging {
         new HiveFunctionWrapper("hivemall.ftvec.conv.QuantifyColumnsUDTF"),
         exprs.map(_.expr)),
       join = false, outer = false, None,
-      (0 until exprs.size).map(i => s"$i").map(UnresolvedAttribute(_)),
+      (0 until exprs.size - 1).map(i => s"c$i").map(UnresolvedAttribute(_)),
       df.logicalPlan)
   }
 
@@ -663,6 +663,12 @@ final class HivemallOps(df: DataFrame) extends Logging {
    */
   @scala.annotation.varargs
   def as(colNames: String*): DataFrame = df.toDF(colNames: _*)
+
+  /**
+   * Returns all the columns as Seq[Column] in this [[DataFrame]].
+   */
+  @scala.annotation.varargs
+  def cols: Seq[Column] = df.schema.fields.map(col => df.col(col.name)).toSeq
 }
 
 object HivemallOps {
