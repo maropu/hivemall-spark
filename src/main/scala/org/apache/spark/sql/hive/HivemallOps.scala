@@ -38,6 +38,7 @@ import org.apache.spark.sql.types._
  * @groupname classifier.multiclass
  * @groupname ensemble
  * @groupname knn.similarity
+ * @groupname knn.distance
  * @groupname knn.lsh
  * @groupname ftvec
  * @groupname ftvec.amplify
@@ -705,16 +706,6 @@ object HivemallOps {
   }
 
   /**
-   * @see hivemall.knn.similarity.HammingDistanceUDF
-   * @group knn.similarity
-   */
-  @scala.annotation.varargs
-  def hamming_distance(exprs: Column*): Column = {
-    HiveSimpleUDF(new HiveFunctionWrapper(
-      "hivemall.knn.distance.HammingDistanceUDF"), exprs.map(_.expr))
-  }
-
-  /**
    * @see hivemall.knn.similarity.JaccardIndexUDF
    * @group knn.similarity
    */
@@ -725,8 +716,48 @@ object HivemallOps {
   }
 
   /**
-   * @see hivemall.knn.similarity.PopcountUDF
+   * @see hivemall.knn.similarity.AngularSimilarityUDF
    * @group knn.similarity
+   */
+  @scala.annotation.varargs
+  def angular_similarity(exprs: Column*): Column = {
+    HiveSimpleUDF(new HiveFunctionWrapper(
+      "hivemall.knn.similarity.AngularSimilarityUDF"), exprs.map(_.expr))
+  }
+
+  /**
+   * @see hivemall.knn.similarity.EuclidSimilarity
+   * @group knn.similarity
+   */
+  @scala.annotation.varargs
+  def euclid_similarity(exprs: Column*): Column = {
+    HiveSimpleUDF(new HiveFunctionWrapper(
+      "hivemall.knn.similarity.EuclidSimilarity"), exprs.map(_.expr))
+  }
+
+  /**
+   * @see hivemall.knn.similarity.Distance2SimilarityUDF
+   * @group knn.similarity
+   */
+  @scala.annotation.varargs
+  def distance2similarity(exprs: Column*): Column = {
+    HiveSimpleUDF(new HiveFunctionWrapper(
+      "hivemall.knn.similarity.Distance2SimilarityUDF"), exprs.map(_.expr))
+  }
+
+  /**
+   * @see hivemall.knn.distance.HammingDistanceUDF
+   * @group knn.distance
+   */
+  @scala.annotation.varargs
+  def hamming_distance(exprs: Column*): Column = {
+    HiveSimpleUDF(new HiveFunctionWrapper(
+      "hivemall.knn.distance.HammingDistanceUDF"), exprs.map(_.expr))
+  }
+
+  /**
+   * @see hivemall.knn.distance.PopcountUDF
+   * @group knn.distance
    */
   @scala.annotation.varargs
   def popcnt(exprs: Column*): Column = {
@@ -735,13 +766,63 @@ object HivemallOps {
   }
 
   /**
-   * @see hivemall.knn.similarity.KLDivergenceUDF
-   * @group knn.similarity
+   * @see hivemall.knn.distance.KLDivergenceUDF
+   * @group knn.distance
    */
   @scala.annotation.varargs
   def kld(exprs: Column*): Column = {
     HiveSimpleUDF(new HiveFunctionWrapper(
       "hivemall.knn.distance.KLDivergenceUDF"), exprs.map(_.expr))
+  }
+
+  /**
+   * @see hivemall.knn.distance.EuclidDistanceUDF
+   * @group knn.distance
+   */
+  @scala.annotation.varargs
+  def euclid_distance(exprs: Column*): Column = {
+    HiveSimpleUDF(new HiveFunctionWrapper(
+      "hivemall.knn.distance.EuclidDistanceUDF"), exprs.map(_.expr))
+  }
+
+  /**
+   * @see hivemall.knn.distance.CosineDistanceUDF
+   * @group knn.distance
+   */
+  @scala.annotation.varargs
+  def cosine_distance(exprs: Column*): Column = {
+    HiveSimpleUDF(new HiveFunctionWrapper(
+      "hivemall.knn.distance.CosineDistanceUDF"), exprs.map(_.expr))
+  }
+
+  /**
+   * @see hivemall.knn.distance.AngularDistanceUDF
+   * @group knn.distance
+   */
+  @scala.annotation.varargs
+  def angular_distance(exprs: Column*): Column = {
+    HiveSimpleUDF(new HiveFunctionWrapper(
+      "hivemall.knn.distance.AngularDistanceUDF"), exprs.map(_.expr))
+  }
+
+  /**
+   * @see hivemall.knn.distance.ManhattanDistanceUDF
+   * @group knn.distance
+   */
+  @scala.annotation.varargs
+  def manhattan_distance(exprs: Column*): Column = {
+    HiveSimpleUDF(new HiveFunctionWrapper(
+      "hivemall.knn.distance.ManhattanDistanceUDF"), exprs.map(_.expr))
+  }
+
+  /**
+   * @see hivemall.knn.distance.MinkowskiDistanceUDF
+   * @group knn.distance
+   */
+  @scala.annotation.varargs
+  def minkowski_distance (exprs: Column*): Column = {
+    HiveSimpleUDF(new HiveFunctionWrapper(
+      "hivemall.knn.distance.MinkowskiDistanceUDF"), exprs.map(_.expr))
   }
 
   /**
