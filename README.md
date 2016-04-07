@@ -1,6 +1,8 @@
 [![Build Status](https://travis-ci.org/maropu/hivemall-spark.svg?branch=master)](https://travis-ci.org/maropu/hivemall-spark)
 [![License](http://img.shields.io/:license-Apache_v2-blue.svg)](https://github.com/maropu/hivemall-spark/blob/master/LICENSE)
 
+NOTE: This work will be merged into hivemall in [a future release](https://github.com/myui/hivemall/tree/dev/spark)!
+
 This is a simple wrapper implementation of [Hivemall](https://github.com/myui/hivemall/) for Spark.
 This can make highly scalable machine learning algorithms available in DataFrame and HiveContext.
 
@@ -13,7 +15,7 @@ Quick Installation
 
 // Download Spark-v1.5.1 from 'http://spark.apache.org/downloads.html' and
 // invoke an interactive shell
-# $SPARK_HOME/bin/spark-shell --packages maropu:hivemall-spark:0.0.5
+# $SPARK_HOME/bin/spark-shell --packages maropu:hivemall-spark:0.0.6
 
 scala> :load define-udfs.sh
 ```
@@ -92,7 +94,7 @@ testData.predict { case testDf =>
 
 Support Status
 --------------------
-Hivemall v0.4.1-alpha.2 is currently incorporated in hivemall-spark and the most functions can be available in HiveContext.
+Hivemall v0.4.1-alpha.6 is currently incorporated in hivemall-spark and the most functions can be available in HiveContext.
 On the other hand, functions listed below are available in DataFrame:
 
 * regression
@@ -110,7 +112,7 @@ TBW
 System Requirements
 --------------------
 
-* Spark 1.6.0
+* Spark 1.6.1
 
 Presentations
 ------------
