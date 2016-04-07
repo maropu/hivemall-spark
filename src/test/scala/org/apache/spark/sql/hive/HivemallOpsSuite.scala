@@ -30,7 +30,7 @@ import org.apache.spark.test.TestUtils._
 final class HivemallOpsSuite extends HivemallQueryTest {
 
   test("hivemall_version") {
-    assert(DummyInputData.select(hivemall_version()).collect.toSet === Set(Row("0.4.1-alpha.2")))
+    assert(DummyInputData.select(hivemall_version()).collect.toSet === Set(Row("0.4.1-alpha.6")))
     /**
      * TODO: Why a test below does fail?
      *

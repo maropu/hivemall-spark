@@ -91,6 +91,7 @@ final class GroupedDataEx protected[sql](
   //////////////////////////////////////////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////////////////////////////////////////
 
+  // `agg` only supports aggregation functions with a single argument
   override def agg(exprs: Map[String, String]): DataFrame = {
     toDF(exprs.map { case (colName, expr) =>
       val a = expr match {
@@ -128,14 +129,42 @@ final class GroupedDataEx protected[sql](
   }
 
   /**
+   * @see hivemall.ensemble.bagging.VotedAvgUDAF
+   */
+  def voted_avg(weight: String): DataFrame = {
+    // checkType(weight, NumericType)
+    val udaf = HiveUDAFFunction(
+        new HiveFunctionWrapper("hivemall.ensemble.bagging.WeightVotedAvgUDAF"),
+        Seq(weight).map(df.col(_).expr),
+        isUDAFBridgeRequired = true)
+      .toAggregateExpression()
+    toDF((Alias(udaf, udaf.prettyString)() :: Nil).toSeq)
+  }
+
+  /**
+   * @see hivemall.ensemble.bagging.WeightVotedAvgUDAF
+   */
+  def weight_voted_avg(weight: String): DataFrame = {
+    // checkType(weight, NumericType)
+    val udaf = HiveUDAFFunction(
+        new HiveFunctionWrapper("hivemall.ensemble.bagging.WeightVotedAvgUDAF"),
+        Seq(weight).map(df.col(_).expr),
+        isUDAFBridgeRequired = true)
+      .toAggregateExpression()
+    toDF((Alias(udaf, udaf.prettyString)() :: Nil).toSeq)
+  }
+
+  /**
    * @see hivemall.ensemble.ArgminKLDistanceUDAF
    */
   def argmin_kld(weight: String, conv: String): DataFrame = {
-    // CheckType(weight, NumericType)
-    // CheckType(conv, NumericType)
+    // checkType(weight, NumericType)
+    // checkType(conv, NumericType)
     val udaf = HiveUDAFFunction(
-      new HiveFunctionWrapper("hivemall.ensemble.ArgminKLDistanceUDAF"),
-      Seq(weight, conv).map(df.resolve))
+        new HiveFunctionWrapper("hivemall.ensemble.ArgminKLDistanceUDAF"),
+        Seq(weight, conv).map(df.col(_).expr),
+        isUDAFBridgeRequired = true)
+      .toAggregateExpression()
     toDF((Alias(udaf, udaf.prettyString)() :: Nil).toSeq)
   }
 
@@ -146,8 +175,10 @@ final class GroupedDataEx protected[sql](
     // checkType(score, NumericType)
     checkType(label, StringType)
     val udaf = HiveUDAFFunction(
-      new HiveFunctionWrapper("hivemall.ensemble.MaxValueLabelUDAF"),
-      Seq(score, label).map(df.resolve))
+        new HiveFunctionWrapper("hivemall.ensemble.MaxValueLabelUDAF"),
+        Seq(score, label).map(df.col(_).expr),
+        isUDAFBridgeRequired = true)
+      .toAggregateExpression()
     toDF((Alias(udaf, udaf.prettyString)() :: Nil).toSeq)
   }
 
@@ -158,8 +189,10 @@ final class GroupedDataEx protected[sql](
     // checkType(score, NumericType)
     checkType(label, StringType)
     val udaf = HiveUDAFFunction(
-      new HiveFunctionWrapper("hivemall.ensemble.MaxRowUDAF"),
-      Seq(score, label).map(df.resolve))
+        new HiveFunctionWrapper("hivemall.ensemble.MaxRowUDAF"),
+        Seq(score, label).map(df.col(_).expr),
+        isUDAFBridgeRequired = true)
+      .toAggregateExpression()
     toDF((Alias(udaf, udaf.prettyString)() :: Nil).toSeq)
   }
 
@@ -169,8 +202,10 @@ final class GroupedDataEx protected[sql](
   def rf_ensemble(predict: String): DataFrame = {
     // checkType(predict, NumericType)
     val udaf = HiveUDAFFunction(
-      new HiveFunctionWrapper("hivemall.smile.tools.RandomForestEnsembleUDAF"),
-      Seq(predict).map(df.resolve))
+        new HiveFunctionWrapper("hivemall.smile.tools.RandomForestEnsembleUDAF"),
+        Seq(predict).map(df.col(_).expr),
+        isUDAFBridgeRequired = true)
+      .toAggregateExpression()
     toDF((Alias(udaf, udaf.prettyString)() :: Nil).toSeq)
   }
 
@@ -181,8 +216,10 @@ final class GroupedDataEx protected[sql](
     checkType(target, ArrayType(IntegerType))
     checkType(predict, ArrayType(IntegerType))
     val udaf = HiveUDAFFunction(
-      new HiveFunctionWrapper("hivemall.evaluation.FMeasureUDAF"),
-      Seq(target, predict).map(df.resolve))
+        new HiveFunctionWrapper("hivemall.evaluation.FMeasureUDAF"),
+        Seq(predict, target).map(df.col(_).expr),
+        isUDAFBridgeRequired = true)
+      .toAggregateExpression()
     toDF((Alias(udaf, udaf.prettyString)() :: Nil).toSeq)
   }
 
