@@ -1,5 +1,6 @@
 /**
- * A bootstrap script to register Hivemall UDFs on a spark context
+ * A script to register Hivemall UDFs on a spark context.
+ * The functions available in hivemall-v0.4.1-alpha.6 are supported here.
  */
 
 // sqlContext.sql("DROP TEMPORARY FUNCTION IF EXISTS hivemall_version")
@@ -105,11 +106,37 @@ sqlContext.sql("CREATE TEMPORARY FUNCTION train_randomforest_regr AS 'hivemall.s
 // sqlContext.sql("DROP TEMPORARY FUNCTION IF EXISTS tree_predict")
 sqlContext.sql("CREATE TEMPORARY FUNCTION tree_predict AS 'hivemall.smile.tools.TreePredictUDF'")
 
+// sqlContext.sql("DROP TEMPORARY FUNCTION IF EXISTS vm_tree_predict")
+sqlContext.sql("CREATE TEMPORARY FUNCTION vm_tree_predict AS 'hivemall.smile.tools.TreePredictByStackMachineUDF'")
+
+// sqlContext.sql("DROP TEMPORARY FUNCTION IF EXISTS js_tree_predict")
+sqlContext.sql("CREATE TEMPORARY FUNCTION js_tree_predict AS 'hivemall.smile.tools.TreePredictByJavascriptUDF'")
+
 // sqlContext.sql("DROP TEMPORARY FUNCTION IF EXISTS rf_ensemble")
 sqlContext.sql("CREATE TEMPORARY FUNCTION rf_ensemble AS 'hivemall.smile.tools.RandomForestEnsembleUDAF'")
 
 // sqlContext.sql("DROP TEMPORARY FUNCTION IF EXISTS guess_attribute_types")
-sqlContext.sql("CREATE TEMPORARY FUNCTION guess_attribute_typesAS 'hivemall.smile.tools.GuessAttributesUDF'")
+sqlContext.sql("CREATE TEMPORARY FUNCTION guess_attribute_types AS 'hivemall.smile.tools.GuessAttributesUDF'")
+
+/**
+ * Boosting functions
+ */
+
+// sqlContext.sql("DROP TEMPORARY FUNCTION IF EXISTS train_gradient_tree_boosting_classifier")
+sqlContext.sql("CREATE TEMPORARY FUNCTION train_gradient_tree_boosting_classifier AS 'hivemall.smile.classification.GradientTreeBoostingClassifierUDTF'")
+
+/**
+ * Matrix Factorization
+ */
+
+// sqlContext.sql("DROP TEMPORARY FUNCTION IF EXISTS mf_predict")
+sqlContext.sql("CREATE TEMPORARY FUNCTION mf_predict AS 'hivemall.mf.MFPredictionUDF'")
+
+// sqlContext.sql("DROP TEMPORARY FUNCTION IF EXISTS train_mf_sgd")
+sqlContext.sql("CREATE TEMPORARY FUNCTION train_mf_sgd AS 'hivemall.mf.MatrixFactorizationSGDUDTF'")
+
+// sqlContext.sql("DROP TEMPORARY FUNCTION IF EXISTS train_mf_adagrad")
+sqlContext.sql("CREATE TEMPORARY FUNCTION train_mf_adagrad AS 'hivemall.mf.MatrixFactorizationAdaGradUDTF'")
 
 /**
  * Factorization Machine
@@ -286,6 +313,16 @@ sqlContext.sql("CREATE TEMPORARY FUNCTION array_hash_values AS 'hivemall.ftvec.h
 sqlContext.sql("CREATE TEMPORARY FUNCTION prefixed_hash_values AS 'hivemall.ftvec.hashing.ArrayPrefixedHashValuesUDF'")
 
 /**
+ * Paring functions
+ */
+
+// sqlContext.sql("DROP TEMPORARY FUNCTION IF EXISTS polynomial_features")
+sqlContext.sql("CREATE TEMPORARY FUNCTION polynominal_features AS 'hivemall.ftvec.pairing.PolynomialFeaturesUDF'")
+
+// sqlContext.sql("DROP TEMPORARY FUNCTION IF EXISTS powered_features")
+sqlContext.sql("CREATE TEMPORARY FUNCTION powered_features AS 'hivemall.ftvec.pairing.PoweredFeaturesUDF'")
+
+/**
  * Amplifier functions
  */
 
@@ -377,6 +414,31 @@ sqlContext.sql("CREATE TEMPORARY FUNCTION train_mf_sgd AS 'hivemall.mf.MatrixFac
 
 // sqlContext.sql("DROP TEMPORARY FUNCTION IF EXISTS train_mf_adagrad")
 sqlContext.sql("CREATE TEMPORARY FUNCTION train_mf_adagrad AS 'hivemall.mf.MatrixFactorizationAdaGradUDTF'")
+
+/**
+ * Text functions
+ */
+
+// sqlContext.sql("DROP TEMPORARY FUNCTION IF EXISTS tf")
+sqlContext.sql("CREATE TEMPORARY FUNCTION tf AS 'hivemall.ftvec.text.TermFrequencyUDAF'")
+
+// sqlContext.sql("DROP TEMPORARY FUNCTION IF EXISTS tokenize")
+sqlContext.sql("CREATE TEMPORARY FUNCTION tokenize AS 'hivemall.tools.text.TokenizeUDF'")
+
+// sqlContext.sql("DROP TEMPORARY FUNCTION IF EXISTS is_stopword")
+sqlContext.sql("CREATE TEMPORARY FUNCTION is_stopword AS 'hivemall.tools.text.StopwordUDF'")
+
+// sqlContext.sql("DROP TEMPORARY FUNCTION IF EXISTS split_words")
+sqlContext.sql("CREATE TEMPORARY FUNCTION split_words AS 'hivemall.tools.text.SplitWordsUDF'")
+
+// sqlContext.sql("DROP TEMPORARY FUNCTION IF EXISTS normalize_unicode")
+sqlContext.sql("CREATE TEMPORARY FUNCTION normalize_unicode AS 'hivemall.tools.text.NormalizeUnicodeUDF'")
+
+// sqlContext.sql("DROP TEMPORARY FUNCTION IF EXISTS base91")
+sqlContext.sql("CREATE TEMPORARY FUNCTION base91 AS 'hivemall.tools.text.Base91UDF'")
+
+// sqlContext.sql("DROP TEMPORARY FUNCTION IF EXISTS unbase91")
+sqlContext.sql("CREATE TEMPORARY FUNCTION unbase91 AS 'hivemall.tools.text.Unbase91UDF'")
 
 /**
  * Compression functions
