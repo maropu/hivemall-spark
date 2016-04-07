@@ -926,6 +926,26 @@ object HivemallOps {
   }
 
   /**
+   * @see hivemall.ftvec.hashing.ArrayHashValuesUDF
+   * @group ftvec.hashing
+   */
+  @scala.annotation.varargs
+  def array_hash_values(exprs: Column*): Column = {
+    HiveSimpleUDF(new HiveFunctionWrapper(
+      "hivemall.ftvec.hashing.ArrayHashValuesUDF"), exprs.map(_.expr))
+  }
+
+  /**
+   * @see hivemall.ftvec.hashing.ArrayPrefixedHashValuesUDF
+   * @group ftvec.hashing
+   */
+  @scala.annotation.varargs
+  def prefixed_hash_values(exprs: Column*): Column = {
+    HiveSimpleUDF(new HiveFunctionWrapper(
+      "hivemall.ftvec.hashing.ArrayPrefixedHashValuesUDF"), exprs.map(_.expr))
+  }
+
+  /**
    * @see hivemall.ftvec.scaling.RescaleUDF
    * @group ftvec.scaling
    */
