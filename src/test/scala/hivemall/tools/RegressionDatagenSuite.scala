@@ -22,7 +22,7 @@ import org.scalatest.FunSuite
 
 class RegressionDatagenSuite extends FunSuite {
 
-  ignore("datagen") {
+  test("datagen") {
    val df = RegressionDatagen.exec(
      TestHive, min_examples = 10000, n_features = 100, n_dims = 65536,
      dense=false, cl=true)

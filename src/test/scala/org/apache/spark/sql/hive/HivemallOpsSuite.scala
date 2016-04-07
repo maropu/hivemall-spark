@@ -43,7 +43,8 @@ final class HivemallOpsSuite extends HivemallQueryTest {
      *
      * [info] - hivemall_version *** FAILED ***
      * [info]   org.apache.spark.sql.AnalysisException:
-     *    Cannot resolve column name "HiveSimpleUDF#hivemall.HivemallVersionUDF()" among (HiveSimpleUDF#hivemall.Hivemall VersionUDF());
+     *    Cannot resolve column name "HiveSimpleUDF#hivemall.HivemallVersionUDF()" among
+     *    (HiveSimpleUDF#hivemall.Hivemall VersionUDF());
      * [info]   at org.apache.spark.sql.DataFrame$$anonfun$resolve$1.apply(DataFrame.scala:159)
      * [info]   at org.apache.spark.sql.DataFrame$$anonfun$resolve$1.apply(DataFrame.scala:159)
      * [info]   at scala.Option.getOrElse(Option.scala:120)
@@ -51,6 +52,7 @@ final class HivemallOpsSuite extends HivemallQueryTest {
      * [info]   at org.apache.spark.sql.DataFrame$$anonfun$30.apply(DataFrame.scala:1227)
      * [info]   at org.apache.spark.sql.DataFrame$$anonfun$30.apply(DataFrame.scala:1227)
      * [info]   at scala.collection.TraversableLike$$anonfun$map$1.apply(TraversableLike.scala:244)
+     * ...
      */
   }
 
@@ -218,6 +220,7 @@ final class HivemallOpsSuite extends HivemallQueryTest {
      *    Invalid call to dataType on unresolved object, tree: 'data
      * [info]   at org.apache.spark.sql.catalyst.analysis.UnresolvedAttribute.dataType(unresolved.scala:59)
      * [info]   at org.apache.spark.sql.hive.HiveSimpleUDF$$anonfun$method$1.apply(hiveUDFs.scala:119)
+     * ...
      */
     val rows = DummyInputData.select(sigmoid($"data")).collect
     assert(rows(0).getDouble(0) ~== 0.500)
@@ -289,8 +292,7 @@ final class HivemallOpsSuite extends HivemallQueryTest {
     }
   }
 
-  // TODO: Why this tests fail?
-  ignore("invoke multiclass classifier functions") {
+  test("invoke multiclass classifier functions") {
     import hiveContext.implicits._
     Seq(
       "train_multiclass_perceptron",
@@ -359,6 +361,19 @@ final class HivemallOpsSuite extends HivemallQueryTest {
   }
 
   ignore("user-defined aggregators for evaluation") {
+    /**
+     * TODO: These tests throw an exception below:
+     *
+     * [info] - user-defined aggregators for evaluation *** FAILED ***
+     * [info]   java.lang.AssertionError: assertion failed: Invoking mae failed because: null
+     * [info]   at scala.Predef$.assert(Predef.scala:179)
+     * [info]   at org.apache.spark.test.TestUtils$.invokeFunc(TestUtils.scala:46)
+     * [info]   at org.apache.spark.sql.hive.HivemallOpsSuite$$anonfun$30$$anonfun$apply$mcV$sp$8
+     *    .apply(HivemallOpsSuite.scala:363)
+     * [info]   at org.apache.spark.sql.hive.HivemallOpsSuite$$anonfun$30$$anonfun$apply$mcV$sp$8
+     *    .apply(HivemallOpsSuite.scala:362)
+     * ...
+     */
     Seq("mae", "mse", "rmse")
       .map { udaf =>
         invokeFunc(Float2Data.groupby(), udaf, "predict", "target")
