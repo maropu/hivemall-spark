@@ -31,8 +31,10 @@ import org.apache.spark.sql.types._
 
 /**
  * A wrapper of hivemall for DataFrame.
+ * This class only supports the parts of functions available in `scripts/ddl/define-udfs.sh`.
+ * Those who'd like to use more functions this class does not support
+ * let us know in a github issue tracker.
  *
- * @groupname misc
  * @groupname regression
  * @groupname classifier
  * @groupname classifier.multiclass
@@ -46,10 +48,7 @@ import org.apache.spark.sql.types._
  * @groupname ftvec.scaling
  * @groupname ftvec.conv
  * @groupname ftvec.trans
- * @groupname tools.mapred
- * @groupname tools
- * @groupname tools.math
- * @groupname dataset
+ * @groupname misc
  */
 final class HivemallOps(df: DataFrame) extends Logging {
 
@@ -59,30 +58,6 @@ final class HivemallOps(df: DataFrame) extends Logging {
   @inline
   private[this] implicit def toDataFrame(logicalPlan: LogicalPlan) =
     DataFrame(df.sqlContext, logicalPlan)
-
-  /**
-   * If a parameter '-mix' does not exist in a 3rd argument,
-   * set it from an environmental variable
-   * 'HIVEMALL_MIX_SERVERS'.
-   *
-   * TODO: This could work if '--deploy-mode' has 'client';
-   * otherwise, we need to set HIVEMALL_MIX_SERVERS
-   * in all possible spark workers.
-   */
-  private[this] def setMixServs(exprs: Column*): Seq[Column] = {
-    val mixes = System.getenv("HIVEMALL_MIX_SERVERS")
-    if (mixes != null && !mixes.isEmpty()) {
-      val groupId = df.sqlContext.sparkContext.applicationId + "-" + UUID.randomUUID
-      logInfo(s"set '${mixes}' as default mix servers (session: ${groupId})")
-      exprs.size match {
-        case 2 => exprs :+ Column(Literal.create(s"-mix ${mixes} -mix_session ${groupId}", StringType))
-        /** TODO: Add codes in the case where exprs.size == 3. */
-        case _ => exprs
-      }
-    } else {
-      exprs
-    }
-  }
 
   /**
    * @see hivemall.regression.AdaDeltaUDTF
@@ -589,7 +564,7 @@ final class HivemallOps(df: DataFrame) extends Logging {
   }
 
   /**
-   * Amplify and shuffle data inside partitions.
+   * Amplifies and shuffle data inside partitions.
    * @group ftvec.amplify
    */
   def part_amplify(xtimes: Int): DataFrame = {
@@ -604,7 +579,7 @@ final class HivemallOps(df: DataFrame) extends Logging {
   }
 
   /**
-   * Quantify input columns.
+   * Quantifies input columns.
    * @see hivemall.ftvec.conv.QuantifyColumnsUDTF
    * @group ftvec.conv
    */
@@ -618,22 +593,9 @@ final class HivemallOps(df: DataFrame) extends Logging {
       df.logicalPlan)
   }
 
-  /**
-   * @see hivemall.dataset.LogisticRegressionDataGeneratorUDTF
-   * @group dataset
-   */
-  @scala.annotation.varargs
-  def lr_datagen(exprs: Column*): DataFrame = {
-    Generate(HiveGenericUDTF(
-        new HiveFunctionWrapper("hivemall.dataset.LogisticRegressionDataGeneratorUDTFWrapper"),
-        exprs.map(_.expr)),
-      join = false, outer = false, None,
-      Seq("label", "features").map(UnresolvedAttribute(_)),
-      df.logicalPlan)
-  }
 
   /**
-   * Split Seq[String] into pieces.
+   * Splits Seq[String] into pieces.
    * @group ftvec
    */
   def explode_array(expr: Column): DataFrame = {
@@ -648,7 +610,7 @@ final class HivemallOps(df: DataFrame) extends Logging {
 
   /**
    * Returns a top-`k` records for each `group`.
-   * @group tools
+   * @group misc
    */
   def each_top_k(k: Column, group: Column, value: Column, args: Column*): DataFrame = {
     Generate(HiveGenericUDTF(
@@ -663,15 +625,56 @@ final class HivemallOps(df: DataFrame) extends Logging {
   /**
    * Returns a new [[DataFrame]] with columns renamed.
    * This is a wrapper for DataFrame#toDF.
+   * @group misc
    */
   @scala.annotation.varargs
   def as(colNames: String*): DataFrame = df.toDF(colNames: _*)
 
   /**
    * Returns all the columns as Seq[Column] in this [[DataFrame]].
+   * @group misc
    */
   def cols: Seq[Column] = {
     df.schema.fields.map(col => df.col(col.name)).toSeq
+  }
+
+  /**
+   * @see hivemall.dataset.LogisticRegressionDataGeneratorUDTF
+   * @group misc
+   */
+  @scala.annotation.varargs
+  def lr_datagen(exprs: Column*): DataFrame = {
+    Generate(HiveGenericUDTF(
+        new HiveFunctionWrapper("hivemall.dataset.LogisticRegressionDataGeneratorUDTFWrapper"),
+        exprs.map(_.expr)),
+      join = false, outer = false, None,
+      Seq("label", "features").map(UnresolvedAttribute(_)),
+      df.logicalPlan)
+  }
+
+  /**
+   * :: Experimental ::
+   * If a parameter '-mix' does not exist in a 3rd argument,
+   * set it from an environmental variable
+   * 'HIVEMALL_MIX_SERVERS'.
+   *
+   * TODO: This could work if '--deploy-mode' has 'client';
+   * otherwise, we need to set HIVEMALL_MIX_SERVERS
+   * in all possible spark workers.
+   */
+  private[this] def setMixServs(exprs: Column*): Seq[Column] = {
+    val mixes = System.getenv("HIVEMALL_MIX_SERVERS")
+    if (mixes != null && !mixes.isEmpty()) {
+      val groupId = df.sqlContext.sparkContext.applicationId + "-" + UUID.randomUUID
+      logInfo(s"set '${mixes}' as default mix servers (session: ${groupId})")
+      exprs.size match {
+        case 2 => exprs :+ Column(Literal.create(s"-mix ${mixes} -mix_session ${groupId}", StringType))
+        /** TODO: Add codes in the case where exprs.size == 3. */
+        case _ => exprs
+      }
+    } else {
+      exprs
+    }
   }
 }
 
@@ -1049,7 +1052,7 @@ object HivemallOps {
    * @group ftvec.trans
    */
   @scala.annotation.varargs
-  def quantified_features(exprs: Column*): Column = {
+  def quantitative_features(exprs: Column*): Column = {
     HiveGenericUDF(new HiveFunctionWrapper(
       "hivemall.ftvec.trans.QuantitativeFeaturesUDF"), exprs.map(_.expr))
   }
@@ -1066,7 +1069,7 @@ object HivemallOps {
 
   /**
    * @see hivemall.smile.tools.TreePredictUDF
-   * @group tools
+   * @group misc
    */
   @scala.annotation.varargs
   def tree_predict(exprs: Column*): Column = {
@@ -1075,18 +1078,8 @@ object HivemallOps {
   }
 
   /**
-   * @see hivemall.tools.mapred.RowIdUDF
-   * @group tools.mapred
-   */
-  def rowid(): Column = {
-    val hiveUdf = HiveGenericUDF(new HiveFunctionWrapper(
-      "hivemall.tools.mapred.RowIdUDFWrapper"), Nil)
-    hiveUdf.as("rowid")
-  }
-
-  /**
    * @see hivemall.tools.math.SigmoidUDF
-   * @group tools.math
+   * @group misc
    */
   @scala.annotation.varargs
   def sigmoid(exprs: Column*): Column = {
@@ -1098,5 +1091,15 @@ object HivemallOps {
     val value = exprs.head
     val one: () => Literal = () => Literal.create(1.0, DoubleType)
     Column(one()) / (Column(one()) + exp(-value))
+  }
+
+  /**
+   * @see hivemall.tools.mapred.RowIdUDF
+   * @group misc
+   */
+  def rowid(): Column = {
+    val hiveUdf = HiveGenericUDF(new HiveFunctionWrapper(
+      "hivemall.tools.mapred.RowIdUDFWrapper"), Nil)
+    hiveUdf.as("rowid")
   }
 }

@@ -415,4 +415,3 @@ sqlContext.sql("CREATE TEMPORARY FUNCTION convert_label AS 'hivemall.tools.Conve
 
 // sqlContext.sql("DROP TEMPORARY FUNCTION IF EXISTS each_top_k")
 sqlContext.sql("CREATE TEMPORARY FUNCTION each_top_k AS 'hivemall.tools.EachTopKUDTF'")
-
