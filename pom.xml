@@ -99,6 +99,46 @@
           </execution>
         </executions>
       </plugin>
+
+      <!-- hivemall-spark-xx.jar -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>2.5</version>
+        <configuration>
+          <finalName>${project.artifactId}-${project.version}</finalName>
+          <outputDirectory>${project.parent.build.directory}</outputDirectory>
+        </configuration>
+      </plugin>
+      <!-- hivemall-spark-xx-with-dependencies.jar including minimum dependencies -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-shade-plugin</artifactId>
+        <version>2.3</version>
+        <executions>
+          <execution>
+            <id>jar-with-dependencies</id>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+            <configuration>
+              <finalName>${project.artifactId}-${project.version}-with-dependencies</finalName>
+              <outputDirectory>${project.build.directory}</outputDirectory>
+              <minimizeJar>false</minimizeJar>
+              <createDependencyReducedPom>false</createDependencyReducedPom>
+              <artifactSet>
+                <includes>
+                  <include>io.github.myui:hivemall-core</include>
+                  <include>com.github.haifengl:smile-core</include>
+                  <include>com.github.haifengl:smile-math</include>
+                  <include>com.github.haifengl:smile-data</include>
+                </includes>
+              </artifactSet>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
       <!-- disable surefire -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
