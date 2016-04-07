@@ -16,7 +16,7 @@ Data preparation
 # wget https://raw.githubusercontent.com/maropu/hivemall-spark/master/scripts/ddl/define-dfs.sh
 
 // Invoke a spark-shell with hivemall-spark
-# bin/spark-shell --packages maropu:hivemall-spark:0.0.4 --master=local-cluster[2,1,1024] --conf spark.executor.memory=1024
+# bin/spark-shell --packages maropu:hivemall-spark:0.0.6 --master=local-cluster[2,1,1024] --conf spark.executor.memory=1024
 
 scala> :load define-dfs.sh
 
