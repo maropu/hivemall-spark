@@ -593,7 +593,6 @@ final class HivemallOps(df: DataFrame) extends Logging {
       df.logicalPlan)
   }
 
-
   /**
    * Splits Seq[String] into pieces.
    * @group ftvec

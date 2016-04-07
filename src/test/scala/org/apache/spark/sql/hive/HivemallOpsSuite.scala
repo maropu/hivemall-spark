@@ -19,7 +19,7 @@ package org.apache.spark.sql.hive
 
 import scala.collection.mutable.Seq
 
-import org.apache.spark.sql.Row
+import org.apache.spark.sql.{Column, Row}
 import org.apache.spark.sql.hive.HivemallOps._
 import org.apache.spark.sql.hive.HivemallUtils._
 import org.apache.spark.sql.types._
@@ -210,6 +210,15 @@ final class HivemallOpsSuite extends HivemallQueryTest {
         Row(Seq("1:1.0"))))
   }
 
+  test("quantify") {
+    import hiveContext.implicits._
+    val testDf = Seq((1, "aaa", true), (2, "bbb", false), (3, "aaa", false)).toDF
+    // This test is done in a single parition because `HivemallOps#quantify` assigns indentifiers
+    // for non-numerical values in each partition.
+    assert(testDf.coalesce(1).quantify(Seq[Column](true) ++ testDf.cols: _*).collect.toSet
+      === Set(Row(1, 0, 0), Row(2, 1, 1), Row(3, 0, 1)))
+  }
+
   test("sigmoid") {
     import hiveContext.implicits._
     /**
@@ -310,6 +319,21 @@ final class HivemallOpsSuite extends HivemallQueryTest {
     }
   }
 
+  test("invoke random forest functions") {
+    import hiveContext.implicits._
+    val testDf = Seq(
+      (Array(0.3, 0.1, 0.2), 1),
+      (Array(0.3, 0.1, 0.2), 0),
+      (Array(0.3, 0.1, 0.2), 0)).toDF.as("features", "label")
+    Seq(
+      "train_randomforest_regr",
+      "train_randomforest_classifier"
+    ).map { func =>
+      invokeFunc(new HivemallOps(testDf.coalesce(1)), func, Seq($"features", $"label"))
+        .foreach(_ => {}) // Just call it
+    }
+  }
+
   test("invoke misc udtf functions") {
     import hiveContext.implicits._
     Seq("minhash").map { func =>
@@ -353,10 +377,17 @@ final class HivemallOpsSuite extends HivemallQueryTest {
   }
 
   test("user-defined aggregators for ensembles") {
+    import hiveContext.implicits._
     Seq("voted_avg", "weight_voted_avg")
       .map { udaf =>
         TinyScoreData.groupby().agg("score"->udaf)
           .foreach(_ => {})
+      }
+    Seq("rf_ensemble")
+      .map { udaf =>
+         Seq((1, 1), (1, 0), (0, 0)).toDF.as("c0", "c1")
+           .groupby($"c0").agg("c1"->udaf)
+           .foreach(_ => {})
       }
   }
 
