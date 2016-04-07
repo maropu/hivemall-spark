@@ -45,6 +45,7 @@ import org.apache.spark.sql.types._
  * @groupname ftvec.hashing
  * @groupname ftvec.scaling
  * @groupname ftvec.conv
+ * @groupname ftvec.trans
  * @groupname tools.mapred
  * @groupname tools
  * @groupname tools.math
@@ -607,6 +608,7 @@ final class HivemallOps(df: DataFrame) extends Logging {
    * @see hivemall.ftvec.conv.QuantifyColumnsUDTF
    * @group ftvec.conv
    */
+  @scala.annotation.varargs
   def quantify(exprs: Column*): DataFrame = {
     Generate(HiveGenericUDTF(
         new HiveFunctionWrapper("hivemall.ftvec.conv.QuantifyColumnsUDTF"),
@@ -634,15 +636,15 @@ final class HivemallOps(df: DataFrame) extends Logging {
    * Split Seq[String] into pieces.
    * @group ftvec
    */
-  def explode_array(input: Column): DataFrame = {
-    df.explode(input) { case Row(v: Seq[_]) =>
+  def explode_array(expr: Column): DataFrame = {
+    df.explode(expr) { case Row(v: Seq[_]) =>
       // Type erasure removes the component type in Seq
       v.map(s => HmFeature(s.asInstanceOf[String]))
     }
   }
 
-  def explode_array(input: String): DataFrame =
-    this.explode_array(df(input))
+  def explode_array(expr: String): DataFrame =
+    this.explode_array(df(expr))
 
   /**
    * Returns a top-`k` records for each `group`.
@@ -973,6 +975,93 @@ object HivemallOps {
   def normalize(exprs: Column*): Column = {
     HiveGenericUDF(new HiveFunctionWrapper(
       "hivemall.ftvec.scaling.L2NormalizationUDFWrapper"), exprs.map(_.expr))
+  }
+
+  /**
+   * @see hivemall.ftvec.conv.ConvertToDenseModelUDAF
+   * @group ftvec.conv
+   */
+  def conv2dense(expr: Column): Column = {
+    HiveGenericUDF(new HiveFunctionWrapper(
+      "hivemall.ftvec.conv.ConvertToDenseModelUDAF"), Seq(expr.expr))
+  }
+
+  /**
+   * @see hivemall.ftvec.conv.ToDenseFeaturesUDF
+   * @group ftvec.conv
+   */
+  def to_dense_features(expr: Column): Column = {
+    HiveGenericUDF(new HiveFunctionWrapper(
+      "hivemall.ftvec.conv.ToDenseFeaturesUDF"), Seq(expr.expr))
+  }
+
+  /**
+   * @see hivemall.ftvec.conv.ToSparseFeaturesUDF
+   * @group ftvec.conv
+   */
+  def to_sparse_features(expr: Column): Column = {
+    HiveGenericUDF(new HiveFunctionWrapper(
+      "hivemall.ftvec.conv.ToSparseFeaturesUDF"), Seq(expr.expr))
+  }
+
+  /**
+   * @see hivemall.ftvec.trans.VectorizeFeaturesUDF
+   * @group ftvec.trans
+   */
+  @scala.annotation.varargs
+  def vectorize_features(exprs: Column*): Column = {
+    HiveGenericUDF(new HiveFunctionWrapper(
+      "hivemall.ftvec.trans.VectorizeFeaturesUDF"), exprs.map(_.expr))
+  }
+
+  /**
+   * @see hivemall.ftvec.trans.CategoricalFeaturesUDF
+   * @group ftvec.trans
+   */
+  @scala.annotation.varargs
+  def categorical_features(exprs: Column*): Column = {
+    HiveGenericUDF(new HiveFunctionWrapper(
+      "hivemall.ftvec.trans.CategoricalFeaturesUDF"), exprs.map(_.expr))
+  }
+
+  /**
+   * @see hivemall.ftvec.trans.IndexedFeatures
+   * @group ftvec.trans
+   */
+  @scala.annotation.varargs
+  def indexed_features(exprs: Column*): Column = {
+    HiveGenericUDF(new HiveFunctionWrapper(
+      "hivemall.ftvec.trans.IndexedFeatures"), exprs.map(_.expr))
+  }
+
+  /**
+   * @see hivemall.ftvec.trans.QuantifiedFeaturesUDTF
+   * @group ftvec.trans
+   */
+  @scala.annotation.varargs
+  def quantified_features(exprs: Column*): Column = {
+    HiveGenericUDF(new HiveFunctionWrapper(
+      "hivemall.ftvec.trans.QuantifiedFeaturesUDTF"), exprs.map(_.expr))
+  }
+
+  /**
+   * @see hivemall.ftvec.trans.QuantitativeFeaturesUDF
+   * @group ftvec.trans
+   */
+  @scala.annotation.varargs
+  def quantified_features(exprs: Column*): Column = {
+    HiveGenericUDF(new HiveFunctionWrapper(
+      "hivemall.ftvec.trans.QuantitativeFeaturesUDF"), exprs.map(_.expr))
+  }
+
+  /**
+   * @see hivemall.ftvec.trans.BinarizeLabelUDTF
+   * @group ftvec.trans
+   */
+  @scala.annotation.varargs
+  def binarize_label(exprs: Column*): Column = {
+    HiveGenericUDF(new HiveFunctionWrapper(
+      "hivemall.ftvec.trans.BinarizeLabelUDTF"), exprs.map(_.expr))
   }
 
   /**
