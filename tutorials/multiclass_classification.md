@@ -16,7 +16,7 @@ Data preparation
 # wget https://raw.githubusercontent.com/maropu/hivemall-spark/master/scripts/ddl/define-dfs.sh
 
 // Invoke a spark-shell with hivemall-spark
-# bin/spark-shell --packages maropu:hivemall-spark:0.0.4 --master=local-cluster[2,1,1024] --conf spark.executor.memory=1024
+# bin/spark-shell --packages maropu:hivemall-spark:0.0.5 --master=local-cluster[2,1,1024] --conf spark.executor.memory=1024
 
 scala> :load define-dfs.sh
 
@@ -30,6 +30,19 @@ val trainRdd = sc.textFile("news20.train")
 // amplify the data by 3 times.
 val trainDf = sqlContext.createDataFrame(trainRdd)
   .coalesce(2).part_amplify(3)
+
+// Load the test data as a RDD
+val testRdd = sc.textFile("news20.test")
+  .map(HmLabeledPoint.parse)
+
+// Transform into a DataFrame and transform features
+// into a Spark Vector type.
+val testDf = sqlContext.createDataFrame(testRdd)
+  .select(rowid(), $"label".cast(IntegerType).as("target"), $"features")
+  .cache
+
+val testDf_exploded = testDf.explode_array($"features")
+  .select($"rowid", $"target", extract_feature($"feature"), extract_weight($"feature"))
 ```
 
 Training (CW)
@@ -45,19 +58,6 @@ val model = trainDf
 Test
 --------------------
 ```
-// Load the test data as a RDD
-val testRdd = sc.textFile("news20.test")
-  .map(HmLabeledPoint.parse)
-
-// Transform into a DataFrame and transform features
-// into a Spark Vector type.
-val testDf = sqlContext.createDataFrame(testRdd)
-  .select(rowid(), $"label".cast(IntegerType).as("target"), $"features")
-  .cache
-
-val testDf_exploded = testDf.explode_array($"features")
-  .select($"rowid", $"target", extract_feature($"feature"), extract_weight($"feature"))
-
 // Do prediction
 val predict = testDf_exploded
   .join(model, testDf_exploded("feature") === model("feature"), "LEFT_OUTER")

@@ -21,7 +21,7 @@ val trainCsvDf = sqlContext
   .format("com.databricks.spark.csv")
   .option("header", "true")
   .option("inferSchema", "true")
-  .load("/Users/maropu/Desktop/train.csv")
+  .load("train.csv")
   .cache // Cached for second use
 
 val trainQuantifiedDf = trainCsvDf
@@ -32,11 +32,31 @@ val trainQuantifiedDf = trainCsvDf
 
 val trainDf = trainQuantifiedDf
   .select(
-      rand(31).as("rnd"),
       $"passengerid",
       array(trainQuantifiedDf.cols.drop(2): _*).as("features"),
       $"survived"
     )
+
+// Load the test data as a DataFrame
+val testCsvDf = sqlContext
+  .read
+  .format("com.databricks.spark.csv")
+  .option("header", "true")
+  .option("inferSchema", "true")
+  .load("test.csv")
+
+val testQuantifiedDf = testCsvDf
+  .select(Seq(1.as("train_first"), true.as("output"), $"PassengerId") ++ testCsvDf.cols.drop(1): _*)
+  .unionAll(
+      trainCsvDf.select(Seq(0.as("train_first"), false.as("output"), $"PassengerId") ++ trainCsvDf.cols.drop(2): _*)
+    )
+  .sort($"train_first".asc, $"PassengerId".asc)
+  .quantify($"output" +: testCsvDf.cols: _*)
+  // Rename output columns for readability
+  .as("passengerid", "pclass", "name", "sex", "age", "sibsp", "parch", "ticket", "fare", "cabin", "embarked")
+
+val testDf = testQuantifiedDf
+  .select($"passengerid", array(testQuantifiedDf.cols.drop(1): _*).as("features"))
 ```
 
 Training
@@ -51,27 +71,6 @@ val model = trainDf
 Test
 --------------------
 ```
-// Load the test data as a DataFrame
-val testCsvDf = sqlContext
-  .read
-  .format("com.databricks.spark.csv")
-  .option("header", "true")
-  .option("inferSchema", "true")
-  .load("/Users/maropu/Desktop/test.csv")
-
-val testQuantifiedDf = testCsvDf
-  .select(Seq(1.as("train_first"), true.as("output"), $"PassengerId") ++ testCsvDf.cols.drop(1): _*)
-  .unionAll(
-      trainCsvDf.select(Seq(0.as("train_first"), false.as("output"), $"PassengerId") ++ trainCsvDf.cols.drop(2): _*)
-    )
-  .sort($"train_first".asc, $"PassengerId".asc)
-  .quantify($"output" +: testCsvDf.cols: _*)
-  // Rename output columns for readability
-  .as("passengerid", "pclass", "name", "sex", "age", "sibsp", "parch", "ticket", "fare", "cabin", "embarked")
-
-val testDf = testQuantifiedDf
-  .select($"passengerid", array(testQuantifiedDf.cols.drop(1): _*).as("features"))
-
 // Do prediction
 model
   .coalesce(4)
@@ -80,8 +79,7 @@ model
       testDf("passengerid"),
       tree_predict(model("model_id"), model("model_type"), model("pred_model"), testDf("features"), true).as("predicted")
     )
-  .groupby($"passengerid")
-  .agg("predicted" -> "rf_ensemble")
+  .groupby($"passengerid").rf_ensemble("predicted")
   .as("passengerid", "predicted")
   .select($"passengerid", $"predicted.label")
   .show

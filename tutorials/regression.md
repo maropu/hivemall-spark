@@ -30,6 +30,15 @@ val trainRdd = sc.textFile("E2006.train.lp")
 // amplify the data by 3 times.
 val trainDf = sqlContext.createDataFrame(trainRdd)
   .coalesce(2).part_amplify(3)
+
+// Load the test data as a RDD
+val testRdd = sc.textFile("E2006.test.lp")
+  .map(HmLabeledPoint.parse)
+
+// Transform into a DataFrame and transform features
+// into a Spark Vector type.
+val testDf = sqlContext.createDataFrame(testRdd)
+  .select($"label".as("target"), ft2vec($"features").as("features"))
 ```
 
 Training (PA1)
@@ -48,15 +57,6 @@ val modelUdf = HivemallUtils
 Test
 --------------------
 ```
-// Load the test data as a RDD
-val testRdd = sc.textFile("E2006.test.lp")
-  .map(HmLabeledPoint.parse)
-
-// Transform into a DataFrame and transform features
-// into a Spark Vector type.
-val testDf = sqlContext.createDataFrame(testRdd)
-  .select($"label".as("target"), ft2vec($"features").as("features"))
-
 // Do prediction
 val predict = testDf
   .select($"target", modelUdf($"features").as("predicted"))
